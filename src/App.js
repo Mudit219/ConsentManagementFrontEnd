@@ -9,7 +9,7 @@ import {
     Config,
 } from '@usedapp/core'
 
-import {Box} from '@mui/material';
+import {Box, Stack} from '@mui/material';
 import { formatEther } from '@ethersproject/units'
 import { getDefaultProvider } from 'ethers'
 import SideMenuPatient from './Components/PatientDashboard/Menu'
@@ -23,9 +23,10 @@ import {store,persistor} from "./Components/app/store"
 import { PersistGate } from 'redux-persist/integration/react'
 import Profile from "./Components/Profile/profile";
 // import getWeb3 from "./utils/getWeb3";
+import DisplayRecords from './Components/PatientDashboard/EHealthRecords';
 
 export default function App() {
-    const {account} = useEthers()
+    const {account,activateBrowserWallet} = useEthers()
     // const etherBalance = useEtherBalance(account)
     const SmartContractConnection = () => {
 
@@ -53,23 +54,39 @@ export default function App() {
     //       return contract;
     //     }
     // }
+
+
     
     useEffect(async() => {
         // const web3 = await getWeb3();
         // console.log("Hello there")  
+        activateBrowserWallet();
     }, [])
 
     return ( 
         <Provider store={store}>
-            <PersistGate loading={null} persistor={persistor}>
-        <Router>
+        <PersistGate loading={null} persistor={persistor}>
+            
+            <Router>
+            <Box sx={{ display: 'flex' }}>
+            
+            <SideMenuPatient patientId={account}/>
+            <Stack sx={{ display: 'flex' }}>
+            <Header />
             <Routes>
+                <Route path={account+"/E-Health-Records"} element = {<DisplayRecords patientId={account}/>} />
                 <Route exact path="/account/:id" element={<Profile />} />
                 <Route path="/login" element={<Login />} />
                 <Route exact path="/" element={<PrivateRoute />} >
-                    <Route exact path='/' element={<Homepage/>}/>  
+                <Route exact path='/' element={<Homepage/>}/>  
                 </Route>
             </Routes>
+            
+            </Stack>
+            
+            </Box>
+    
+        </Router>
             
         
         {/* <div>{!account && < button onClick = {
@@ -79,7 +96,6 @@ export default function App() {
             etherBalance && < p > Balance: { formatEther(etherBalance) } </p>
         }  
     </div> */}
-        </Router>
         </PersistGate>
         </Provider>
         
