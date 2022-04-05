@@ -1,17 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { makeStyles } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { useNavigate } from "react-router-dom";
-import {
-    Mainnet,
-    DAppProvider,
-    useEtherBalance,
-    useEthers,
-    Config,
-} from '@usedapp/core'
+
 import {useDispatch} from "react-redux";
 import { login } from "../features/userSlice";
+
+import { useWeb3React } from '@web3-react/core'
+import { Web3Provider } from '@ethersproject/providers'
+import { InjectedConnector } from '@web3-react/injected-connector'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -35,12 +33,14 @@ const Form = ({ handleClose }) => {
   const classes = useStyles();
   // create state variables for each input
   const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const { activateBrowserWallet, deactivate, account } = useEthers()
   const [firstLogin,setfirstLogin] = useState(true);
+
+  const injectedConnector = new InjectedConnector({supportedChainIds: [1,3, 4, 5, 42, 1337],})
+  const { chainId, account, activate, active,library } = useWeb3React()
+  // const { activateBrowserWallet, deactivate, account } = useEthers()
+  useEffect(() => {
+    console.log(chainId, account, active)
+    },);
 
   let navigate = useNavigate(); 
   const routeChange = () =>{ 
@@ -52,7 +52,7 @@ const Form = ({ handleClose }) => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    console.log(firstName, lastName, email, password);
+    // console.log(firstName, lastName, email, password);
 
     routeChange();
     // Send a call to backend to register user if first time otherwise nothing just login 
@@ -67,25 +67,18 @@ const Form = ({ handleClose }) => {
   };
 
   const disconnect = () => {
-      deactivate();
+      // deactivate();
   }
   
   const ConnectWallet = async() => {
-      activateBrowserWallet();
-        //   await window.ethereum.enable();
-        //   const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        //   const account = accounts[0];
-        //   console.log(account)
-        //   window.ethereum.on('accountsChanged', function (accounts) {
-        //   // Time to reload your interface with accounts[0]!
-        //       console.log(accounts[0])
-        //   });
+      // activateBrowserWallet();
+      activate(injectedConnector);
       console.log(firstLogin)
       setfirstLogin(true);
 
-    //   Make a axios call with the accountID to see if this person is a first time login user
+      //   Make a axios call with the accountID to see if this person is a first time login user
 
-        // setfirstLogin(...);
+      // setfirstLogin(...);
 
     }
 

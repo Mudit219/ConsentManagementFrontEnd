@@ -3,27 +3,33 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import {
-    Mainnet,
-    DAppProvider,
-    useEtherBalance,
-    useEthers,
-    Config,
-    Localhost,
-} from '@usedapp/core'
+import { Web3ReactProvider } from '@web3-react/core'
+import {Provider} from 'react-redux';
+import {store,persistor} from "./Components/app/store"
+import { PersistGate } from 'redux-persist/integration/react'
+import MetamaskProvider from "./Components/MetamaskProvider/metamask";
+import { Web3Provider } from '@ethersproject/providers'
 
-const config = {
-  readOnlyChainId: Mainnet.chainID,
-  readOnlyUrls: {
-    [Mainnet.chainID]: '*',
-  },
+
+function getLibrary(provider){
+  const library = new Web3Provider(provider)
+  library.pollingInterval = 12000
+  return library
 }
 
-
 ReactDOM.render( 
-    <DAppProvider config = { config } >
+  <Web3ReactProvider getLibrary={getLibrary}>
+  <MetamaskProvider>
+  <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+  
     <App / >
-    </DAppProvider>,
+      
+  </PersistGate>
+
+  </Provider>
+  </MetamaskProvider>
+  </Web3ReactProvider>,
     document.getElementById('root')
 );
 
