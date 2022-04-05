@@ -16,22 +16,27 @@ const useStyles = makeStyles({
         display:'flex'
     }
 })
-const SideMenuPatient=({patientId})=> {
+
+const SideMenuPatient=({account})=> {
     const classes = useStyles();
     const navigate = useNavigate();
-    console.log(patientId);
+    console.log(account);
     const menuItems=[
         {
             text:"E-Health-Records",
-            path:patientId+"/E-Health-Records"
+            path:"/E-Health-Records"
         },
         {
-            text:"Create Consent",
-            path:patientId+"/create-consent"
+            text:"Consents",
+            path:"/Consents"
+        },
+        {
+            text:"My Profile",
+            path:"/Profile"
         }
     ]
     return (
-      <div >
+      <div className={classes.SideMenu} >
 
         <Drawer
             className={classes.drawer}

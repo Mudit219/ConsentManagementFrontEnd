@@ -3,9 +3,10 @@ import { TableContainer, Table, TableCell, TableBody, TableHead, TableRow, Paper
 import baseURL from "../../BackendApi/BackendConnection";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 
-const DisplayRecords=({patientId})=>{
+const DisplayRecords=({account})=>{
 
     const [EHealthRecords,setEHealthRecord] = useState([]);
 
@@ -17,9 +18,11 @@ const DisplayRecords=({patientId})=>{
       displayEHR();
     },[]);
 
+    // const params = useParams();
+
     const displayEHR=()=>{
-        console.log(`${baseURL}/Pat_${patientId}/E-Health-Records`);    
-      axios.get(`${baseURL}/Pat_${patientId}/E-Health-Records`).then(
+        console.log(`${baseURL}/Pat_${account}/E-Health-Records`);    
+      axios.get(`${baseURL}/Pat_${account}/E-Health-Records`).then(
         (response)=>{
           console.log("bla bla bla bla:",response);
           setEHealthRecord(response.data);
@@ -32,8 +35,8 @@ const DisplayRecords=({patientId})=>{
     }
     return (
         
-        <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableContainer sx={{width: window.innerWidth - 400 }} component={Paper}>
+      <Table sx={{width:'100%' }} aria-label="simple table">
         <TableHead>
           <TableRow>
             <TableCell>Record ID</TableCell>
