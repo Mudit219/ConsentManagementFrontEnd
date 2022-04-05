@@ -3,8 +3,9 @@ import './App.css';
 import SideMenuPatient from './Components/PatientDashboard/Menu';
 import { BrowserRouter as Router, Routes , Route} from 'react-router-dom';
 import DisplayRecords from './Components/PatientDashboard/EHealthRecords';
+import PatientProfile from './Components/PatientDashboard/Profile';
 
-const patientId=456;
+const patientId=1234;
 
 function App() {
   return (
@@ -12,7 +13,8 @@ function App() {
       <Router>
       <SideMenuPatient patientId={patientId}/>
       <Routes>
-        <Route path={"Pat_"+patientId+"/E-Health-Records"} element = {<DisplayRecords patientId={patientId}/>} />
+        <Route path={patientId+"/E-Health-Records"} element = {<DisplayRecords patientId={patientId}/>} />
+        <Route path={patientId+"/Profile"} element= {<PatientProfile/>} />
       </Routes>
       </Router>
       

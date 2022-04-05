@@ -23,11 +23,11 @@ const SideMenuPatient=({patientId})=> {
     const menuItems=[
         {
             text:"E-Health-Records",
-            path:"Pat_"+ patientId+"/E-Health-Records"
+            path:patientId+"/E-Health-Records"
         },
         {
             text:"Create Consent",
-            path:"Pat_"+ patientId+"/create-consent"
+            path:patientId+"/create-consent"
         }
     ]
     return (
