@@ -16,6 +16,8 @@ import { Link as RouterLink } from "react-router-dom";
 import {useSelector} from "react-redux";
 import {selectUser} from "../features/userSlice";
 
+import {useDispatch} from "react-redux";
+import { logout } from "../features/userSlice";
 
 
 const useStyles = makeStyles(() => ({
@@ -55,14 +57,11 @@ export default function Header() {
   const { header, logo, menuButton, toolbar, drawerContainer } = useStyles();
   const user =  useSelector(selectUser);
 
+
   const headersData = [
     {
       label: user.account,
       href: "/account/" + user.account,
-    },
-    {
-      label: "Logout",
-      href: "/logout",
     }
   ];
 
@@ -89,11 +88,31 @@ export default function Header() {
     };
   }, []);
 
+  const dispatch = useDispatch();
+    
+  const ReleaseAccount = () => {
+    console.log("Dispatching the account ")
+    dispatch(logout());
+  }
+
   const displayDesktop = () => {
     return (
       <Toolbar className={toolbar}>
         {femmecubatorLogo}
-        <div>{getMenuButtons()}</div>
+        <div>
+          {getMenuButtons()}
+          <Button
+            {...{
+              key: "Logout",
+              color: "inherit",
+              className: menuButton,
+              onClick: ReleaseAccount
+            }}
+          >
+            {"Logout"}
+          </Button>
+        </div>
+
       </Toolbar>
     );
   };
