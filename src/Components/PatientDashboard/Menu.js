@@ -6,7 +6,7 @@ import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
     drawer:{
-        width:200
+        width:280
     },
     drawerPaper:{
         width:250
@@ -29,7 +29,7 @@ const SideMenuPatient=()=> {
         }
     ]
     return (
-      <div >
+      <div className={classes.SideMenu} >
 
         <Drawer
             className={classes.drawer}
