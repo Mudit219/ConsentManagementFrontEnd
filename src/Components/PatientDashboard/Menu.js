@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 const SideMenuPatient=({account})=> {
     const classes = useStyles();
     const navigate = useNavigate();
-    console.log(account);
+    // console.log(account);
     const menuItems=[
         {
             text:"E-Health-Records",

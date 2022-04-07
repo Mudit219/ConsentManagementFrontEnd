@@ -7,11 +7,11 @@ import {useSelector} from "react-redux";
 
 const PrivateRoute = () => {
     const user =  useSelector(selectUser);
-    console.log("coming  to this components of authenticate", user);
-    const fun = () => {
-        return user ? "User There" : "User Not There"
-    }
-    console.log(fun())
+    // console.log("coming  to this components of authenticate", user);
+    // const fun = () => {
+    //     return user ? "User There" : "User Not There"
+    // }
+    // console.log(fun())
     // const account = AccountCheck();
     // const auth = true; // determine if authorized, from context or however you're doing it
 

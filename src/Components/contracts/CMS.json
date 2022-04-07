@@ -1,0 +1,229 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "address payable",
+				"name": "_user",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "role",
+				"type": "string"
+			}
+		],
+		"name": "AddNewUser",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_company",
+				"type": "string"
+			},
+			{
+				"internalType": "address payable",
+				"name": "_owner",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "factory",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "file",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "consent",
+				"type": "address"
+			}
+		],
+		"name": "CMSConsentCreatedEvent",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "factory",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "contract Consent",
+				"name": "consent",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "enum Consent.Status",
+				"name": "status",
+				"type": "uint8"
+			}
+		],
+		"name": "CMSConsentStatusChangedEvent",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "factory",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "file",
+				"type": "address"
+			}
+		],
+		"name": "CMSFileCreatedEvent",
+		"type": "event"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "address payable",
+				"name": "_user",
+				"type": "address"
+			},
+			{
+				"internalType": "enum ConsentFile.Role",
+				"name": "role",
+				"type": "uint8"
+			}
+		],
+		"name": "createConsentFile",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "requestedDesc",
+				"type": "string"
+			},
+			{
+				"internalType": "address",
+				"name": "fromPatient",
+				"type": "address"
+			}
+		],
+		"name": "requestConsent",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "ConsentFileExists",
+		"outputs": [
+			{
+				"internalType": "contract ConsentFile",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "DoctorExists",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "GetConsents",
+		"outputs": [
+			{
+				"internalType": "contract Consent[]",
+				"name": "",
+				"type": "address[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
