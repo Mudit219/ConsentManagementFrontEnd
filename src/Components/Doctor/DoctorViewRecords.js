@@ -6,12 +6,12 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 
 
-const DisplayRecords=({account,role})=>{
+const DisplayRecords=({account})=>{
 
-    const [EHealthRecords,setEHealthRecord] = useState([]);
+    const [RelatedRecords,setEHealthRecord] = useState([]);
 
     useEffect(()=>{
-      document.title='Welcome Patient'
+      document.title='Welcome Doctor'
     },[]);
 
     useEffect(()=>{
@@ -21,9 +21,11 @@ const DisplayRecords=({account,role})=>{
     // const params = useParams();
 
     const displayEHR=()=>{
-        // console.log(`${baseURL}/Pat_${account}/E-Health-Records`);   
-       
-      axios.get(`${baseURL}/${role}${account}/E-Health-Records`).then(
+        // console.log(`${baseURL}/Pat_${account}/E-Health-Records`);    
+      axios.get(`${baseURL}/Doc_${account}/E-Health-Records`,{params:
+        {
+            
+        }}).then(
         (response)=>{
           console.log("bla bla bla bla:",response);
           setEHealthRecord(response.data);

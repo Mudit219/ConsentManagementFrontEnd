@@ -4,9 +4,9 @@ import React, { useEffect, useState } from "react";
 import baseURL from "../../BackendApi/BackendConnection";
 import { useParams } from "react-router-dom";
 
-const PatientProfile=({account})=>{
+const PatientProfile=({account,role})=>{
 
-    const [PatientProfile,setPatientProfile] = useState({});
+    const [Profile,setPatientProfile] = useState({});
     useEffect(()=>{
         document.title="Your Profile";
         displayProfile();
@@ -14,7 +14,7 @@ const PatientProfile=({account})=>{
 
     // const params = useParams()
     const displayProfile=()=>{
-        axios.get(`${baseURL}/Pat_${account}/Profile`).then(
+        axios.get(`${baseURL}/${role}${account}/Profile`).then(
             (response)=>{
                 // console.log(response);
                 setPatientProfile(response.data);
@@ -30,8 +30,22 @@ const PatientProfile=({account})=>{
                 <CardContent>
                     {
                         // console.log(PatientProfile)
-                        PatientProfile!=null
-                        ? "Hello " + PatientProfile.name
+                        Profile!=null
+                        ?
+                            (<div className='card' key={Profile.metaId}>
+                            <h3>--- {role} Dashboard ---</h3>
+                            <p className='btc'>{role} Name : {Profile.name}</p>
+                            <p className='btc'>MobileNumber : {Profile.phone}</p>
+                            <p className='btc'>Gender : {Profile.gender}</p>
+                            <p className='btc'>EmailId : {Profile.email}</p>
+                            </div>
+                            // <img 
+                            //     src={doctorData.photoUrl}
+                            //     alt="Doctor Image"
+                            // />
+                            )
+
+
                         : "No Profile found"
                     }
                 </CardContent>

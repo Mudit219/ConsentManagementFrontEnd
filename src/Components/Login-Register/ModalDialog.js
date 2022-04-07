@@ -2,12 +2,12 @@ import React from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import Form from './Login-Form';
 
-const ModalDialog = ({ open, handleClose }) => {
+const ModalDialog = ({ open, handleClose,role,firstLogin }) => {
   return (
     // props received from App.js
     <Dialog open={open} onClose={handleClose}>
       // form to be created
-      <Form handleClose={handleClose} />
+      <Form handleClose={handleClose} role={role} firstLoginRoot={firstLogin}/>
     </Dialog>
   );
 };

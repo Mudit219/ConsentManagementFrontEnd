@@ -10,6 +10,9 @@ import { login } from "../features/userSlice";
 import { useWeb3React } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
 import { InjectedConnector } from '@web3-react/injected-connector'
+import { Stack } from '@mui/material';
+import axios from 'axios';
+import baseURL from '../../BackendApi/BackendConnection';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -29,17 +32,20 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Form = ({ handleClose }) => {
+const Form = ({ handleClose,role,firstLoginRoot }) => {
   const classes = useStyles();
   // create state variables for each input
   const [firstName, setFirstName] = useState('');
-  const [firstLogin,setfirstLogin] = useState(true);
+  const [phoneNumber, setphoneNumber] = useState('');
+  
+  const [firstLogin,setfirstLogin] = useState(firstLoginRoot);
 
   const injectedConnector = new InjectedConnector({supportedChainIds: [1,3, 4, 5, 42, 1337],})
   const { chainId, account, activate, active,library } = useWeb3React()
   // const { activateBrowserWallet, deactivate, account } = useEthers()
   useEffect(() => {
-    console.log(chainId, account, active)
+    setfirstLogin(firstLoginRoot)
+    console.log(chainId, account, firstLogin,firstLoginRoot)
     },);
 
   let navigate = useNavigate(); 
@@ -53,16 +59,28 @@ const Form = ({ handleClose }) => {
   const handleSubmit = e => {
     e.preventDefault();
     // console.log(firstName, lastName, email, password);
-
-    routeChange();
-    // Send a call to backend to register user if first time otherwise nothing just login 
+    if(firstLogin) {
+        // Send a call to backend to register user if first time otherwise nothing just login 
+      axios.post(`${baseURL}/Add${role}`,{metaId:account,name:firstName,phone:phoneNumber}).then(
+        (response)=>{
+          console.log("Working!!!!"+response.data);
+        },  
+        (error)=>{
+          throw(error);
+        }
+      )
+    }
+    
     dispatch(login({
             account: account,
             firstName: firstName,
+            phoneNumber: phoneNumber,
+            role: role
     }));
 
     handleClose();
 
+    routeChange();
 
   };
 
@@ -72,9 +90,26 @@ const Form = ({ handleClose }) => {
   
   const ConnectWallet = async() => {
       // activateBrowserWallet();
-      activate(injectedConnector);
-      console.log(firstLogin)
-      setfirstLogin(true);
+      await activate(injectedConnector);
+      console.log("Existing User?: " + firstLogin)
+      // Send a call to backend to register user if first time otherwise nothing just login 
+      // await window.ethereum.enable();
+      // const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      // const account = accounts[0];
+      
+      console.log("My Account is: "+ account);
+      axios.get(`${baseURL}/${role}${account}/Valid`).then(
+        (response)=>{
+          console.log("Check valid or not " + response.data);
+          if(response.data==false)
+            setfirstLogin(true);
+        },
+        (error)=>{
+          throw(error);
+        }
+      )
+
+
 
       //   Make a axios call with the accountID to see if this person is a first time login user
 
@@ -99,16 +134,25 @@ const Form = ({ handleClose }) => {
                  
         }
         <p> If the above field is not The Account you used to Login please change it in you metamask plugin</p>
-        {firstLogin &&
-        (<TextField
-            label="First Name"
+        {firstLogin==true 
+        ?(<Stack><TextField
+            label="Full Name"
             variant="filled"
             required
             value={firstName}
             onChange={e => setFirstName(e.target.value)}
-        />)}
+        />
+            <TextField
+            label="Phone Number"
+            variant="filled"
+            required
+            value={phoneNumber}
+            onChange={e => setphoneNumber(e.target.value)}
+        />
+        </Stack>)
+        :"Nope"}
         <Button type="submit" variant="contained" color="primary">
-            Signup
+            Login
         </Button>
     </form>
   );
