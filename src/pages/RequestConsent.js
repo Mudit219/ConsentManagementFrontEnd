@@ -1,14 +1,6 @@
 import React, { useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import Radio from "@material-ui/core/Radio";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import Slider from "@material-ui/core/Slider";
 import Button from "@material-ui/core/Button";
 
 const defaultValues = {
@@ -35,12 +27,16 @@ const Form = ({account,web3}) => {
       [name]: value,
     });
   };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     // console.log(formValues);
     // console.log(web3)
-    const abi = require("../Components/contracts/CMS.json");
-    const contract = new web3.eth.Contract(abi)
+    const abi = require("../Components/contracts/ConsentManagementSystem.json");
+    console.log(abi)
+
+    const ContractAddress = "0xcf250c794a3591f4Ed22930564859a3eD84DE1Fe"
+    const contract = new web3.eth.Contract(abi["abi"],ContractAddress);
     // , "0x1cff8c70b8410931055748a4f69074e7fc42124b");
     // web3.eth.Contract(abi,"0x1cff8c70b8410931055748a4f69074e7fc42124b")
     console.log(account)
@@ -50,16 +46,21 @@ const Form = ({account,web3}) => {
     // });
     // console.log(res);
 
-    await contract.methods.AddNewUser("0xA87794DAFf4F7e5463b3BAF34EF4c45e385613a3","doctor").call({from : account},function(res,err) {
-        console.log(res)
-    });
+    const OwnerAccount = process.env.REACT_APP_OWNERADDRESS
+    console.log(OwnerAccount)
+
+    console.log(contract.methods)
+
+    var res = await contract.methods.AddNewUser("0x528F0E67258a254eE95d77ef4C9665c8d294A0d5","doctor").send({from : OwnerAccount, gas: '1000000'})
+    console.log(res)
     
-    await contract.methods.AddNewUser("0x33e312F1C2f2151C9593DB9bb141D6fA8C6BB090","patient").call({from : account},function(res,err) {
-        console.log(res)
-    });
+    // var res = await contract.methods.AddNewUser("0xc704C6FA6CD7b397B5B6d605f05A9Daa2e688Ab3","patient").send({from : OwnerAccount, gas: '1000000'})
+    // console.log(res)
     
-    // contract.methods.requestConsent().call
-    // console.log(contract);
+    // console.log(formValues)
+    // var res = contract.methods.requestConsent(formValues.desc,formValues.id).send({from : "0x528F0E67258a254eE95d77ef4C9665c8d294A0d5", gas: '1000000'})
+    // console.log(res);
+
   };
 
   return (
