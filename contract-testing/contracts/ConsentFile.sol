@@ -7,7 +7,7 @@ contract ConsentFile {
   address CMS;
 
   /* The owner of the file */
-  address private user;
+  address payable user;
   
   enum Role {
     doctor,
@@ -38,12 +38,34 @@ contract ConsentFile {
   }
 
   /* The constructor of the file. Also attaches it to an owner */
-  constructor (address _user,Role _role,address _CMS) public
+  constructor (address payable _user,Role _role,address _CMS) public
   {
     CMS = _CMS;
     user = _user;
     role = _role;
   }
+
+  function getAssociatedConsent(address _otherUser) public returns(bool,Consent ) {
+    if(role == Role.doctor) {
+      for(uint i=0;i < listOfConsents.length;i++) {
+        if(listOfConsents[i].getPatient() == _otherUser) {
+          return (true,listOfConsents[i]);
+        }
+      }
+      Consent nc = new Consent(_otherUser,user);
+      return (false,nc);
+    }
+    else {
+      for(uint i=0;i < listOfConsents.length;i++) {
+        if(listOfConsents[i].getDoctor() == _otherUser) {
+          return (true,listOfConsents[i]);
+        }
+      }
+      Consent nc = new Consent(user,_otherUser);
+      return (false,nc);
+    }
+  }
+    
 
   /* Adds a new consent to the file */
   function addConsent(Consent _consent) CMSorUser() public 
