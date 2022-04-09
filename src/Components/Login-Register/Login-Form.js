@@ -51,7 +51,7 @@ const Form = ({ handleClose, role, firstLoginRoot }) => {
   useEffect(() => {
     setfirstLogin(firstLoginRoot);
     console.log(chainId, account, firstLogin, firstLoginRoot);
-  },[firstLoginRoot]);
+  },[firstLoginRoot,account]);
 
   let navigate = useNavigate();
   const routeChange = () => {
@@ -64,15 +64,41 @@ const Form = ({ handleClose, role, firstLoginRoot }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // console.log(firstName, lastName, email, password);
-    if (firstLogin) {
+    if (firstLogin && role == "Doc_") {
       // Send a call to backend to register user if first time otherwise nothing just login
       axios
         .post(`${baseURL}/Add${role}`, {
           metaId: account,
           name: firstName,
-          phone: phoneNumber,
           doctorLicense: doctorLicense
+        })
+        .then(
+          (response) => {
+            console.log("Working!!!!" + response.data);
+            dispatch(
+              login({
+                account: account,
+                firstName: firstName,
+                doctorLicense: doctorLicense,
+                role: role,
+              })
+            );
+            handleClose();
+            routeChange();
 
+            },
+          (error) => {
+            setLoginError("Failed");
+            throw error;
+          }
+        );
+    }
+    else if(firstLogin && role == "Pat_"){
+      axios
+        .post(`${baseURL}/Add${role}`, {
+          metaId: account,
+          name: firstName,
+          phone: phoneNumber,
         })
         .then(
           (response) => {
@@ -86,6 +112,8 @@ const Form = ({ handleClose, role, firstLoginRoot }) => {
               })
             );
             handleClose();
+            routeChange();
+
             },
           (error) => {
             setLoginError("Failed");
@@ -105,6 +133,7 @@ const Form = ({ handleClose, role, firstLoginRoot }) => {
                 role: role,
               }));
           handleClose();
+          routeChange();
 
           },
           (error)=>{
@@ -114,13 +143,18 @@ const Form = ({ handleClose, role, firstLoginRoot }) => {
           }
         )
     }
-
-    
-
-
+    // ---------------------------------------------------------------------------------------
+    // Comment this line once fully integrated with backend
+    dispatch(
+      login({
+        account: account,
+        firstName: firstName,
+        phoneNumber: phoneNumber,
+        role: role,
+      }));
     routeChange();
   };
-
+// -------------------------------------------------------------------------------------------
   const disconnect = () => {
     // deactivate();
   };
@@ -166,8 +200,7 @@ const Form = ({ handleClose, role, firstLoginRoot }) => {
       )}
       <p>
         {" "}
-        If the above field is not The Account you used to Login please change it
-        in you metamask plugin
+        You are login for the first time, Please fill in the details:
       </p>
       {firstLogin == true && account ? (
         <Stack>
@@ -184,20 +217,27 @@ const Form = ({ handleClose, role, firstLoginRoot }) => {
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
           />
-          <TextField
+
+          {role=="Pat_" && (
+            <TextField
             label="Phone Number"
             variant="filled"
             required
             value={phoneNumber}
             onChange={(e) => setphoneNumber(e.target.value)}
           />
-          <TextField
-            label="Doctor License"
-            variant="filled"
-            // required
-            value={doctorLicense}
-            onChange={(e) => setDoctorLicense(e.target.value)}
-          />
+          )}
+          
+          {role == "Doc_" && (
+              <TextField
+              label="Doctor License"
+              variant="filled"
+              required
+              value={doctorLicense}
+              onChange={(e) => setDoctorLicense(e.target.value)}
+            />
+          )}
+          
         </Stack>
       ) : (
         "Nope"

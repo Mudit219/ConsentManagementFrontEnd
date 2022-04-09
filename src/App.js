@@ -10,7 +10,7 @@ import {Box, Stack} from '@mui/material';
 import SideMenuPatient from './Components/General/Menu'
 import Header from './Components/General/Header'
 import {selectUser} from "./Components/Redux/userSlice";
-import PatientConsents from './Components/PatientDashboard/PatientConsents';
+import PatientConsents from './pages/PatientConsents';
 import doctorMenu from './Components/DoctorDashboard/DoctorMenu'
 import patientMenu from './Components/PatientDashboard/PatientMenu'
 // import PrivateRoute from './Components/Login-Register/Authentication';
@@ -40,7 +40,6 @@ export default function App() {
         if(library && !web3) {
           startWeb3()
         }
-        
     })
     return ( 
             

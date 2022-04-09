@@ -14,11 +14,8 @@ import bytecode from '../contracts/Bytecode'
 import owner_id from "../contracts/Owner_credentials";
 
 const defaultValues = {
-  name: "",
-  age: 0,
-  gender: "",
-  os: "",
-  favoriteNumber: 0,
+  id:"",
+  desc:""
 };
 
 
@@ -41,6 +38,8 @@ const Form = ({web3}) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    console.log("These are form values" + formValues.id + " " + formValues.desc);
     // Deploying the contract 
 
     let abi = require("../contracts/CMS.json");
