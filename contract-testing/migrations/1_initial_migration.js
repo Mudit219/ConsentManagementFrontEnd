@@ -1,4 +1,4 @@
-const Migrations = artifacts.require("Migrations");
+const Migrations = artifacts.require("ConsentManagementSystem");
 
 module.exports = function (deployer) {
   deployer.deploy(Migrations);

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import ModalDialog from '../Components/Login-Register/ModalDialog';
 import { useWeb3React } from '@web3-react/core';
@@ -9,7 +9,7 @@ const Login = () => {
   // declare a new state variable for modal open
   const [open, setOpen] = useState(false);
   const [role, setRole] = useState();
-  const [firstLogin,setfirstLogin] = useState(false);
+  const [firstLogin,setfirstLogin] = useState(true);
 
   const { chainId, account, activate, active,library } = useWeb3React()
   // function to handle modal open
@@ -21,6 +21,7 @@ const Login = () => {
       axios.get(`${baseURL}/${role}${account}/Valid`).then(
         (response)=>{
           console.log("Check valid or not " + response.data);
+
           if(response.data==false)
             setfirstLogin(true);
           else
@@ -33,8 +34,7 @@ const Login = () => {
       )
     }
   };
-
-  // function to handle modal close
+  
   const handleClose = () => {
     setOpen(false);
   };

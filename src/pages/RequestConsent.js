@@ -10,6 +10,8 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import Slider from "@material-ui/core/Slider";
 import Button from "@material-ui/core/Button";
+import bytecode from '../contracts/Bytecode'
+import owner_id from "../contracts/Owner_credentials";
 
 const defaultValues = {
   name: "",
@@ -19,9 +21,15 @@ const defaultValues = {
   favoriteNumber: 0,
 };
 
-const Form = ({account,web3}) => {
-  const [formValues, setFormValues] = useState(defaultValues);
 
+
+const Form = ({web3}) => {
+  const [formValues, setFormValues] = useState(defaultValues);
+  const account_ids = {
+    owner: owner_id,
+    doctor: "0x22e6D372bfd0D97F883623952187d99331C52e80",
+    patient: "0x4278C94eB9bFb39dda0eCD27d14F5Ff75F6db979"
+  }
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormValues({
@@ -29,37 +37,65 @@ const Form = ({account,web3}) => {
       [name]: value,
     });
   };
-  const handleSliderChange = (name) => (e, value) => {
-    setFormValues({
-      ...formValues,
-      [name]: value,
-    });
-  };
+
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // console.log(formValues);
-    // console.log(web3)
-    const abi = require("../Components/contracts/CMS.json");
-    const contract = new web3.eth.Contract(abi)
-    // , "0x1cff8c70b8410931055748a4f69074e7fc42124b");
-    // web3.eth.Contract(abi,"0x1cff8c70b8410931055748a4f69074e7fc42124b")
-    console.log(account)
-    console.log(contract);
-    // contract.methods.ConsentFileExists().send({from : account}, (res,err) => {
-    //     console.log(res)
-    // });
-    // console.log(res);
+    // Deploying the contract 
 
-    await contract.methods.AddNewUser("0xA87794DAFf4F7e5463b3BAF34EF4c45e385613a3","doctor").call({from : account},function(res,err) {
-        console.log(res)
-    });
+    let abi = require("../contracts/CMS.json");
+    let bytecode_contract = bytecode;
     
-    await contract.methods.AddNewUser("0x33e312F1C2f2151C9593DB9bb141D6fA8C6BB090","patient").call({from : account},function(res,err) {
-        console.log(res)
-    });
+    let deploy_contract = new web3.eth.Contract(abi)
+
+    let payload = {
+      data: bytecode_contract,
+      arguments: ['My Company',account_ids.owner]
+    }
+    let parameter = {
+      from: account_ids.owner,
+      gas: 4712388,
+      gasPrice: 100000000000
+    }
+
+    console.log("Blah Blah");
+    console.log(account_ids.owner);
+    console.log(deploy_contract);
+
+    // 0x71950D6FCf532febDeC198761C0DC358c75BC7F9
+    let CONTRACT_ADDRESS='';
+    await deploy_contract.deploy(payload).send(parameter, (err, transactionHash) => {
+      console.log('Transaction Hash :', transactionHash);
+    }).on('confirmation', () => {}).then((newContractInstance) => {
+      console.log('Deployed Contract Address : ', newContractInstance.options.address);
+      CONTRACT_ADDRESS=newContractInstance.options.address;
+
+    })
+    console.log(CONTRACT_ADDRESS);
+
+    // Accessing the deployed contract
+    let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
+  
+    console.log(contract);
+
+    await contract.methods.AddNewUser(account_ids.doctor,"doctor").send(
+      {from : account_ids.owner , gas: 4712388}).then(console.log)
     
-    // contract.methods.requestConsent().call
-    // console.log(contract);
+    await contract.methods.AddNewUser(account_ids.patient,"patient").send(
+      {from : account_ids.owner , gas: 4712388}).then(console.log)
+
+      console.log("AddNewUser is working")
+
+    await contract.methods.ConsentFileExists().call(
+      {from: account_ids.doctor, gas:4712388}).then(console.log);
+
+    console.log("ConsentFileExists is working")
+    
+    await contract.methods.requestConsent("I need your blood group",account_ids.patient).send({from: account_ids.doctor, gas: 4712388}).then(console.log);
+
+    console.log("requestConsent is working")
+
+
   };
 
   return (

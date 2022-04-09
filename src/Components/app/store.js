@@ -1,5 +1,5 @@
 import {configureStore} from "@reduxjs/toolkit";
-import userReducer from "../features/userSlice";
+import userReducer from "../Redux/userSlice";
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
  

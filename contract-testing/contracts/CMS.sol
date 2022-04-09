@@ -136,23 +136,23 @@ contract ConsentManagementSystem {
     return _consents;
   }
 
-  // function createConsent (address _file, string memory _purpouse, string memory _languageCountry) PatientAccountExists(msg.sender) public
-  // {
-  //   ConsentFile cf = ConsentFile (_file);
-  //   ConsentTemplate ct = getTemplate (_purpouse, _languageCountry);
-  //   if (address(ct) != address(0)) {
+  function createConsent (address _file, string memory _purpouse, string memory _languageCountry) PatientAccountExists(msg.sender) public
+  {
+    ConsentFile cf = ConsentFile (_file);
+    ConsentTemplate ct = getTemplate (_purpouse, _languageCountry);
+    if (address(ct) != address(0)) {
 
-  //     /* We got a template so generate the consent and put it into the consent file */
-  //     Consent consent = new Consent (cf.getGiver(), address(ct));
-  //     ConsentFile(_file).addConsent (address(consent));
-  //     // emit ConsentFactoryConsentCreatedEvent(address(this), owner, cf.getGiver(), _file, address(consent));
+    /* We got a template so generate the consent and put it into the consent file */
+    Consent consent = new Consent (cf.getGiver(), address(ct));
+    ConsentFile(_file).addConsent (address(consent));
+    // emit ConsentFactoryConsentCreatedEvent(address(this), owner, cf.getGiver(), _file, address(consent));
 
-  //   } else {
+     } else {
       
-  //     // emit ConsentFactoryFailedEvent(address(this), owner, cf.getGiver(), Error.no_such_template);
+       // emit ConsentFactoryFailedEvent(address(this), owner, cf.getGiver(), Error.no_such_template);
       
-  //   }
-  // }
+     }
+   }
   
   /* This function tests wether a consent for a specific purpouse exists or not */
   // function getTemplate (string memory _purpouse, string memory _languageCountry) view internal returns (ConsentTemplate)
