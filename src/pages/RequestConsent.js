@@ -51,10 +51,12 @@ const Form = ({web3}) => {
       data: bytecode_contract,
       arguments: ['My Company']
     }
+    
     let parameter = {
       from: account_ids.owner,
-      gas: 4712388,
-      gasPrice: 10000000000
+      gas: 5000000,
+      // "gasPrice": currGas,
+      // "gasLimit": "0x3A980",
     }
 
     console.log("Blah Blah");
@@ -85,7 +87,7 @@ const Form = ({web3}) => {
 
       console.log("AddNewUser is working")
 
-    await contract.methods.ConsentFileExists().call(
+    await contract.methods.GetConsentFile().call(
       {from: account_ids.doctor, gas:4712388}).then(console.log);
 
     console.log("ConsentFileExists is working")
@@ -98,6 +100,11 @@ const Form = ({web3}) => {
     
     console.log("createConsent is working")
     
+
+    // Note you are getting the address of all the consents here so you need to use web3.eth.Contract function along with the respective abi
+    // to access the address of the contract
+    await contract.methods.GetConsents().call({from: account_ids.doctor, gas:4712388}).then(console.log);
+
   };
 
   return (
