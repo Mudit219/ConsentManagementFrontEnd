@@ -100,6 +100,12 @@ const Form = ({web3}) => {
     
     console.log("createConsent is working")
     
+    // Right now one big problem is everytime doctor is rquestingg for consent a new consent is created even if it previously existed
+    // We also need to have a look at how to get the logs from events i am writing a sample code here
+    
+    // console.log(myContract.getPastEvents('<event name>');
+
+
 
     // Note you are getting the address of all the consents here so you need to use web3.eth.Contract function along with the respective abi
     // to access the address of the contract
