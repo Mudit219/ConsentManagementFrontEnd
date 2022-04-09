@@ -1,20 +1,22 @@
 import { Card, CardContent } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import baseURL from "../../BackendApi/BackendConnection";
+import baseURL from "../BackendApi/BackendConnection";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectUser } from "../Components/Redux/userSlice";
 
-const PatientProfile=({account,role})=>{
+const UserProfile=()=>{
 
+    const user = useSelector(selectUser);
     const [Profile,setPatientProfile] = useState({});
     useEffect(()=>{
         document.title="Your Profile";
         displayProfile();
     },[])
 
-    // const params = useParams()
     const displayProfile=()=>{
-        axios.get(`${baseURL}/${role}${account}/Profile`).then(
+        axios.get(`${baseURL}/${user.role}${user.account}/Profile`).then(
             (response)=>{
                 // console.log(response);
                 setPatientProfile(response.data);
@@ -33,16 +35,12 @@ const PatientProfile=({account,role})=>{
                         Profile!=null
                         ?
                             (<div className='card' key={Profile.metaId}>
-                            <h3>--- {role} Dashboard ---</h3>
-                            <p className='btc'>{role} Name : {Profile.name}</p>
+                            <h3>--- {user.role} Dashboard ---</h3>
+                            <p className='btc'>{user.role} Name : {Profile.name}</p>
                             <p className='btc'>MobileNumber : {Profile.phone}</p>
                             <p className='btc'>Gender : {Profile.gender}</p>
                             <p className='btc'>EmailId : {Profile.email}</p>
                             </div>
-                            // <img 
-                            //     src={doctorData.photoUrl}
-                            //     alt="Doctor Image"
-                            // />
                             )
 
 
@@ -54,4 +52,4 @@ const PatientProfile=({account,role})=>{
     )
 }
 
-export default PatientProfile;
+export default UserProfile;

@@ -1,11 +1,11 @@
 import React from "react";
 
-const PatientConsents=()=>{
+const CreateConsents=()=>{
     return (
         <div>
-            
+            Hello
         </div>
     )
 }
 
-export default PatientConsents;
+export default CreateConsents;

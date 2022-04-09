@@ -14,10 +14,11 @@ import React, { useState, useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
 
 import {useSelector} from "react-redux";
-import {selectUser} from "../features/userSlice";
+import {selectUser} from "../Redux/userSlice";
 
 import {useDispatch} from "react-redux";
-import { logout } from "../features/userSlice";
+import { logout } from "../Redux/userSlice";
+import { useNavigate } from "react-router-dom";
 
 
 const useStyles = makeStyles(() => ({
@@ -56,6 +57,8 @@ const useStyles = makeStyles(() => ({
 export default function Header() {
   const { header, logo, menuButton, toolbar, drawerContainer } = useStyles();
   const user =  useSelector(selectUser);
+  const navigate = useNavigate();
+
 
   const headersData = [
     {
@@ -91,6 +94,7 @@ export default function Header() {
     
   const ReleaseAccount = () => {
     console.log("Dispatching the account ")
+    navigate("/login");
     dispatch(logout());
   }
 

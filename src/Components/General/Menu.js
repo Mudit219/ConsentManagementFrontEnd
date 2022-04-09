@@ -17,24 +17,9 @@ const useStyles = makeStyles({
     }
 })
 
-const SideMenuPatient=({account})=> {
+const SideMenuPatient=({tabs})=> {
     const classes = useStyles();
     const navigate = useNavigate();
-    // console.log(account);
-    const menuItems=[
-        {
-            text:"E-Health-Records",
-            path:"/E-Health-Records"
-        },
-        {
-            text:"Consents",
-            path:"/Consents"
-        },
-        {
-            text:"My Profile",
-            path:"/Profile"
-        }
-    ]
     return (
       <div className={classes.SideMenu} >
 
@@ -50,7 +35,7 @@ const SideMenuPatient=({account})=> {
             </Typography>
 
            <List>
-                {menuItems.map((item)=>(
+                {tabs.map((item)=>(
                     <ListItem 
                     key={item.text} 
                     button
