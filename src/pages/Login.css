@@ -1,0 +1,59 @@
+.logoImage {
+    height: 200%;
+    width: 200%;
+    object-fit: contain;
+    margin-left: 550px;
+    margin-top: 40px;
+  }
+  h1 {
+    margin-left: 100px;
+    color: rgb(255, 255, 255);
+  }
+  .Login {
+    height: 100vh;
+    background-color: #27043d;
+  }
+  .logo {
+    box-sizing: border-box;
+    height: 150px;
+    width: 200px;
+  }
+  .LoginContainer {
+    margin-left: 570px;
+    margin-top: 300px;
+  }
+  .PatientLogin {
+    width: 200px;
+    float: left;
+  }
+  .DoctorLogin {
+    margin-left: 100;
+    width: 50%;
+    float: left;
+  }
+  .logoPat {
+    height: 100px;
+    width: 150px;
+    /* margin-left: 250px;
+    margin-top: 40px; */
+    margin: auto;
+    padding-right: 3.3rem;
+    margin-left: 5px;
+  }
+  .logoDoc {
+    /* height: 100px;
+    width: 150px;
+    padding-right: 1rem;
+    margin-left: 250px;
+    margin-top: 40px;
+    margin: auto; */
+    height: 100px;
+    width: 150px;
+    /* margin-left: 250px;
+    margin-top: 40px; */
+    margin: auto;
+    padding-right: 3.3rem;
+    margin-left: 5px;
+    
+  }
+  

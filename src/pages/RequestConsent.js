@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -10,37 +10,67 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import Slider from "@material-ui/core/Slider";
 import Button from "@material-ui/core/Button";
-import bytecode from '../contracts_temp/Bytecode'
-import owner_id from "../contracts_temp/Owner_credentials";
+import owner_id from "../contracts/Owner_credentials";
+import axios from "axios";
+import baseURL from "../BackendApi/BackendConnection";
+import { useSelector } from "react-redux";
+import { selectUser } from "../Components/Redux/userSlice";
+import "./RequestConsent.css"
 
-const defaultValues = {
-  id:"",
-  desc:""
-};
 
+// const formDefaultValues = {
+//   id:"",
+//   desc:""
+// };
 
+const account_ids = {
+  owner: owner_id,
+  doctor: "0x22e6D372bfd0D97F883623952187d99331C52e80",
+  patient: "0x4278C94eB9bFb39dda0eCD27d14F5Ff75F6db979"
+}
 
 const Form = ({web3}) => {
-  const [formValues, setFormValues] = useState(defaultValues);
-  const account_ids = {
-    owner: owner_id,
-    doctor: "0x544eeE51a9C156d12e6FAc5C626768a055a6b770",
-    patient: "0xB5DCCCDc66c54705218b61d771312b6053dAF77e"
-  }
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues({
-      ...formValues,
-      [name]: value,
-    });
-  };
+  // const [formValues, setFormValues] = useState(formDefaultValues);
+  const [PatientId, SetPatientId] = useState('')
+  const [Description, SetDescription] = useState('')
+  const [patientPhone, setPatientPhone] = useState('')
+  const [connectedPatients,setConnectedPatients] = useState([]);
+  const user = useSelector(selectUser);
 
+  useEffect(()=>{
+    loadPatient();
+  },[]);
+
+  // const handleInputChange = (e) => {
+  //   console.log(e);
+  //   const { name, value } = e.target;
+  //   setFormValues({...formValues,[name]: value,});
+  // };
+
+  // Loading all the connections with patients
+  const loadPatient=()=>{
+    axios.get(`${baseURL}/${user.role}${user.account}/Get-Connections`).then(
+      (response)=>{
+          setConnectedPatients(response.data);
+      },
+      (error)=>{
+        throw(error);
+      }
+    )
+  }
+  // const account_ids = {
+  //   owner: owner_id,
+  //   doctor: "0x544eeE51a9C156d12e6FAc5C626768a055a6b770",
+  //   patient: "0xB5DCCCDc66c54705218b61d771312b6053dAF77e"  
+  // }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    SetPatientId(PatientId);
+    SetDescription(Description);
+    setPatientPhone(patientPhone);
 
-    console.log("These are form values" + formValues.id + " " + formValues.desc);
-    // Deploying the contract 
+    // alert("Request Send Successfully")
 
     let DeployedContract = require("../contracts/ConsentManagementSystem.json");
     
@@ -81,34 +111,28 @@ const Form = ({web3}) => {
     // Accessing the deployed contract
     let contract = new web3.eth.Contract(CMS_abi,CMS_ContractAddress); 
   
-    console.log(contract);
+    // console.log(contract);
 
-    await contract.methods.AddNewUser(account_ids.doctor,"doctor").send(
-      {from : account_ids.owner , gas: 4712388}).then(console.log)
+    // await contract.methods.AddNewUser(account_ids.doctor,"doctor").send(
+    //   {from : account_ids.owner , gas: 4712388}).then(console.log)
     
-    await contract.methods.AddNewUser(account_ids.patient,"patient").send(
-      {from : account_ids.owner , gas: 4712388}).then(console.log)
+    // await contract.methods.AddNewUser(account_ids.patient,"patient").send(
+    //   {from : account_ids.owner , gas: 4712388}).then(console.log)
 
-      console.log("AddNewUser is working")
+    // console.log("AddNewUser is working")
 
-    await contract.methods.GetConsentFile().call(
-      {from: account_ids.doctor, gas:4712388}).then(console.log);
+    // await contract.methods.ConsentFileExists().call(
+    //   {from: account_ids.doctor, gas:4712388}).then(console.log);
 
-    console.log("ConsentFileExists is working")
+    // console.log("ConsentFileExists is working")
     
-    await contract.methods.requestConsent("I need your blood group",account_ids.patient).send({from: account_ids.doctor, gas: 4712388}).then(console.log);
+    // await contract.methods.requestConsent(formValues.desc,formValues.id).send({from: account_ids.doctor, gas: 4712388}).then(console.log);
 
-    console.log("requestConsent is working")
-    
-    await contract.methods.createConsent(account_ids.doctor,["a1","a2"]).send({from: account_ids.patient, gas: 4712388}).then(console.log);
-    
-    console.log("createConsent is working")
-    
-    // Right now one big problem is everytime doctor is rquestingg for consent a new consent is created even if it previously existed
-    // We also need to have a look at how to get the logs from events i am writing a sample code here
-    
-    // console.log(myContract.getPastEvents('<event name>');
+    // console.log("requestConsent is working")
 
+    SetPatientId('');
+    SetDescription('');
+    setPatientPhone('');
 
 
     // Note you are getting the address of all the consents here so you need to use web3.eth.Contract function along with the respective abi
@@ -134,35 +158,35 @@ const Form = ({web3}) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Grid container alignItems="center" justify="center" direction="column">
-        <Grid item>
-        <TextField
-            id="age-input"
-            name="id"
-            label="Patient ID"
-            type="text"
-            style={{width:'500px'}}
-            value={formValues.id}
-            onChange={handleInputChange}
-          />
-        </Grid>
-        <Grid item>
-          <TextField
-            id="age-input"
-            name="desc"
-            label="Request Description"
-            type="text"
-            
-            style={{width:'500px'}}
-            value={formValues.desc}
-            onChange={handleInputChange}
-          />
-        </Grid>
-        <Button variant="contained" color="primary" type="submit">
-          Submit
-        </Button>
-      </Grid>
-    </form>
-  );
-};
+        <div class="container">
+            <h1 style={{ color: 'black' }}>RequestConsent</h1>
+            <hr />
+            <Grid item className="Patient" >
+                <div><label for="Patient"><b>Patient Name</b></label></div>
+                <TextField id="outlined-basic" select required label="Enter Patient Name" variant="outlined" style={{ marginTop: '10px' ,width:'500px'}} value={PatientId} onChange={(e) => SetPatientId(e.target.value)} >
+                { 
+                    connectedPatients.map((item)=>(
+                    <MenuItem key={item.patientName} value= {item.patientName} >
+                      {item.patientName}
+                    </MenuItem>
+                    ))
+                }
+                </TextField>
+            </Grid>
+            <Grid item className="Mobile">
+                <div><label for="Mobile" ><b>Mobile Number</b></label></div>
+                <TextField id="standard-textarea" label="Mobile" variant="outlined" required style={{ marginTop: '10px' ,width:'500px'}} multiline value={patientPhone} onChange={(e) => setPatientPhone(e.target.value)} >
+                </TextField>
+            </Grid>
+            <Grid item className="Description">
+                <div><label for="Description"><b>Description</b></label></div>
+                <TextField id="standard-textarea" label="Enter the description for records" variant="outlined" required style={{ marginTop: '10px' ,width:'500px'}} multiline value={Description} onChange={(e) => SetDescription(e.target.value)} >
+                </TextField>
+            </Grid>
+            <Button class="registerbtn" type="submit" style={{ marginTop: '1rem' } } >Request Consent</Button>
+        </div >
+    </form >
+  )
+}
+
 export default Form;

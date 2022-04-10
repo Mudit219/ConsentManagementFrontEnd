@@ -153,7 +153,7 @@ contract ConsentManagementSystem {
     }
 
     _consent.setConsentedRecords(records);
-
+    
   }
   
   /* This function tests wether a consent for a specific purpouse exists or not */

@@ -1,10 +1,11 @@
 import { Card, CardContent } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import baseURL from "../../BackendApi/BackendConnection";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "../Components/Redux/userSlice";
-import baseURL from "../BackendApi/BackendConnection";
+
 
 const UserProfile = () => {
 
@@ -32,7 +33,9 @@ const UserProfile = () => {
             <Card>
                 <CardContent>
                     {
-                        Profile != null && user.role == "Pat_" &&
+                        // console.log(PatientProfile)
+                        Profile != null
+                            ?
                             (<div className='card' key={Profile.metaId}>
                                 {/* <h3>{role} Dashboard</h3> */}
                                 <img src="https://t4.ftcdn.net/jpg/02/60/04/09/360_F_260040900_oO6YW1sHTnKxby4GcjCvtypUCWjnQRg5.jpg"></img>
@@ -41,25 +44,15 @@ const UserProfile = () => {
                                 <p className='btc'>Gender : {Profile.gender}</p>
                                 <p className='btc'>EmailId : {Profile.email}</p>
                             </div>
+                                // <img 
+                                //     src={doctorData.photoUrl}
+                                //     alt="Doctor Image"
+                                // />
                             )
-                        
+
+
+                            : "No Profile found"
                     }
-                    {
-                        Profile != null && user.role == "Doc_" &&
-                            (<div className='card' key={Profile.metaId}>
-                                {/* <h3>{role} Dashboard</h3> */}
-                                <img src="https://t4.ftcdn.net/jpg/02/60/04/09/360_F_260040900_oO6YW1sHTnKxby4GcjCvtypUCWjnQRg5.jpg"></img>
-                                <p className='btc'>{user.role} Name : {Profile.name}</p>
-                                <p className='btc'>Mobile Number : {Profile.phone}</p>
-                                <p className='btc'>Gender : {Profile.gender}</p>
-                                <p className='btc'>Email Id : {Profile.email}</p>
-                                <p className='btc'>Specialization : {Profile.specialization}</p>
-                                <p className='btc'>Doctor License : {Profile.doctorLicense}</p>
-                            </div>
-                            )
-                        
-                    }
-                    
                 </CardContent>
             </Card>
         </div>
