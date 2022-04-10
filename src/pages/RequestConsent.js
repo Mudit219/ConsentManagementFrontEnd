@@ -10,8 +10,8 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import Slider from "@material-ui/core/Slider";
 import Button from "@material-ui/core/Button";
-import bytecode from '../contracts/Bytecode'
-import owner_id from "../contracts/Owner_credentials";
+import bytecode from '../contracts_temp/Bytecode'
+import owner_id from "../contracts_temp/Owner_credentials";
 
 const defaultValues = {
   id:"",
@@ -24,8 +24,8 @@ const Form = ({web3}) => {
   const [formValues, setFormValues] = useState(defaultValues);
   const account_ids = {
     owner: owner_id,
-    doctor: "0x69D5d7f1166eAb9c9ffA844D64f6B1C41451d603",
-    patient: "0xA717cF6faD25e73Df0D8327198fB006BA386109E"
+    doctor: "0x544eeE51a9C156d12e6FAc5C626768a055a6b770",
+    patient: "0xB5DCCCDc66c54705218b61d771312b6053dAF77e"
   }
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -42,40 +42,44 @@ const Form = ({web3}) => {
     console.log("These are form values" + formValues.id + " " + formValues.desc);
     // Deploying the contract 
 
-    let abi = require("../contracts/CMS.json");
-    let bytecode_contract = bytecode;
+    let DeployedContract = require("../contracts/ConsentManagementSystem.json");
     
-    let deploy_contract = new web3.eth.Contract(abi)
-
-    let payload = {
-      data: bytecode_contract,
-      arguments: ['My Company']
-    }
+    let CMS_ContractAddress = DeployedContract["networks"][Object.keys(DeployedContract["networks"])[0]]["address"];
+    let CMS_abi = DeployedContract["abi"]
+    // console.log();
+    // let bytecode_contract = bytecode;
     
-    let parameter = {
-      from: account_ids.owner,
-      gas: 5000000,
-      // "gasPrice": currGas,
-      // "gasLimit": "0x3A980",
-    }
+    // let deploy_contract = new web3.eth.Contract(abi)
 
-    console.log("Blah Blah");
-    console.log(account_ids.owner);
-    console.log(deploy_contract);
+    // let payload = {
+    //   data: bytecode_contract,
+    //   arguments: ['My Company']
+    // }
+    
+    // let parameter = {
+    //   from: account_ids.owner,
+    //   gas: 5000000,
+    //   // "gasPrice": currGas,
+    //   // "gasLimit": "0x3A980",
+    // }
 
-    // 0x71950D6FCf532febDeC198761C0DC358c75BC7F9
-    let CONTRACT_ADDRESS='';
-    await deploy_contract.deploy(payload).send(parameter, (err, transactionHash) => {
-      console.log('Transaction Hash :', transactionHash);
-    }).on('confirmation', () => {}).then((newContractInstance) => {
-      console.log('Deployed Contract Address : ', newContractInstance.options.address);
-      CONTRACT_ADDRESS=newContractInstance.options.address;
+    // console.log("Blah Blah");
+    // console.log(account_ids.owner);
+    // console.log(deploy_contract);
 
-    })
-    console.log(CONTRACT_ADDRESS);
+    // // 0x71950D6FCf532febDeC198761C0DC358c75BC7F9
+    // let CONTRACT_ADDRESS='';
+    // await deploy_contract.deploy(payload).send(parameter, (err, transactionHash) => {
+    //   console.log('Transaction Hash :', transactionHash);
+    // }).on('confirmation', () => {}).then((newContractInstance) => {
+    //   console.log('Deployed Contract Address : ', newContractInstance.options.address);
+    //   CONTRACT_ADDRESS=newContractInstance.options.address;
+
+    // })
+    // console.log(CONTRACT_ADDRESS);
 
     // Accessing the deployed contract
-    let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
+    let contract = new web3.eth.Contract(CMS_abi,CMS_ContractAddress); 
   
     console.log(contract);
 
@@ -109,8 +113,23 @@ const Form = ({web3}) => {
 
     // Note you are getting the address of all the consents here so you need to use web3.eth.Contract function along with the respective abi
     // to access the address of the contract
-    await contract.methods.GetConsents().call({from: account_ids.doctor, gas:4712388}).then(console.log);
+    var consents = [];
+    await contract.methods.GetConsents().call({from: account_ids.doctor, gas:4712388}).then( async(consents,err) => {
+      // address
+      for(var i=0;i<consents.length;i++) {
+        const ContractABI = require("../contracts_temp/Consent.json");
+        const _consent = new web3.eth.Contract(ContractABI,consents[i]);
+        // _consent.getPatient()
+        // console.log(_consent);
+        await _consent.methods.getTemplate().call({from: account_ids.doctor, gas:4712388}).then( (consentTemplate) => {
+          const ConsentTemplateABI = require("../contracts_temp/ConsentTemplate.json");
+          const _consentTemplate = new web3.eth.Contract(ConsentTemplateABI,consentTemplate);
+          _consentTemplate.methods.GetConsentedRecords().call({from: account_ids.doctor, gas:4712388}).then(console.log)
+        });
+      }
+    });
 
+    
   };
 
   return (
