@@ -64,6 +64,7 @@ const Form = ({ handleClose, role, firstLoginRoot }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // console.log(firstName, lastName, email, password);
+    // if(firstLogin && )
     if (firstLogin && role == "Doc_") {
       // Send a call to backend to register user if first time otherwise nothing just login
       axios
@@ -202,7 +203,7 @@ const Form = ({ handleClose, role, firstLoginRoot }) => {
         {" "}
         You are login for the first time, Please fill in the details:
       </p>
-      {firstLogin == true && account ? (
+      {firstLogin == true && account && (
         <Stack>
           <p>
           {
@@ -239,8 +240,6 @@ const Form = ({ handleClose, role, firstLoginRoot }) => {
           )}
           
         </Stack>
-      ) : (
-        "Nope"
       )}
       {
         account && (

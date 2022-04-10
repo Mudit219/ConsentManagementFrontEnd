@@ -63,7 +63,7 @@ export default function Header() {
   const headersData = [
     {
       label: user.account,
-      href: "/account/" + user.account,
+      href: "/Profile",
     }
   ];
 

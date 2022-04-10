@@ -1,0 +1,1 @@
+While Login check if the name and phone number which are entered by the patient already exists in databases or not.

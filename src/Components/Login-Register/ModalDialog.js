@@ -6,7 +6,6 @@ const ModalDialog = ({ open, handleClose,role,firstLogin }) => {
   return (
     // props received from App.js
     <Dialog open={open} onClose={handleClose}>
-      // form to be created
       <Form handleClose={handleClose} role={role} firstLoginRoot={firstLogin}/>
     </Dialog>
   );
