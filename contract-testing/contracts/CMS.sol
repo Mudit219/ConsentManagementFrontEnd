@@ -92,11 +92,6 @@ contract ConsentManagementSystem {
     return true;
   }
 
-  
-  function PatientExists() PatientAccountExists(tx.origin) public view returns(bool){
-    return true;
-  }
-
 
   function GetConsentFile() public view returns(ConsentFile) {
     return UserToConsentFile[tx.origin];
@@ -128,12 +123,17 @@ contract ConsentManagementSystem {
     ConsentFile DoctorConsentFile = UserToConsentFile[tx.origin];
     ConsentFile PatientConsentFile = UserToConsentFile[fromPatient];
 
-    Consent consent = new Consent(fromPatient,tx.origin);
-    consent.setRequestStatus(requestedDesc);
-
-    DoctorConsentFile.addConsent(consent);
-    PatientConsentFile.addConsent(consent);
-
+    Consent _consent;
+    bool status;
+    (status,_consent) = DoctorConsentFile.getAssociatedConsent(fromPatient);
+    
+    if(!status) {
+      DoctorConsentFile.addConsent(_consent);
+      PatientConsentFile.addConsent(_consent);
+    }
+    
+    _consent.setRequestStatus(requestedDesc);
+    
   }
 
   function GetConsents() public view returns(Consent[] memory) {
@@ -158,7 +158,7 @@ contract ConsentManagementSystem {
     }
 
     _consent.setConsentedRecords(records);
-    
+
   }
   
   /* This function tests wether a consent for a specific purpouse exists or not */
