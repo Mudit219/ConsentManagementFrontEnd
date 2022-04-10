@@ -104,7 +104,7 @@ const Form = ({web3}) => {
 
     // // Accessing the deployed contract
     let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
-  
+    
     // console.log(contract);
 
     // await contract.methods.AddNewUser(account_ids.doctor,"doctor").send(

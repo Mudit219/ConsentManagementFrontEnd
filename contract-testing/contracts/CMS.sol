@@ -92,6 +92,11 @@ contract ConsentManagementSystem {
     return true;
   }
 
+  
+  function PatientExists() PatientAccountExists(tx.origin) public view returns(bool){
+    return true;
+  }
+
 
   function GetConsentFile() public view returns(ConsentFile) {
     return UserToConsentFile[tx.origin];
@@ -153,7 +158,7 @@ contract ConsentManagementSystem {
     }
 
     _consent.setConsentedRecords(records);
-
+    
   }
   
   /* This function tests wether a consent for a specific purpouse exists or not */
