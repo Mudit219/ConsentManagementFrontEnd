@@ -121,7 +121,7 @@ const Form = ({web3}) => {
 
     // console.log("AddNewUser is working")
 
-    // await contract.methods.ConsentFileExists().call(
+    // await contract.methods.GetConsentFile().call(
     //   {from: account_ids.doctor, gas:4712388}).then(console.log);
 
     // console.log("ConsentFileExists is working")
