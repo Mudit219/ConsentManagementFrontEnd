@@ -5,6 +5,7 @@ import { selectUser } from '../Redux/userSlice';
 import { logout } from "../Redux/userSlice";
 
 function MetaNavigate(){
+    const user = useSelector(selectUser);
     const dispatch = useDispatch()
     const navigate = useNavigate();;
     const ReleaseAccount = () => {

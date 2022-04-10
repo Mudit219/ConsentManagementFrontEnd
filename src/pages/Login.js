@@ -5,9 +5,10 @@ import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import baseURL from '../BackendApi/BackendConnection';
 import './Login.css';
+import owner_id from '../contracts/Owner_credentials';
+import bytecode from '../contracts/Bytecode';
 
-
-const Login = () => {
+const Login = ({web3}) => {
   // declare a new state variable for modal open
   const [open, setOpen] = useState(false);
   const [role, setRole] = useState();
@@ -41,21 +42,9 @@ const Login = () => {
     setOpen(false);
   };
 
-
   return (
-  //   <div className="App">
-  //     <Button variant="contained" color="primary" onClick={() => handleOpen("Pat_")}>
-  //       Patient Login
-  //     </Button>
-  //     <Button variant="contained" color="primary" onClick={() => handleOpen("Doc_")}>
-  //       Doctor Login
-  //     </Button>
-      
-  //     // display the modal and pass props
-  //     <ModalDialog open={open} handleClose={handleClose} role={role} firstLogin={firstLogin}/>
-  //   </div>
-  // );
   <div className='Login'>
+      {/* <Button variant="contained" color="primary" onClick={() => deploy("Pat_")} >Deploy</Button> */}
       <div className="logo">
         <img className="logoImage" src='https://gdm-catalog-fmapi-prod.imgix.net/ProductScreenshot/d65416a4-8162-406b-add4-040305619de6.png?auto=format' />
       </div>
@@ -86,7 +75,7 @@ const Login = () => {
 
       </div>
       {/* // display the modal and pass props */}
-      <ModalDialog open={open} handleClose={handleClose} role={role} firstLogin={firstLogin} />
+      <ModalDialog open={open} handleClose={handleClose} role={role} firstLogin={firstLogin} web3={web3}/>
     </div >
   );
 };

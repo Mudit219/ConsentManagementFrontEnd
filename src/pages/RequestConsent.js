@@ -10,6 +10,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import Slider from "@material-ui/core/Slider";
 import Button from "@material-ui/core/Button";
+import bytecode from '../contracts/Bytecode'
 import owner_id from "../contracts/Owner_credentials";
 import axios from "axios";
 import baseURL from "../BackendApi/BackendConnection";
@@ -18,21 +19,17 @@ import { selectUser } from "../Components/Redux/userSlice";
 import "./RequestConsent.css"
 
 
-// const formDefaultValues = {
-//   id:"",
-//   desc:""
-// };
-
-const account_ids = {
-  owner: owner_id,
-  doctor: "0x22e6D372bfd0D97F883623952187d99331C52e80",
-  patient: "0x4278C94eB9bFb39dda0eCD27d14F5Ff75F6db979"
-}
+// const account_ids = {
+//   owner: owner_id,
+//   doctor: "0x16A86133196110F3DDEbc5385f966352849eB88d",
+//   patient: "0x42ce918A1FD73D6129d0e080fFEFd00fF2363a14"
+// }
 
 const Form = ({web3}) => {
   // const [formValues, setFormValues] = useState(formDefaultValues);
-  const [PatientId, SetPatientId] = useState('')
-  const [Description, SetDescription] = useState('')
+  const [patientId, SetPatientId] = useState('')
+  const [patientName, SetPatientName] = useState('')
+  const [description, SetDescription] = useState('')
   const [patientPhone, setPatientPhone] = useState('')
   const [connectedPatients,setConnectedPatients] = useState([]);
   const user = useSelector(selectUser);
@@ -40,7 +37,10 @@ const Form = ({web3}) => {
   useEffect(()=>{
     loadPatient();
   },[]);
-
+  useEffect(()=>{
+    // loadPatient();
+    SetPatientId(patientId);
+  },[patientId]);
   // const handleInputChange = (e) => {
   //   console.log(e);
   //   const { name, value } = e.target;
@@ -58,39 +58,33 @@ const Form = ({web3}) => {
       }
     )
   }
-  // const account_ids = {
-  //   owner: owner_id,
-  //   doctor: "0x544eeE51a9C156d12e6FAc5C626768a055a6b770",
-  //   patient: "0xB5DCCCDc66c54705218b61d771312b6053dAF77e"  
-  // }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    SetPatientId(PatientId);
-    SetDescription(Description);
-    setPatientPhone(patientPhone);
+
+      connectedPatients.map((item)=>{
+        console.log(item.patientPhone === patientPhone , item.patientName === patientName)
+        if(item.patientPhone === patientPhone && item.patientName === patientName){
+          SetPatientId(item.patientId);
+        }
+      })
 
     // alert("Request Send Successfully")
+    console.log(connectedPatients);
+    console.log("These are form values " + patientName + " " + description + " " + patientId + " " + patientPhone);
+    // Deploying the contract 
 
-    let DeployedContract = require("../contracts/ConsentManagementSystem.json");
-    
-    let CMS_ContractAddress = DeployedContract["networks"][Object.keys(DeployedContract["networks"])[0]]["address"];
-    let CMS_abi = DeployedContract["abi"]
-    // console.log();
-    // let bytecode_contract = bytecode;
-    
+    let abi = require("../contracts/CMS.json");    
     // let deploy_contract = new web3.eth.Contract(abi)
 
     // let payload = {
     //   data: bytecode_contract,
-    //   arguments: ['My Company']
+    //   arguments: ['My Company',account_ids.owner]
     // }
-    
     // let parameter = {
     //   from: account_ids.owner,
-    //   gas: 5000000,
-    //   // "gasPrice": currGas,
-    //   // "gasLimit": "0x3A980",
+    //   gas: 4712388,
+    //   gasPrice: 100000000000
     // }
 
     // console.log("Blah Blah");
@@ -98,7 +92,7 @@ const Form = ({web3}) => {
     // console.log(deploy_contract);
 
     // // 0x71950D6FCf532febDeC198761C0DC358c75BC7F9
-    // let CONTRACT_ADDRESS='';
+    let CONTRACT_ADDRESS="0xf037F438832DeBc059131cE73CB6bdE735736b38";
     // await deploy_contract.deploy(payload).send(parameter, (err, transactionHash) => {
     //   console.log('Transaction Hash :', transactionHash);
     // }).on('confirmation', () => {}).then((newContractInstance) => {
@@ -108,9 +102,9 @@ const Form = ({web3}) => {
     // })
     // console.log(CONTRACT_ADDRESS);
 
-    // Accessing the deployed contract
-    let contract = new web3.eth.Contract(CMS_abi,CMS_ContractAddress); 
-  
+    // // Accessing the deployed contract
+    let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
+    
     // console.log(contract);
 
     // await contract.methods.AddNewUser(account_ids.doctor,"doctor").send(
@@ -126,34 +120,13 @@ const Form = ({web3}) => {
 
     // console.log("ConsentFileExists is working")
     
-    // await contract.methods.requestConsent(formValues.desc,formValues.id).send({from: account_ids.doctor, gas: 4712388}).then(console.log);
+    await contract.methods.requestConsent(description,patientId).send({from: user.account, gas: 4712388}).then(console.log);
 
-    // console.log("requestConsent is working")
+    console.log("requestConsent is working")
 
-    SetPatientId('');
+    SetPatientId(''); 
     SetDescription('');
     setPatientPhone('');
-
-
-    // Note you are getting the address of all the consents here so you need to use web3.eth.Contract function along with the respective abi
-    // to access the address of the contract
-    var consents = [];
-    await contract.methods.GetConsents().call({from: account_ids.doctor, gas:4712388}).then( async(consents,err) => {
-      // address
-      for(var i=0;i<consents.length;i++) {
-        const ContractABI = require("../contracts_temp/Consent.json");
-        const _consent = new web3.eth.Contract(ContractABI,consents[i]);
-        // _consent.getPatient()
-        // console.log(_consent);
-        await _consent.methods.getTemplate().call({from: account_ids.doctor, gas:4712388}).then( (consentTemplate) => {
-          const ConsentTemplateABI = require("../contracts_temp/ConsentTemplate.json");
-          const _consentTemplate = new web3.eth.Contract(ConsentTemplateABI,consentTemplate);
-          _consentTemplate.methods.GetConsentedRecords().call({from: account_ids.doctor, gas:4712388}).then(console.log)
-        });
-      }
-    });
-
-    
   };
 
   return (
@@ -163,7 +136,7 @@ const Form = ({web3}) => {
             <hr />
             <Grid item className="Patient" >
                 <div><label for="Patient"><b>Patient Name</b></label></div>
-                <TextField id="outlined-basic" select required label="Enter Patient Name" variant="outlined" style={{ marginTop: '10px' ,width:'500px'}} value={PatientId} onChange={(e) => SetPatientId(e.target.value)} >
+                <TextField id="outlined-basic" select required label="Enter Patient Name" variant="outlined" style={{ marginTop: '10px' ,width:'500px'}} value={patientName} onChange={(e) => SetPatientName(e.target.value)} >
                 { 
                     connectedPatients.map((item)=>(
                     <MenuItem key={item.patientName} value= {item.patientName} >
@@ -178,15 +151,17 @@ const Form = ({web3}) => {
                 <TextField id="standard-textarea" label="Mobile" variant="outlined" required style={{ marginTop: '10px' ,width:'500px'}} multiline value={patientPhone} onChange={(e) => setPatientPhone(e.target.value)} >
                 </TextField>
             </Grid>
+            
             <Grid item className="Description">
                 <div><label for="Description"><b>Description</b></label></div>
-                <TextField id="standard-textarea" label="Enter the description for records" variant="outlined" required style={{ marginTop: '10px' ,width:'500px'}} multiline value={Description} onChange={(e) => SetDescription(e.target.value)} >
+                <TextField id="standard-textarea" label="Enter the description for records" variant="outlined" required style={{ marginTop: '10px' ,width:'500px'}} multiline value={description} onChange={(e) => SetDescription(e.target.value)} >
                 </TextField>
             </Grid>
             <Button class="registerbtn" type="submit" style={{ marginTop: '1rem' } } >Request Consent</Button>
+            
         </div >
     </form >
-  )
-}
 
+  )
+};
 export default Form;
