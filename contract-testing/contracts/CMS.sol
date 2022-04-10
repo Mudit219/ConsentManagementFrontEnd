@@ -64,9 +64,9 @@ contract ConsentManagementSystem {
   }
 
   /* Constructor for the consent factory */
-  constructor (string memory _company, address payable _owner) public
+  constructor (string memory _company) public
   {
-    owner = _owner;
+    owner = tx.origin;
     creator = msg.sender;
     company = _company;
   }
@@ -92,7 +92,8 @@ contract ConsentManagementSystem {
     return true;
   }
 
-  function ConsentFileExists() public view returns(ConsentFile) {
+
+  function GetConsentFile() public view returns(ConsentFile) {
     return UserToConsentFile[tx.origin];
   }
   /* Create a file that holds a users all consents.
@@ -136,23 +137,24 @@ contract ConsentManagementSystem {
     return _consents;
   }
 
-  function createConsent (address _file, string memory _purpouse, string memory _languageCountry) PatientAccountExists(msg.sender) public
+  function createConsent(address _doctor, string[] memory records) PatientAccountExists(tx.origin) DoctorAccountExists(_doctor) public
   {
-    ConsentFile cf = ConsentFile (_file);
-    ConsentTemplate ct = getTemplate (_purpouse, _languageCountry);
-    if (address(ct) != address(0)) {
 
-    /* We got a template so generate the consent and put it into the consent file */
-    Consent consent = new Consent (cf.getGiver(), address(ct));
-    ConsentFile(_file).addConsent (address(consent));
-    // emit ConsentFactoryConsentCreatedEvent(address(this), owner, cf.getGiver(), _file, address(consent));
+    ConsentFile PatientConsentFile = UserToConsentFile[tx.origin];
+    ConsentFile DoctorConsentFile = UserToConsentFile[_doctor];
 
-     } else {
-      
-       // emit ConsentFactoryFailedEvent(address(this), owner, cf.getGiver(), Error.no_such_template);
-      
-     }
-   }
+    Consent _consent;
+    bool state;
+    (state,_consent) = PatientConsentFile.getAssociatedConsent(_doctor);
+
+    if(!state) {
+      PatientConsentFile.addConsent(_consent);
+      DoctorConsentFile.addConsent(_consent);
+    }
+
+    _consent.setConsentedRecords(records);
+
+  }
   
   /* This function tests wether a consent for a specific purpouse exists or not */
   // function getTemplate (string memory _purpouse, string memory _languageCountry) view internal returns (ConsentTemplate)
