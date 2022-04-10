@@ -92,6 +92,11 @@ contract ConsentManagementSystem {
     return true;
   }
 
+  
+  function PatientExists() PatientAccountExists(tx.origin) public view returns(bool){
+    return true;
+  }
+
 
   function GetConsentFile() public view returns(ConsentFile) {
     return UserToConsentFile[tx.origin];
