@@ -127,8 +127,6 @@ const Form = ({web3}) => {
     SetPatientId(''); 
     SetDescription('');
     setPatientPhone('');
-
-    
   };
 
   return (
