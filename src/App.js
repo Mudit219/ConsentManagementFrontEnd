@@ -94,7 +94,7 @@ export default function App() {
               // Directing to Login Page
               !user && (
                 <Routes>
-                  <Route exact path="/login" element={<Login />} />
+                  <Route exact path="/login" element={<Login web3={web3} />} />
                   <Route exact path="/" element={<Navigate replace to= "/login"/>} />
                 </Routes>
               )

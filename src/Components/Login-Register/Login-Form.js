@@ -4,7 +4,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useNavigate } from "react-router-dom";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { login } from "../Redux/userSlice";
 
 import { useWeb3React } from "@web3-react/core";
@@ -13,6 +13,11 @@ import { InjectedConnector } from "@web3-react/injected-connector";
 import { Stack } from "@mui/material";
 import axios from "axios";
 import baseURL from "../../BackendApi/BackendConnection";
+import { selectUser } from "../Redux/userSlice";
+// import abi from '../contracts/ConsentManagementSystem.json'
+import owner_id from '../../contracts/Owner_credentials'
+import CONTRACT_ADDRESS from '../../contracts/ContractAddress'
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,95 +37,115 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Form = ({ handleClose, role, firstLoginRoot }) => {
+const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
   const classes = useStyles();
   // create state variables for each input
   const [firstName, setFirstName] = useState("");
   const [phoneNumber, setphoneNumber] = useState("");
   const [doctorLicense, setDoctorLicense] = useState("");
   const [loginError, setLoginError] = useState("");
-
-
   const [firstLogin, setfirstLogin] = useState(firstLoginRoot);
+
+  const dispatch = useDispatch();
 
   const injectedConnector = new InjectedConnector({
     supportedChainIds: [1, 3, 4, 5, 42, 1337],
   });
   const { chainId, account, activate, active, library } = useWeb3React();
-  // const { activateBrowserWallet, deactivate, account } = useEthers()
+  
   useEffect(() => {
     setfirstLogin(firstLoginRoot);
     console.log(chainId, account, firstLogin, firstLoginRoot);
   },[firstLoginRoot,account]);
 
   let navigate = useNavigate();
+  
   const routeChange = () => {
     let path = `/E-Health-Records`;
     navigate(path);
   };
 
-  const dispatch = useDispatch();
+
+  const Register = async () => {
+
+    let abi = require("../../contracts/CMS.json");
+    // let CONTRACT_ADDRESS="0xf037F438832DeBc059131cE73CB6bdE735736b38";
+    let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
+  
+    console.log(contract);
+
+    if(role === "Doc_"){
+      await contract.methods.AddNewUser(account,"doctor").send({from : owner_id , gas: 4712388}).then(console.log)
+      await contract.methods.DoctorExists().call({from:account}).then(console.log);
+      console.log("You have successfully registered on the CMS Platform");
+    }
+    else if(role === "Pat_"){
+      await contract.methods.AddNewUser(account,"patient").send({from : owner_id , gas: 4712388}).then(console.log)
+      console.log("You have successfully registered on the CMS Platform");
+    }
+  };
+
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log(firstName, lastName, email, password);
-    // if(firstLogin && )
-    if (firstLogin && role == "Doc_") {
-      // Send a call to backend to register user if first time otherwise nothing just login
-      axios
-        .post(`${baseURL}/Add${role}`, {
-          metaId: account,
-          name: firstName,
-          doctorLicense: doctorLicense
-        })
-        .then(
-          (response) => {
-            console.log("Working!!!!" + response.data);
-            dispatch(
-              login({
-                account: account,
-                firstName: firstName,
-                doctorLicense: doctorLicense,
-                role: role,
-              })
-            );
-            handleClose();
-            routeChange();
+    if (firstLogin ) {
+        Register();
+        if(role === "Doc_"){
+          axios
+            .post(`${baseURL}/Add${role}`, {
+              metaId: account,
+              name: firstName,
+              doctorLicense: doctorLicense
+            })
+            .then(
+              (response) => {
+                console.log("Working!!!!" + response.data);
+                dispatch(
+                  login({
+                    account: account,
+                    firstName: firstName,
+                    doctorLicense: doctorLicense,
+                    role: role,
+                  })
+                );
+                handleClose();
+                routeChange();
 
-            },
-          (error) => {
-            setLoginError("Failed");
-            throw error;
-          }
-        );
-    }
-    else if(firstLogin && role == "Pat_"){
-      axios
-        .post(`${baseURL}/Add${role}`, {
-          metaId: account,
-          name: firstName,
-          phone: phoneNumber,
-        })
-        .then(
-          (response) => {
-            console.log("Working!!!!" + response.data);
-            dispatch(
-              login({
-                account: account,
-                firstName: firstName,
-                phoneNumber: phoneNumber,
-                role: role,
-              })
+                },
+              (error) => {
+                setLoginError("Failed");
+                throw error;
+              }
             );
-            handleClose();
-            routeChange();
-
-            },
-          (error) => {
-            setLoginError("Failed");
-            throw error;
           }
-        );
+          else if(role === "Pat_"){
+            axios
+            .post(`${baseURL}/Add${role}`, {
+              metaId: account,
+              name: firstName,
+              phone: phoneNumber,
+            })
+            .then(
+              (response) => {
+                console.log("Working!!!!" + response.data);
+                dispatch(
+                  login({
+                    account: account,
+                    firstName: firstName,
+                    phoneNumber: phoneNumber,
+                    role: role,
+                  })
+                );
+                handleClose();
+                routeChange();
+
+                },
+              (error) => {
+                setLoginError("Failed");
+                throw error;
+              }
+            );
+          }
     }
     else{
       axios
@@ -164,11 +189,6 @@ const Form = ({ handleClose, role, firstLoginRoot }) => {
     // activateBrowserWallet();
     await activate(injectedConnector);
     console.log("Existing User?: " + firstLogin);
-    // Send a call to backend to register user if first time otherwise nothing just login
-    // await window.ethereum.enable();
-    // const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-    // const account = accounts[0];
-
     console.log("My Account is: " + account);
     axios.get(`${baseURL}/${role}${account}/Valid`).then(
       (response) => {
@@ -179,10 +199,6 @@ const Form = ({ handleClose, role, firstLoginRoot }) => {
         throw error;
       }
     );
-
-    //   Make a axios call with the accountID to see if this person is a first time login user
-
-    // setfirstLogin(...);
   };
 
   return (
@@ -208,7 +224,6 @@ const Form = ({ handleClose, role, firstLoginRoot }) => {
           <p>
           {
             loginError === "" ? <></> : loginError
-
           }
           </p>
           <TextField
@@ -248,12 +263,8 @@ const Form = ({ handleClose, role, firstLoginRoot }) => {
           </Button>
         )
       }
-      {/* <Button type="submit" variant="contained" color="primary">
-        Login
-      </Button> */}
-      
     </form>
   );
 };
 
-export default Form;
+export default LoginForm;
