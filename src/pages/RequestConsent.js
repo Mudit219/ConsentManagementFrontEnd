@@ -17,6 +17,7 @@ import baseURL from "../BackendApi/BackendConnection";
 import { useSelector } from "react-redux";
 import { selectUser } from "../Components/Redux/userSlice";
 import "./RequestConsent.css"
+import CONTRACT_ADDRESS from "../contracts/ContractAddress";
 
 
 // const account_ids = {
@@ -92,7 +93,7 @@ const Form = ({web3}) => {
     // console.log(deploy_contract);
 
     // // 0x71950D6FCf532febDeC198761C0DC358c75BC7F9
-    let CONTRACT_ADDRESS="0xf037F438832DeBc059131cE73CB6bdE735736b38";
+    // let CONTRACT_ADDRESS="0xf037F438832DeBc059131cE73CB6bdE735736b38";
     // await deploy_contract.deploy(payload).send(parameter, (err, transactionHash) => {
     //   console.log('Transaction Hash :', transactionHash);
     // }).on('confirmation', () => {}).then((newContractInstance) => {

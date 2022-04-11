@@ -17,13 +17,13 @@ import { selectUser } from "../Components/Redux/userSlice";
 import { useEffect } from "react";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import CONTRACT_ADDRESS from "../contracts/ContractAddress";
 
 
-const AllConsents =({web3})=> {
+
+function AllConsents() {
     const [open, setOpen] = React.useState(false);
     const [value, SetValue] = React.useState([]);
-    const [doctorId,setDoctorId] = useState("");
+    const [doctorName,setDoctorName] = useState("");
     const [records, SetRecords] = React.useState([]);
     const user = useSelector(selectUser);
     const [connectedDoctors,setConnectedDoctors]=useState([]);
@@ -35,20 +35,15 @@ const AllConsents =({web3})=> {
     const handleClose = () => {
         setOpen(false);
     };
-    const addRecord = () => {
+    const empty = () => {
         SetRecords([...records, value])
         // SetValue('')
-        { console.log(records) }
+        // { console.log(records) }
     }
 
-    useEffect(()=>{
-        loadDoctor();
-        getRecords();
-    },[]);
     const loadDoctor=()=>{
         axios.get(`${baseURL}/${user.role}${user.account}/Get-Connections`).then(
           (response)=>{
-            //   console.log("fhjasdkfhasdjk");
               setConnectedDoctors(response.data);
           },
           (error)=>{
@@ -70,13 +65,10 @@ const AllConsents =({web3})=> {
           )
     }
 
-    
-    const saveConsent=async()=>{
-        let abi = require("../contracts/CMS.json");    
-        let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
-        await contract.methods.createConsent(doctorId,records).send({from: user.account, gas: 4712388}).then(console.log);
-
-    }
+    useEffect(()=>{
+        loadDoctor();
+        getRecords();
+    });
 
     return (
         <Grid>
@@ -98,15 +90,15 @@ const AllConsents =({web3})=> {
                                 variant="standard"
                                 select
                                 required
-                                value={doctorId}
+                                value={doctorName}
                                 style={{ marginTop: '10px' ,width:'300px'}}
-                                onChange={(e) => setDoctorId(e.target.value)}
+                                onChange={(e) => setDoctorName(e.target.value)}
                                 // defaultValue={""}
                             >
                             { 
                                 connectedDoctors.map((item)=>(
-                                <MenuItem key={item.doctorName} value = {item.doctorId} >
-                                    {item.doctorName + " (" + item.doctorId + ")"}
+                                <MenuItem key={item.doctorName} value= {item.doctorName} >
+                                    {item.doctorName}
                                 </MenuItem>
                                 ))
                             }
@@ -117,37 +109,39 @@ const AllConsents =({web3})=> {
                     <div>
                         <h2> Records</h2>
                         <div>
-                            <Select
+                            <TextField
                                 // margin="dense"
                                 id="Record"
                                 label="Record"
-                                type="text"
+                                // type="long"
                                 fullWidth
                                 variant="standard"
                                 value={value}
                                 onChange={(e) => SetValue(e.target.value)}
                                 // select
                                 required
+                                // defaultValue={""}
                             >
-                            { 
+                            {/* { 
                                 patientRecords.map((item)=>(
                                 <MenuItem key={item.ehrId} value= {item.ehrId} >
                                     {item.ehrId}
                                 </MenuItem>
                                 ))
-                            }
-                            </Select>
+                            } */}
+                            </TextField>
                         </div>
-                        <Button className="add" onClick={addRecord}>+Add Record</Button>
+                        <Button className="add" onClick={empty}>+Add Record</Button>
                     </div>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={saveConsent}>Save Consent</Button>
+                    <Button onClick={handleClose}>Save Consent</Button>
                 </DialogActions>
             </Dialog >
         </Grid >
     );
 }
+
 
 export default AllConsents;

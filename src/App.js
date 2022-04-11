@@ -63,7 +63,7 @@ export default function App() {
                   <Fragment>
                     <SideMenuPatient tabs={doctorMenu}/>
                     <Routes >
-                      <Route exact path={"/E-Health-Records"} element = {<DisplayRecords />} />
+                      <Route exact path={"/E-Health-Records"} element = {<DisplayRecords web3={web3} />} />
                       <Route exact path={"/Profile"} element={<UserProfile role="Doc_"/>} />
                       <Route exact path={"/Request-Consent"} element={<RequestConsent web3={web3}/>} />
                       <Route exact path="/login" element={user && (<Navigate replace to= "/E-Health-Records"/>)} />
@@ -76,9 +76,9 @@ export default function App() {
                   <Fragment>
                     <SideMenuPatient account={account} tabs={patientMenu}/>
                     <Routes>
-                      <Route exact path={"/E-Health-Records"} element = {<DisplayRecords />} />
+                      <Route exact path={"/E-Health-Records"} element = {<DisplayRecords web3={web3} />} />
                       <Route exact path={"/Profile"} element={<UserProfile />} />
-                      <Route exact path={"/Consents"} element={<AllConsents />} />
+                      <Route exact path={"/Consents"} element={<AllConsents web3={web3}/>} />
                       {/* <Route exact path="/login" element={user && (<Navigate replace to= "/E-Health-Records"/>)} /> */}
                       <Route exact path="/" element={user && (<Navigate replace to= "/E-Health-Records"/>)} />
                     </Routes>
