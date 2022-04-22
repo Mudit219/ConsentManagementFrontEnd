@@ -90,7 +90,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
     e.preventDefault();
     if (firstLogin ) {
         Register();
-        if(role === "Doc_"){
+        if(role === "Doc_" && account){
           axios
             .post(`${baseURL}/Add${role}`, {
               metaId: account,

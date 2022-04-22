@@ -75,7 +75,7 @@ const AllConsents =({web3})=> {
         let abi = require("../contracts/CMS.json");    
         let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
         await contract.methods.createConsent(doctorId,records).send({from: user.account, gas: 4712388}).then(console.log);
-
+        handleClose();
     }
 
     return (

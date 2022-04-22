@@ -44,6 +44,7 @@ export default function App() {
           startWeb3()
         }
     })
+    
     return ( 
             
       <Router>
