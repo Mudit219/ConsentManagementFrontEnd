@@ -12,18 +12,19 @@ const DisplayRecords=({web3})=>{
     const user =  useSelector(selectUser);
     const [EHealthRecords,setEHealthRecord] = useState([]);
     const [ConsentedRecords,setConsentedRecords] = useState([]);
+
     // const 
     // console.log("These are the parameters: " + parameters.consentRecords);
     useEffect(()=>{
-      if(user.role==="Pat_")
+      if(user.role==="Pat")
         document.title='Welcome Patient'
-      else if(user.role==="Doc_")
+      else if(user.role==="Doc")
         document.title='Welcome Doctor'
     },[]);
 
     useEffect(async ()=>{
-      await accessConsents();
-      console.log(ConsentedRecords);
+      // await accessConsents();
+      // console.log(ConsentedRecords);
       // displayEHR();
     },[]);
 
@@ -70,15 +71,15 @@ const DisplayRecords=({web3})=>{
       });
     }
     const displayEHR=()=>{       
-      if(user.role === "Doc_"){
+      if(user.role === "Doc"){
         // if(ConsentedRecords.length!==0){
           console.log("Blehasdafsd");
           console.log(ConsentedRecords);
-          axios.post(`${baseURL}/${user.role}${user.account}/E-Health-Records`,ConsentedRecords, 
+          axios.post(`${baseURL}/${user.role}/${user.account}/E-Health-Records`,ConsentedRecords, 
           {
               headers: { 
-                  // 'Authorization': 'Basic xxxxxxxxxxxxxxxxxxx',
-                  'Content-Type' : 'application/json' 
+                  'Authorization': user.token,
+                  'Content-Type' : 'application/json'
               }
           }).then(
             (response)=>{
@@ -92,8 +93,14 @@ const DisplayRecords=({web3})=>{
           )
           // }
       }
-      if(user.role === "Pat_"){
-        axios.get(`${baseURL}/${user.role}${user.account}/E-Health-Records`).then(
+      if(user.role === "Pat"){
+        axios.get(`${baseURL}/${user.role}/${user.account}/E-Health-Records`, 
+        {
+            headers: { 
+                'Authorization': user.token,
+                'Content-Type' : 'application/json'
+            }
+        }).then(
           (response)=>{
             // console.log("bla bla bla bla:",response);
             setEHealthRecord(response.data);
@@ -113,7 +120,7 @@ const DisplayRecords=({web3})=>{
           <TableRow>
             <TableCell>Record ID</TableCell>
             {
-              user.role == "Doc_" && (
+              user.role == "Doc" && (
                 <Fragment>
                   <TableCell align="right">Patient Name</TableCell>
                   <TableCell align="right">Patient Phone</TableCell>
@@ -135,7 +142,7 @@ const DisplayRecords=({web3})=>{
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
                 <TableCell component="th" scope="row"> {item.ehrId}</TableCell>
                   {
-                  user.role === "Doc_" && (
+                  user.role === "Doc" && (
                     <Fragment>
                       <TableCell align="right">{item.patientName}</TableCell>
                       <TableCell align="right">{item.patientPhone}</TableCell>

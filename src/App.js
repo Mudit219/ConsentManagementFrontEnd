@@ -59,13 +59,13 @@ export default function App() {
               {
                 // ----------------------------------------------------------------------------
                 // Directing to Doctor Dashboard
-                (user.role == "Doc_")
+                (user.role == "Doc")
                 ?(
                   <Fragment>
                     <SideMenuPatient tabs={doctorMenu}/>
                     <Routes >
                       <Route exact path={"/E-Health-Records"} element = {<DisplayRecords web3={web3} />} />
-                      <Route exact path={"/Profile"} element={<UserProfile role="Doc_"/>} />
+                      <Route exact path={"/Profile"} element={<UserProfile/>} />
                       <Route exact path={"/Request-Consent"} element={<RequestConsent web3={web3}/>} />
                       <Route exact path="/login" element={user && (<Navigate replace to= "/E-Health-Records"/>)} />
                       <Route exact path="/" element={user && (<Navigate replace to= "/E-Health-Records"/>)} />
@@ -80,7 +80,7 @@ export default function App() {
                       <Route exact path={"/E-Health-Records"} element = {<DisplayRecords web3={web3} />} />
                       <Route exact path={"/Profile"} element={<UserProfile />} />
                       <Route exact path={"/Consents"} element={<AllConsents web3={web3}/>} />
-                      {/* <Route exact path="/login" element={user && (<Navigate replace to= "/E-Health-Records"/>)} /> */}
+                      <Route exact path="/login" element={user && (<Navigate replace to= "/E-Health-Records"/>)} />
                       <Route exact path="/" element={user && (<Navigate replace to= "/E-Health-Records"/>)} />
                     </Routes>
                   </Fragment>

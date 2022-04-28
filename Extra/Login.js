@@ -54,7 +54,7 @@ const Login = () => {
             <img className='logoPat' src='https://thumbs.dreamstime.com/b/black-solid-icon-boy-patient-boy-patient-logo-pills-medical-black-solid-icon-boy-patient-pills-medical-147675883.jpg' />
           </div>
           <div>
-            <Button variant="contained" color="primary" onClick={() => handleOpen("Pat_")} color="#F44336" style={{ marginRight: 5 }}>
+            <Button variant="contained" color="primary" onClick={() => handleOpen("Pat")} style={{ marginRight: 5 }}>
               Patient Login
             </Button>
           </div>
@@ -64,7 +64,7 @@ const Login = () => {
             <img className='logoDoc' src='https://www.kindpng.com/picc/m/127-1272273_doctors-logo-black-and-white-vector-png-download.png' />
           </div>
           <div>
-            <Button variant="contained" color="primary" onClick={() => handleOpen("Doc_")} color="#F44336" style={{ marginLeft: 5 }}>
+            <Button variant="contained" color="primary" onClick={() => handleOpen("Doc")} style={{ marginLeft: 5 }}>
               Doctor Login
             </Button>
           </div>

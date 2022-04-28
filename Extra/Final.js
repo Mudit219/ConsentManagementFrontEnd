@@ -42,7 +42,13 @@ function AllConsents() {
     }
 
     const loadDoctor=()=>{
-        axios.get(`${baseURL}/${user.role}${user.account}/Get-Connections`).then(
+        axios.get(`${baseURL}/${user.role}${user.account}/Get-Connections`, 
+        {
+            headers: { 
+                'Authorization': user.token,
+                'Content-Type' : 'application/json'
+            }
+        }).then(
           (response)=>{
               setConnectedDoctors(response.data);
           },
@@ -53,7 +59,13 @@ function AllConsents() {
       }
     
     const getRecords=()=>{
-        axios.get(`${baseURL}/${user.role}${user.account}/E-Health-Records`).then(
+        axios.get(`${baseURL}/${user.role}${user.account}/E-Health-Records`, 
+        {
+            headers: { 
+                'Authorization': user.token,
+                'Content-Type' : 'application/json'
+            }
+        }).then(
             (response)=>{
             //   console.log("bla bla bla bla:",response);
               setPatientRecords(response.data);

@@ -9,6 +9,10 @@ import {store,persistor} from "./Components/app/store"
 import { PersistGate } from 'redux-persist/integration/react'
 import MetamaskProvider from "./Components/MetamaskProvider/metamask";
 import { Web3Provider } from '@ethersproject/providers'
+import 'react-datepicker/dist/react-datepicker.css'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 function getLibrary(provider){
@@ -26,6 +30,13 @@ ReactDOM.render(
     <App / >
       
   </PersistGate>
+  <ToastContainer position="top-right"
+                autoClose={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable />
 
   </Provider>
   </MetamaskProvider>

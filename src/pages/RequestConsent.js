@@ -50,7 +50,11 @@ const Form = ({web3}) => {
 
   // Loading all the connections with patients
   const loadPatient=()=>{
-    axios.get(`${baseURL}/${user.role}${user.account}/Get-Connections`).then(
+    axios.get(`${baseURL}/${user.role}/${user.account}/Get-Connections`,{
+      headers:{
+        "Authorization":user.token
+      }
+    }).then(
       (response)=>{
           setConnectedPatients(response.data);
       },
@@ -104,7 +108,7 @@ const Form = ({web3}) => {
     // console.log(CONTRACT_ADDRESS);
 
     // // Accessing the deployed contract
-    let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
+    // let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
     
     // console.log(contract);
 
@@ -121,7 +125,7 @@ const Form = ({web3}) => {
 
     // console.log("ConsentFileExists is working")
     
-    await contract.methods.requestConsent(description,patientId).send({from: user.account, gas: 4712388}).then(console.log);
+    // await contract.methods.requestConsent(description,patientId).send({from: user.account, gas: 4712388}).then(console.log);
 
     console.log("requestConsent is working")
 
