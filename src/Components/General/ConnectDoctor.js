@@ -11,13 +11,15 @@ import { Grid } from "@mui/material";
 // import Form from "../Components/Login-Register/Login-Form";
 import './ConnectDoctor.css'
 import { Select } from "@mui/material";
+import {useSelector} from "react-redux";
+import {selectUser} from "../Redux/userSlice";
 
 const ConnectDoctor = ({ web3 }) => {
     const [open, setOpen] = React.useState(false);
     // const [value, SetValue] = React.useState([]);
     // const [doctorId, setDoctorId] = useState("");
     // const [records, SetRecords] = React.useState(["mrinal", "parithi"]);
-    // const user = useSelector(selectUser);
+    const user = useSelector(selectUser);
     // const [connectedDoctors, setConnectedDoctors] = useState([]);
     // const [patientRecords, setPatientRecords] = useState([]);
 
@@ -29,10 +31,49 @@ const ConnectDoctor = ({ web3 }) => {
         setOpen(false);
     };
 
-    const connectDoctor = () => {
+    const connectDoctor = async (meta_id_doctor) => {
         setOpen(false);
+
+        let abi = require("../../contracts/ConsentManagementSystem.json")["abi"];
+        let CONTRACT_ADDRESS= require("../../contracts/ContractAddress")["default"];
+        
+        console.log(CONTRACT_ADDRESS,web3);
+        let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
+      
+        console.log(contract);
+    
+        await contract.methods.PatientCreateConnection(meta_id_doctor).send({from : user.account, gas: 4720000}).then(console.log)
+        .catch(console.error);
+
+        console.log("Patient has sent the connection successfully");
         return;
     }
+
+    const GetConnections = async () =>  {
+        let abi = require("../../contracts/ConsentManagementSystem.json")["abi"];
+        let CONTRACT_ADDRESS= require("../../contracts/ContractAddress")["default"];
+        
+        console.log(CONTRACT_ADDRESS,web3,user.account);
+        let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS);
+        
+        // contract.methods.GetConnectionFile.call().then(console.log);
+
+        await contract.methods.GetConnectionFile().call({from : user.account},async function(err,res) {
+
+            let ConnectionFileAbi = require("../../contracts/ConnectionFile.json")["abi"];
+            let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
+            
+            
+            await ConnectionFileContract.methods.getListOfConnections().call({from : user.account},async(err,ConnectionList) => {
+                console.log(ConnectionList)
+                ConnectionList.forEach(connection => {
+                    console.log(connection);
+                });
+            })
+        })
+        .catch(console.error);
+    }
+
     // const loadDoctor = () => {
     //     axios.get(`${baseURL}/${user.role}${user.account}/Get-Connections`).then(
     //         (response) => {
@@ -119,7 +160,8 @@ const ConnectDoctor = ({ web3 }) => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={connectDoctor}>Connect</Button>
+                    <Button onClick={() => connectDoctor("0x2C8165A2b5CB576b9E8F2e28Ed3837f81C9E9D90")}>Connect</Button>
+                    <Button onClick={GetConnections}>connections</Button>
                 </DialogActions>
             </Dialog >
         </Grid >

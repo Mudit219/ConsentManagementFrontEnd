@@ -1,2 +1,2 @@
-const owner_id = "0x2157350b9b2b79902e198cC35a1973EC5CbE2b6b";
+const owner_id = "0xe4fF9B3Cf5D345cB863B33b9D6507a7EaB87fE0E";
 export default owner_id;

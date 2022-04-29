@@ -1,9 +1,10 @@
 import React from "react";
 import ConnectDoctor from "../Components/General/ConnectDoctor";
 
-const ConnectedDoctors=()=>{
+const ConnectedDoctors=({web3})=>{
+    // console.log(web3);
     return (
-        <ConnectDoctor />
+        <ConnectDoctor web3={web3}/>
     );
 }
 

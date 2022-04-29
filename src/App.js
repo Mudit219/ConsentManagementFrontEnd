@@ -21,6 +21,8 @@ import DisplayRecords from './pages/EHealthRecords';
 import UserProfile from './pages/Profile';
 import RequestConsent from './pages/RequestConsent';
 import AllConsents from "./pages/PatientConsents";
+import ConnectedDoctors from "./pages/ConnectedDoctors";
+
 export default function App() {
     
     // const injectedConnector = new InjectedConnector({supportedChainIds: [1,3, 4, 5, 42, 1337],})
@@ -72,6 +74,7 @@ export default function App() {
                     <SideMenuPatient account={account} tabs={patientMenu}/>
                     <Routes>
                       <Route exact path={"/E-Health-Records"} element = {<DisplayRecords web3={web3.current} />} />
+                      <Route exact path={"/Connected-Doctors"} element = {<ConnectedDoctors web3={web3.current}/>} />
                       <Route exact path={"/Profile"} element={<UserProfile />} />
                       <Route exact path={"/Consents"} element={<AllConsents web3={web3.current}/>} />
                       <Route exact path="/login" element={user && (<Navigate replace to= "/E-Health-Records"/>)} />
