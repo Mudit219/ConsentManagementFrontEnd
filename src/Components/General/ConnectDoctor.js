@@ -11,18 +11,31 @@ import { Grid } from "@mui/material";
 // import Form from "../Components/Login-Register/Login-Form";
 import './ConnectDoctor.css'
 import { Select } from "@mui/material";
+import axios from 'axios';
+import baseURL from '../../BackendApi/BackendConnection'
+import { MenuItem } from "@mui/material";
+
 
 const ConnectDoctor = ({ web3 }) => {
     const [open, setOpen] = React.useState(false);
-    // const [value, SetValue] = React.useState([]);
-    // const [doctorId, setDoctorId] = useState("");
-    // const [records, SetRecords] = React.useState(["mrinal", "parithi"]);
-    // const user = useSelector(selectUser);
-    // const [connectedDoctors, setConnectedDoctors] = useState([]);
-    // const [patientRecords, setPatientRecords] = useState([]);
+    const [availableDoctors,setAvaialbleDoctors] = useState([]);
+    const [selectedDoc,setSelectedDoc] = useState([]);
+    const [selectedHospital,setSelectedHospital] = useState([]);
+    var availableHospitals = [... new Set(availableDoctors.map((item)=>item.hospitalName))]
 
     const handleClickOpen = () => {
         setOpen(true);
+        axios.get(`${baseURL}/admin/Get-AvailableDoctors`).then(
+            (response)=>{
+                console.log(response.data);
+                setAvaialbleDoctors(response.data);
+                console.log(response.data.map((item)=>item.hospitalName));
+            },
+            (error)=>{
+                console.log("No Doctors");
+                throw(error);
+            }
+        )
     };
 
     const handleClose = () => {
@@ -33,41 +46,10 @@ const ConnectDoctor = ({ web3 }) => {
         setOpen(false);
         return;
     }
-    // const loadDoctor = () => {
-    //     axios.get(`${baseURL}/${user.role}${user.account}/Get-Connections`).then(
-    //         (response) => {
-    //             //   console.log("fhjasdkfhasdjk");
-    //             setConnectedDoctors(response.data);
-    //         },
-    //         (error) => {
-    //             throw (error);
-    //         }
-    //     )
-    // }
 
-    // const getRecords = () => {
-    //     axios.get(`${baseURL}/${user.role}${user.account}/E-Health-Records`).then(
-    //         (response) => {
-    //             //   console.log("bla bla bla bla:",response);
-    //             setPatientRecords(response.data);
-    //         },
-    //         (error) => {
-    //             // console.log("bla bla bla blasdfadsfsdf:",error);
-    //             throw (error);
-    //         }
-    //     )
-    // }
-
-
-    // const saveConsent = async () => {
-    //     let abi = require("../contracts/CMS.json");
-    //     let contract = new web3.eth.Contract(abi, CONTRACT_ADDRESS);
-    //     await contract.methods.createConsent(doctorId, records).send({ from: user.account, gas: 4712388 }).then(console.log);
-    //     handleClose();
-    // }
 
     return (
-        <Grid className='rowC'>
+        <div>
             <h2>Doctors</h2>
             <Button className='mainbutton' variant="outlined" onClick={handleClickOpen}>
                 Connect With New Doctor
@@ -75,54 +57,66 @@ const ConnectDoctor = ({ web3 }) => {
             <Dialog open={open} onClose={handleClose} className='DialogBox'>
                 <DialogTitle>Connect to a Doctor</DialogTitle>
                 <DialogContent>
-                    <h4>Doctor Name</h4>
-                    <div className="parent">
-                        <div className="child">
-                            <Select
-                                // autoFocus
-                                // margin="dense"
-                                id="DoctorName"
-                                label="Doctor"
+                <form onSubmit={connectDoctor} style={{ backgroundColor: "#FFFFFF",marginTop:"5%" }}>
+                    <Grid container spacing={5}>    
+                        <Grid item lg={12}>
+                            <TextField
+                                id="hospital"
+                                value={selectedHospital}
+                                onChange={(e)=>setSelectedHospital(e.target.value)}
+                                label="Hospital"
                                 type="text"
-                                // fullWidth
-                                variant="standard"
+                                style={{ width: 450 }}
                                 select
                                 required
-                                // value={doctorId}
-                                style={{ marginTop: '10px', width: '300px' }}
-                            // onChange={(e) => setDoctorId(e.target.value)}
-                            // defaultValue={""}
+                                variant="outlined"
                             >
+                                {
+                                    availableHospitals.map((item)=>(
+                                        <MenuItem key={item} value={item}>
+                                            {item}
+                                        </MenuItem>
+                                    ))
+                                }
+                            </TextField>
+                        </Grid>
 
-
-                            </Select>
-                        </div>
-                    </div>
-                    <div>
-                        <h4> Hospital Name</h4>
-                        <div>
-                            <Select
-                                // margin="dense"
-                                id="Record"
-                                label="Record"
+                        <Grid item lg={12}>
+                            <TextField
+                                id=""
+                                value={selectedDoc}
+                                onChange={(e)=>setSelectedDoc(e.target.value)}
+                                label="Doctor"
                                 type="text"
-                                fullWidth
-                                variant="standard"
-                                // value={value}
-                                // onChange={(e) => SetValue(e.target.value)}
-                                // select
-                                required
-                            >
-                            </Select>
-                        </div>
-                    </div>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={connectDoctor}>Connect</Button>
-                </DialogActions>
+                                select
+                                style={{ width: 450 }}
+                                multiline
+                                rows={4}
+                                variant="outlined">
+
+                                {
+                                    availableDoctors.map((item)=>{
+                                        if(item.hospitalName == selectedHospital){
+                                            return (
+                                            <MenuItem key={item.doctorMetaId} value={item.doctorMetaId}>
+                                                {item.doctorName + " (" + item.doctorMetaId + ")"}
+                                            </MenuItem>
+                                            )
+                                        }
+                                    })
+                                }
+                            </TextField>
+                        </Grid>
+                       
+                    </Grid>
+                </form>           
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={connectDoctor}>Connect</Button>
+            </DialogActions>
             </Dialog >
-        </Grid >
+        </div>
     );
 }
 
