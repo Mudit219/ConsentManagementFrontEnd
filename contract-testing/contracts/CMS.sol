@@ -39,7 +39,9 @@ contract ConsentManagementSystem {
   
   
   /* Events generated when the consent has been created */
-  event CMSConsentCreatedEvent(address indexed factory, address indexed owner, address indexed user, address file, address consent);
+  event CMSConsentCreatedEvent(address consent,string[] Records);
+  event CMSConsentRequestedEvent(address consent,string desc);
+  
   event CMSFileCreatedEvent(address indexed factory, address indexed owner, address indexed user, address file);
   // event CMSFailedEvent(address indexed factory, address indexed owner, address indexed user, Error error);
   event CMSConsentStatusChangedEvent (address indexed factory, address indexed owner, address indexed user, Consent consent, Consent.Status status);
@@ -134,6 +136,7 @@ contract ConsentManagementSystem {
     
     _consent.setRequestStatus(requestedDesc);
     
+    emit CMSConsentRequestedEvent(address(_consent),requestedDesc);
   }
 
   function GetConsents() public view returns(Consent[] memory) {
@@ -158,6 +161,9 @@ contract ConsentManagementSystem {
     }
 
     _consent.setConsentedRecords(records);
+
+    
+    emit CMSConsentCreatedEvent(address(_consent),records);
 
   }
   

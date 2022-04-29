@@ -11,61 +11,12 @@ import { Grid } from "@mui/material";
 // import Form from "../Components/Login-Register/Login-Form";
 import './PatientConsent.css'
 
-// const AllConsents = () => {
-//     const [isOpen, setIsOpen] = useState(false);
-
-//     const togglePopup = () => {
-//         setIsOpen(!isOpen);
-//     }
-//     return (
-//         // props received from App.js
-//         <div>
-//             <input
-//                 type="button"
-//                 value="Click to Open Popup"
-//                 onClick={togglePopup}
-//             />
-//             {isOpen && <Dialog open={isOpen}
-//                 content={<Form><h1>HelloWorld</h1></Form>}
-//                 handleClose={togglePopup} />}
-//         </div>
-//         // <Dialog open={true} onClose={handleClose}>
-//         //     <Form handleClose={handleClose} role={role} firstLoginRoot={firstLogin} />
-//         // </Dialog>
-//     );
-// };
-// const AllConsents =()=> {
-//     const [isOpen, setIsOpen] = useState(false);
-
-//     const togglePopup = () => {
-//         setIsOpen(!isOpen);
-//     }
-//     return (
-//         <div>
-//             <h1>HelloWorld</h1>
-//             <input
-//                 type="button"
-//                 value="Click to Open Popup"
-//                 onClick={togglePopup}
-//             />
-//             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-//             {isOpen && <Popup
-//                 content={<>
-//                     <b>Design your Popup</b>
-//                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-//                     <button>Test button</button>
-//                 </>}
-//                 handleClose={togglePopup} />}
-//         </div>
-//     )
-// }
 
 
-
-function AllConsents() {
+function AllConsents({web3}) {
     const [open, setOpen] = React.useState(false);
     const [value, SetValue] = React.useState('hello')
-    const [records, SetRecords] = React.useState([]);
+    const [records, SetRecords] = React.useState([]);   
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -78,6 +29,20 @@ function AllConsents() {
         SetValue('')
         { console.log(records) }
     }
+
+    const handleSave = () => {
+        let abi = require("../contracts/CMS.json");    
+        // // 0x71950D6FCf532febDeC198761C0DC358c75BC7F9
+        let CONTRACT_ADDRESS="0xf037F438832DeBc059131cE73CB6bdE735736b38";
+        
+        // // Accessing the deployed contract
+        let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
+        
+        await contract.methods.createConsent(doctor,records).send({from: user.account, gas: 4712388}).then(console.log);
+
+        console.log("createConsent is working")
+    }
+
     return (
         <Grid>
             <Button variant="outlined" onClick={handleClickOpen}>
@@ -159,7 +124,7 @@ function AllConsents() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleClose}>Save Consent</Button>
+                    <Button onClick={handleSave}>Save Consent</Button>
                 </DialogActions>
             </Dialog >
         </Grid >
