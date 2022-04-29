@@ -26,7 +26,7 @@ contract Consent {
   ConsentTemplate consentTemplate; /* The template this consent is based on */
   
   /* Event to signal that the status has changed */
-  event ConsentStatusChanged (address indexed consent, address indexed patient, address indexed doctor, Status status);
+  event ConsentStatusChanged(address indexed consent, Status status);
 
   /* A modifier */
   modifier onlyByPatient()
@@ -60,21 +60,21 @@ contract Consent {
   function setRequestStatus(string memory requestdesc) onlyByDoctor() public {
     status = Status.requested;
     consentTemplate.SettingRequestedDesc(requestdesc);
-    emit ConsentStatusChanged(address(this),patient,doctor,status);
+    emit ConsentStatusChanged(address(this),status);
   }
   /* Sets the status of the consent, this can only be done by the giver. */
   function setPatientSideStatus(Status _status) onlyByPatient () public
   {
     if (_status == Status.denied || _status == Status.accepted) {
       status = _status;
-      emit ConsentStatusChanged (address(this), patient, doctor, status);
+      emit ConsentStatusChanged (address(this), status);
     }
   }
 
   function setConsentedRecords(string[] memory consentedRecords) onlyByPatient () public {
     status = Status.accepted;
     consentTemplate.setConsentedRecords(consentedRecords);
-    emit ConsentStatusChanged(address(this),patient,doctor,status);
+    emit ConsentStatusChanged(address(this),status);
   }
 
   /* Cancels a consent, this can only be done by the company who created the consent. */
@@ -82,7 +82,7 @@ contract Consent {
   {
     status = Status.cancelled;
     consentTemplate.setConsentedRecords(new string[](0));
-    emit ConsentStatusChanged (address(this), patient,doctor, Status.cancelled);
+    emit ConsentStatusChanged (address(this), Status.cancelled);
   }
   
   /* Returns the status of the consent */    

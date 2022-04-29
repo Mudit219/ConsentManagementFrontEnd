@@ -1,7 +1,8 @@
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 import "./ConsentFile.sol";
-
+import "./ConnectionFile.sol";
+import "./Connection.sol";
 // /* 
 //  * This is the consent factory contract that handles consents and version of
 //  * consents.
@@ -13,7 +14,6 @@ import "./ConsentFile.sol";
 //  */
 
 contract ConsentManagementSystem {
-
   
   /* The owner of this contract */
   address payable private owner;  /* Who owns this CMS*/
@@ -29,23 +29,24 @@ contract ConsentManagementSystem {
   mapping(address => address) Patients;
   mapping(address => address) Doctors;
   
-  mapping(address => mapping(address => uint)) private ConnectionDoctorPatient;
-  mapping(address => mapping(address => uint)) private ConnectionDoctorPatientInv;
-  // mapping(address => mapping(address => Consent)) private ConsentDoctorPatient;
-  // mapping(address => mapping(address => Consent)) private ConsentDoctorPatientInv;
+  uint256 NumUsers = 0;
 
   mapping(address => ConsentFile) UserToConsentFile;
-  // mapping(address =>mapping(address => address)) PatientDoctorToConsentFile;
-  
+  mapping(address => ConnectionFile) UserToConnectionFile;
+
   
   /* Events generated when the consent has been created */
+  event CMSConnectionStatusEvent(address conn,Connection.Status status);
+  // event CMSConnectionStatusChangedEvent(address indexed factory, address indexed owner, address indexed user, Consent consent, Consent.Status status);
+  
   event CMSConsentCreatedEvent(address consent,string[] Records);
   event CMSConsentRequestedEvent(address consent,string desc);
+  // event CMSConsentStatusChangedEvent(address consent, Consent.Status oldStatus, Consent.Status newStatus);
   
   event CMSFileCreatedEvent(address indexed factory, address indexed owner, address indexed user, address file);
   // event CMSFailedEvent(address indexed factory, address indexed owner, address indexed user, Error error);
-  event CMSConsentStatusChangedEvent (address indexed factory, address indexed owner, address indexed user, Consent consent, Consent.Status status);
   
+
   /* A modifier */
   modifier onlyBy(address _account) 
   { 
@@ -53,6 +54,11 @@ contract ConsentManagementSystem {
     _;
   }
   
+  modifier AccountExists(address _account) {
+    require((Patients[_account] == _account) || (Doctors[_account] == _account));
+    _;
+  }
+
   modifier PatientAccountExists(address _account)
   {
     require(Patients[_account] == _account);
@@ -65,6 +71,33 @@ contract ConsentManagementSystem {
     _;
   }
 
+  struct ConnDeets {
+    bool exists;
+    Connection Conn;
+  }
+
+  struct ConsentDeets {
+    bool exists;
+    Consent _consent;
+  }
+
+  modifier ConnectionStatusExists(address patient,address doctor,Connection.Status state) {
+    ConnectionFile DoctorConnectionFile = UserToConnectionFile[doctor];
+    ConnectionFile PatientConnectionFile = UserToConnectionFile[patient];
+
+    ConnDeets memory DocConn;
+    (DocConn.exists,DocConn.Conn) = DoctorConnectionFile.getAssociatedConnection(patient);
+    
+    ConnDeets memory PatConn;
+    (PatConn.exists,PatConn.Conn) = PatientConnectionFile.getAssociatedConnection(doctor);
+    
+    require ( (DocConn.exists && DocConn.Conn.getStatus() == state) || 
+              (PatConn.exists && PatConn.Conn.getStatus() == state) 
+            );
+    _;
+  }
+  
+  
   /* Constructor for the consent factory */
   constructor (string memory _company) public
   {
@@ -72,6 +105,7 @@ contract ConsentManagementSystem {
     creator = msg.sender;
     company = _company;
   }
+  
   function memcmp(bytes memory a, bytes memory b) internal pure returns(bool){
     return (a.length == b.length) && (keccak256(a) == keccak256(b));
   }
@@ -83,11 +117,18 @@ contract ConsentManagementSystem {
     if(strcmp(role,"doctor")) {
       Doctors[_user] = _user;
       createConsentFile(_user,ConsentFile.Role.doctor);
+      createConnectionFile(_user,ConnectionFile.Role.doctor);
     }
     else {
       Patients[_user] = _user;
       createConsentFile(_user,ConsentFile.Role.patient);
+      createConnectionFile(_user,ConnectionFile.Role.patient);
     }
+    NumUsers += 1;
+  }
+
+  function NumOfUsers() public view returns(uint256) {
+    return NumUsers;
   }
 
   function DoctorExists() DoctorAccountExists(tx.origin) public view returns(bool){
@@ -95,9 +136,14 @@ contract ConsentManagementSystem {
   }
 
 
-  function GetConsentFile() public view returns(ConsentFile) {
+  function GetConsentFile() AccountExists(tx.origin) public view returns(ConsentFile) {
     return UserToConsentFile[tx.origin];
   }
+
+  function GetConnectionFile() AccountExists(tx.origin) public view returns(ConnectionFile) {
+    return UserToConnectionFile[tx.origin];
+  }
+
   /* Create a file that holds a users all consents.
    * 
    * This is the file that holds all consents regardless of their state. Should have a modifier for the company.
@@ -109,11 +155,14 @@ contract ConsentManagementSystem {
     // emit CMSFileCreatedEvent(address(this), owner, _user, file);
   }
 
-  modifier ConnectionExists(address patient,address doctor) {
-    require ((ConnectionDoctorPatient[patient][doctor] == 1) || (ConnectionDoctorPatientInv[patient][doctor] == 1));
-    _;
+  function createConnectionFile(address payable _user,ConnectionFile.Role role) onlyBy(owner) public {
+    ConnectionFile file = new ConnectionFile(_user,role,address(this));
+    UserToConnectionFile[_user] = file;
   }
+
+
   
+
   /* Create a consent for a specific purpouse of the latest version, language and country.
    *
    * Country and Purpouse must exist otherwise it will fail, if language is not there it will
@@ -121,113 +170,147 @@ contract ConsentManagementSystem {
    * the consent to the users file as well. Should have a modifier for the company only.
    */
 
-  function requestConsent(string memory requestedDesc,address fromPatient)  public{
+  function requestConsent(string memory requestedDesc,address fromPatient) ConnectionStatusExists(fromPatient,tx.origin,Connection.Status.accepted)  public{
     ConsentFile DoctorConsentFile = UserToConsentFile[tx.origin];
     ConsentFile PatientConsentFile = UserToConsentFile[fromPatient];
 
-    Consent _consent;
-    bool status;
-    (status,_consent) = DoctorConsentFile.getAssociatedConsent(fromPatient);
+    ConsentDeets memory _deets;
+    (_deets.exists,_deets._consent) = DoctorConsentFile.getAssociatedConsent(fromPatient);
     
-    if(!status) {
-      DoctorConsentFile.addConsent(_consent);
-      PatientConsentFile.addConsent(_consent);
+    if(!_deets.exists) {
+      DoctorConsentFile.addConsent(_deets._consent);
+      PatientConsentFile.addConsent(_deets._consent);
     }
     
-    _consent.setRequestStatus(requestedDesc);
+    _deets._consent.setRequestStatus(requestedDesc);
     
-    emit CMSConsentRequestedEvent(address(_consent),requestedDesc);
+    emit CMSConsentRequestedEvent(address(_deets._consent),requestedDesc);
   }
 
-  function GetConsents() public view returns(Consent[] memory) {
+  function GetConsents() AccountExists(tx.origin) public view returns(Consent[] memory) {
     ConsentFile UserConsents = UserToConsentFile[tx.origin];
     Consent[] memory _consents = UserConsents.getListOfConsents();
     return _consents;
   }
 
-  function createConsent(address _doctor, string[] memory records) PatientAccountExists(tx.origin) DoctorAccountExists(_doctor) public
+  function createConsent(address _doctor, string[] memory records) ConnectionStatusExists(tx.origin,_doctor,Connection.Status.accepted) public
   {
 
     ConsentFile PatientConsentFile = UserToConsentFile[tx.origin];
     ConsentFile DoctorConsentFile = UserToConsentFile[_doctor];
 
-    Consent _consent;
-    bool state;
-    (state,_consent) = PatientConsentFile.getAssociatedConsent(_doctor);
+    ConsentDeets memory _deets;
+    (_deets.exists,_deets._consent) = PatientConsentFile.getAssociatedConsent(_doctor);
 
-    if(!state) {
-      PatientConsentFile.addConsent(_consent);
-      DoctorConsentFile.addConsent(_consent);
+    if(!_deets.exists) {
+      PatientConsentFile.addConsent(_deets._consent);
+      DoctorConsentFile.addConsent(_deets._consent);
     }
 
-    _consent.setConsentedRecords(records);
+    _deets._consent.setConsentedRecords(records);
 
     
-    emit CMSConsentCreatedEvent(address(_consent),records);
+    emit CMSConsentCreatedEvent(address(_deets._consent),records);
 
   }
-  
-  /* This function tests wether a consent for a specific purpouse exists or not */
-  // function getTemplate (string memory _purpouse, string memory _languageCountry) view internal returns (ConsentTemplate)
-  // {
-  //   /* Get the consents for a specific purpouse and language, country*/
-  //   uint ix = consentTemplates[_purpouse][_languageCountry];
-  //   if (ix == 0) {
-      
-  //     /* Fallback here is to only go for the default language of the country */
-  //     /* So we need to strip the language from the country */
-  //     bytes memory b = bytes (_languageCountry);
-  //     if (b.length==5) {
-	// if (uint8(b[2]) == 45) {
-  //   	  bytes memory c = new bytes(2);
-	  
-	//   /* Get the country */
-  //   	  c[0] = b[3];
-  //   	  c[1] = b[4];
-  //   	  ix = consentTemplates[_purpouse][string(c)];
-  //   	}
-  //     }
-  //   }
 
-  //   /* Return the consent template if we found any */
-  //   if (ix>0)
-  //     return ConsentTemplate(listOfActiveConsentTemplates[ix-1]);
-  //   else
-  //     return ConsentTemplate(address(0));
-  // }
+  function ValidateRecordRequest(address doctor, string[] memory records) onlyBy(owner) public view returns(bool){
+    ConsentFile doctorConsentFile = UserToConsentFile[doctor];
+    return doctorConsentFile.RecordsExists(records);
+  }
 
-  // /* Change the status of the consent */
-  // function setConsentStatus(Consent _consent, Consent.Status _status) onlyBy (_consent.getGiver()) public
-  // {
-  //   if(_status == Consent.Status.accepted || _status == Consent.Status.denied) {
-  //     _consent.setStatus (_status);
-  //     emit ConsentFactoryConsentStatusChangedEvent (address(this), _consent.getOwner(), _consent.getGiver(), _consent, _status);
-  //   } else {
-  //     emit ConsentFactoryFailedEvent (address(this), _consent.getOwner(), _consent.getGiver(), Error.only_accepted_or_denied);
-  //   }
-  // }
+  function PatientCreateConnection(address doctor) PatientAccountExists(tx.origin) public {
+    ConnectionFile DoctorConnectionFile = UserToConnectionFile[doctor];
+    ConnectionFile PatientConnectionFile = UserToConnectionFile[tx.origin];
+
+    ConnDeets memory _deets;
+
+    (_deets.exists,_deets.Conn) = PatientConnectionFile.getAssociatedConnection(doctor);
+
+    if(_deets.exists) {
+      return;
+    }
+    else {
+      DoctorConnectionFile.AddConnection(_deets.Conn);
+      PatientConnectionFile.AddConnection(_deets.Conn);
+
+      _deets.Conn.setStatus(Connection.Status.requested);
+    }
+    emit CMSConnectionStatusEvent(address(_deets.Conn),Connection.Status.requested);
+  }
   
+  function DoctorAcceptConnection(address patient) ConnectionStatusExists(patient,tx.origin,Connection.Status.requested) public {
+    ConnectionFile DoctorConnectionFile = UserToConnectionFile[tx.origin];
+    ConnectionFile PatientConnectionFile = UserToConnectionFile[patient];
+
+    ConnDeets memory _deets;
+
+    (_deets.exists,_deets.Conn) = DoctorConnectionFile.getAssociatedConnection(patient);
+
+    if(_deets.exists && _deets.Conn.getStatus() == Connection.Status.accepted) {
+      return;
+    }
+    else {
+      if(!_deets.exists) {
+        DoctorConnectionFile.AddConnection(_deets.Conn);
+        PatientConnectionFile.AddConnection(_deets.Conn);
+      }
+
+      _deets.Conn.setStatus(Connection.Status.accepted);
+    }
+    
+    emit CMSConnectionStatusEvent(address(_deets.Conn),Connection.Status.accepted);
+  }
+  
+  function GetReqestedConnections() AccountExists(tx.origin) public view returns(address[] memory) {
+    ConnectionFile file = UserToConnectionFile[tx.origin];
+    return file.GetTypeConnections(Connection.Status.requested);
+  }
+
+  function GetAcceptedConnections() AccountExists(tx.origin) public view returns(address[] memory) {
+    ConnectionFile file = UserToConnectionFile[tx.origin];
+    return file.GetTypeConnections(Connection.Status.accepted);
+  }
+
+  function CheckSubset(address[2] memory array,address addr) private pure returns(bool) {
+    for(uint i=0;i<array.length;i++) {
+      if(array[i] == addr) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  modifier MultipleOnlyBy(address[2] memory accounts) {
+    require(CheckSubset(accounts,tx.origin) == true);
+    _;
+  }
+
+  function RevokeConnection(Connection _conn) MultipleOnlyBy([_conn.getPatient(),_conn.getDoctor()]) public {
+    _conn.cancel();
+    emit CMSConnectionStatusEvent(address(_conn),Connection.Status.cancelled);
+  }
+
   // /* Cancel the consent */
-  // function cancelConsent(Consent _consent) onlyBy (_consent.getOwner()) public
-  // {
-  //   _consent.cancel();
-  //   emit ConsentFactoryConsentStatusChangedEvent (address(this), _consent.getOwner(), _consent.getGiver(), _consent, Consent.Status.cancelled);
-  // }
+  function cancelConsent(Consent _consent) onlyBy(_consent.getPatient()) public
+  {
+    _consent.cancel();
+    // emit ConsentFactoryConsentStatusChangedEvent (address(this), _consent.getOwner(), _consent.getGiver(), _consent, Consent.Status.cancelled);
+  }
 
   // /* The company who has this factory */
-  // function getCompany() public view returns (string memory)
-  // {
-  //   return company;
-  // }
+  function getCompany() public view returns (string memory)
+  {
+    return company;
+  }
 
   // /* Returns the owner for the factory */
-  // function getOwner() public view returns (address)
-  // {
-  //   return owner;
-  // }
+  function getOwner() public view returns (address)
+  {
+    return owner;
+  }
   
-  // /* Function to recover the funds on the contract */
-  // function kill() public { if (msg.sender == owner) selfdestruct(owner); }
+  
 }
 
 /*

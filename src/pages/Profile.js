@@ -17,7 +17,11 @@ const UserProfile = () => {
 
     // const params = useParams()
     const displayProfile = () => {
-        axios.get(`${baseURL}/${user.role}${user.account}/Profile`).then(
+        axios.get(`${baseURL}/${user.role}/${user.account}/Profile`,{
+            headers:{
+              "Authorization":user.token
+            }
+        }).then(
             (response) => {
                 // console.log(response);
                 setPatientProfile(response.data);
@@ -32,7 +36,7 @@ const UserProfile = () => {
             <Card>
                 <CardContent>
                     {
-                        Profile != null && user.role == "Pat_" &&
+                        Profile != null && user.role == "Pat" &&
                             (<div className='card' key={Profile.metaId}>
                                 {/* <h3>{role} Dashboard</h3> */}
                                 <img src="https://t4.ftcdn.net/jpg/02/60/04/09/360_F_260040900_oO6YW1sHTnKxby4GcjCvtypUCWjnQRg5.jpg"></img>
@@ -45,7 +49,7 @@ const UserProfile = () => {
                         
                     }
                     {
-                        Profile != null && user.role == "Doc_" &&
+                        Profile != null && user.role == "Doc" &&
                             (<div className='card' key={Profile.metaId}>
                                 {/* <h3>{role} Dashboard</h3> */}
                                 <img src="https://t4.ftcdn.net/jpg/02/60/04/09/360_F_260040900_oO6YW1sHTnKxby4GcjCvtypUCWjnQRg5.jpg"></img>

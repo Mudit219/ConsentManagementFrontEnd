@@ -5,48 +5,108 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import {selectUser} from "../Components/Redux/userSlice";
 import {useSelector} from "react-redux";
+import CONTRACT_ADDRESS from "../contracts/ContractAddress";
 
-const DisplayRecords=()=>{
+
+const DisplayRecords=({web3})=>{
     const user =  useSelector(selectUser);
     const [EHealthRecords,setEHealthRecord] = useState([]);
+    const [ConsentedRecords,setConsentedRecords] = useState([]);
+
+    // const 
     // console.log("These are the parameters: " + parameters.consentRecords);
     useEffect(()=>{
-      if(user.role==="Pat_")
+      if(user.role==="Pat")
         document.title='Welcome Patient'
-      else if(user.role==="Doc_")
+      else if(user.role==="Doc")
         document.title='Welcome Doctor'
+    },[]);
+
+    useEffect(async ()=>{
+      // await accessConsents();
+      // console.log(ConsentedRecords);
+      // displayEHR();
     },[]);
 
     useEffect(()=>{
       displayEHR();
-    },[]);
+    },[ConsentedRecords])
 
+    const checkEHR=(EHR)=>{
+      const map = new Map(EHR.map(pos => [pos.ehrId, pos]));
+      const AllRecords = [...map.values()];
+      console.log(EHealthRecords);
+      return AllRecords;
+    }
+    
+    const accessConsents= async ()=>{
+      let abi = require("../contracts/ConsentManagementSystem.json")["abi"];  
+      console.log(web3);  
+      let consentJson = {"patientId":"","recordIds":[]};
+      let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
+      await contract.methods.GetConsents().call({from: user.account, gas: 4712388}).then(async function (consents){
+        var allConsetedRecords = [];
+        console.log(consents.length);
+        for(var i=0;i<consents.length;i++){
+            consentJson = {"patientId":"","recordIds":[]};
+            let consent_abi = require("../contracts/Consent.json")["abi"];
+            const _consent = new web3.eth.Contract(consent_abi,consents[i]);
+            await _consent.methods.getTemplate().call({from: user.account, gas: 4712388}).then(async function (template){
+              let consentTemplate_abi = require("../contracts/ConsentTemplate.json")["abi"];
+              const _template = new web3.eth.Contract(consentTemplate_abi,template);
+              var consentRecords = await _template.methods.GetConsentedRecords().call({from: user.account, gas: 4712388});
+              // console.log(consentRecords);
+              consentJson["recordIds"]=[...consentRecords];
+              console.log(consentJson);
+              // return consentJson;
+            }
+          )
+          console.log(consentJson["recordIds"]);
+          var consentPatientId = await _consent.methods.getPatient().call({from: user.account,gas: 4712388})
+          consentJson["patientId"]=consentPatientId;
+          allConsetedRecords.push(consentJson);
+        }
+        setConsentedRecords(allConsetedRecords);
+
+      });
+    }
     const displayEHR=()=>{       
-      if(user.role === "Doc_"){
-        axios.post(`${baseURL}/${user.role}${user.account}/E-Health-Records`,[
+      if(user.role === "Doc"){
+        // if(ConsentedRecords.length!==0){
+          console.log("Blehasdafsd");
+          console.log(ConsentedRecords);
+          axios.post(`${baseURL}/${user.role}/${user.account}/E-Health-Records`,ConsentedRecords, 
           {
-            "patientId": "",
-            "recordIds": []
-          }
-        ]).then(
-          (response)=>{
-            console.log("bla bla bla bla:",response);
-            setEHealthRecord(response.data);
-          },
-          (error)=>{
-          console.log("bla bla bla bla:",error);
-            throw(error);
-          }
-        )
+              headers: { 
+                  'Authorization': user.token,
+                  'Content-Type' : 'application/json'
+              }
+          }).then(
+            (response)=>{
+              // console.log("bla bla bla bla:",response);
+              setEHealthRecord(checkEHR(response.data));
+            },
+            (error)=>{
+            // console.log("bla bla bla bla:",error);
+              throw(error);
+            }
+          )
+          // }
       }
-      if(user.role === "Pat_"){
-        axios.get(`${baseURL}/${user.role}${user.account}/E-Health-Records`).then(
+      if(user.role === "Pat"){
+        axios.get(`${baseURL}/${user.role}/${user.account}/E-Health-Records`, 
+        {
+            headers: { 
+                'Authorization': user.token,
+                'Content-Type' : 'application/json'
+            }
+        }).then(
           (response)=>{
-            console.log("bla bla bla bla:",response);
+            // console.log("bla bla bla bla:",response);
             setEHealthRecord(response.data);
           },
           (error)=>{
-          console.log("bla bla bla blasdfadsfsdf:",error);
+          // console.log("bla bla bla blasdfadsfsdf:",error);
             throw(error);
           }
         )
@@ -60,7 +120,7 @@ const DisplayRecords=()=>{
           <TableRow>
             <TableCell>Record ID</TableCell>
             {
-              user.role == "Doc_" && (
+              user.role == "Doc" && (
                 <Fragment>
                   <TableCell align="right">Patient Name</TableCell>
                   <TableCell align="right">Patient Phone</TableCell>
@@ -82,7 +142,7 @@ const DisplayRecords=()=>{
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
                 <TableCell component="th" scope="row"> {item.ehrId}</TableCell>
                   {
-                  user.role === "Doc_" && (
+                  user.role === "Doc" && (
                     <Fragment>
                       <TableCell align="right">{item.patientName}</TableCell>
                       <TableCell align="right">{item.patientPhone}</TableCell>

@@ -5,6 +5,8 @@ import "./Consent.sol";
 contract ConsentFile {
 
   address CMS;
+  
+  address validator;
 
   /* The owner of the file */
   address payable user;
@@ -22,7 +24,7 @@ contract ConsentFile {
   Consent[] private listOfConsents;
 
   /* Events that are sent when things happen */
-  event ConsentFileConsentAdded(address indexed file, address indexed user, Role indexed role, address consent);
+  event ConsentFileConsentAdded(address indexed file, address consent);
 
   /* A modifier */
   modifier onlyByUser()
@@ -45,7 +47,46 @@ contract ConsentFile {
     role = _role;
   }
 
-  function getAssociatedConsent(address _otherUser) public returns(bool,Consent ) {
+  function memcmp(bytes memory a, bytes memory b) internal pure returns(bool){
+    return (a.length == b.length) && (keccak256(a) == keccak256(b));
+  }
+  function strcmp(string memory a, string memory b) internal pure returns(bool){
+    return memcmp(bytes(a), bytes(b));
+  }
+
+  function CheckElementExist(string [] memory root, string memory elem) private view returns(bool) {
+    for(uint i=0;i<root.length;i++) {
+      if(strcmp(root[i],elem)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function CheckSubset(string[] memory root,string[] memory check) private view returns(bool) {
+    for(uint i=0;i<check.length;i++) {
+      if(CheckElementExist(root,check[i])) {
+        continue;
+      }
+      else {
+        return false;
+      }
+    }
+    return true;
+  }
+  
+  function RecordsExists(string[] memory records) CMSorUser() public view returns(bool) {
+    if(role == Role.doctor) {
+      for(uint i=0;i < listOfConsents.length;i++) {
+        if(CheckSubset(listOfConsents[i].getTemplate().GetConsentedRecords(),records)) {
+          return true;
+        }
+      }
+      return false;
+    }
+  }
+
+  function getAssociatedConsent(address _otherUser) onlyByUser() public returns(bool,Consent ) {
     if(role == Role.doctor) {
       for(uint i=0;i < listOfConsents.length;i++) {
         if(listOfConsents[i].getPatient() == _otherUser) {
@@ -71,7 +112,7 @@ contract ConsentFile {
   function addConsent(Consent _consent) CMSorUser() public 
   {
     listOfConsents.push(_consent);
-    emit ConsentFileConsentAdded(address(this), user, role, address(_consent));
+    emit ConsentFileConsentAdded(address(this), address(_consent));
   }
 
   /* Retrieve a list of all consents in the file */

@@ -5,8 +5,6 @@ import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import baseURL from '../BackendApi/BackendConnection';
 import './Login.css';
-import owner_id from '../contracts/Owner_credentials';
-import bytecode from '../contracts/Bytecode';
 
 const Login = ({web3}) => {
   // declare a new state variable for modal open
@@ -21,7 +19,7 @@ const Login = ({web3}) => {
     setRole(role);
 
     if(account) {
-      axios.get(`${baseURL}/${role}${account}/Valid`).then(
+      axios.get(`${baseURL}/admin/Valid/${role}/${account}`).then(
         (response)=>{
           console.log("Check valid or not " + response.data);
 
@@ -44,7 +42,6 @@ const Login = ({web3}) => {
 
   return (
   <div className='Login'>
-      {/* <Button variant="contained" color="primary" onClick={() => deploy("Pat_")} >Deploy</Button> */}
       <div className="logo">
         <img className="logoImage" src='https://gdm-catalog-fmapi-prod.imgix.net/ProductScreenshot/d65416a4-8162-406b-add4-040305619de6.png?auto=format' />
       </div>
@@ -56,7 +53,7 @@ const Login = ({web3}) => {
             <img className='logoPat' src='https://thumbs.dreamstime.com/b/black-solid-icon-boy-patient-boy-patient-logo-pills-medical-black-solid-icon-boy-patient-pills-medical-147675883.jpg' />
           </div>
           <div>
-            <Button variant="contained" color="primary" onClick={() => handleOpen("Pat_")}  style={{ marginRight: 5 }}>
+            <Button variant="contained" color="primary" onClick={() => handleOpen("Pat")}  style={{ marginRight: 5 }}>
               Patient Login
             </Button>
           </div>
@@ -66,7 +63,7 @@ const Login = ({web3}) => {
             <img className='logoDoc' src='https://www.kindpng.com/picc/m/127-1272273_doctors-logo-black-and-white-vector-png-download.png' />
           </div>
           <div>
-            <Button variant="contained" color="primary" onClick={() => handleOpen("Doc_")} style={{ marginLeft: 5 }}>
+            <Button variant="contained" color="primary" onClick={() => handleOpen("Doc")} style={{ marginLeft: 5 }}>
               Doctor Login
             </Button>
           </div>

@@ -10,13 +10,12 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import Slider from "@material-ui/core/Slider";
 import Button from "@material-ui/core/Button";
-import bytecode from '../contracts/Bytecode'
-import owner_id from "../contracts/Owner_credentials";
 import axios from "axios";
 import baseURL from "../BackendApi/BackendConnection";
 import { useSelector } from "react-redux";
 import { selectUser } from "../Components/Redux/userSlice";
 import "./RequestConsent.css"
+import CONTRACT_ADDRESS from "../contracts/ContractAddress";
 
 
 // const account_ids = {
@@ -49,7 +48,11 @@ const Form = ({web3}) => {
 
   // Loading all the connections with patients
   const loadPatient=()=>{
-    axios.get(`${baseURL}/${user.role}${user.account}/Get-Connections`).then(
+    axios.get(`${baseURL}/${user.role}/${user.account}/Get-Connections`,{
+      headers:{
+        "Authorization":user.token
+      }
+    }).then(
       (response)=>{
           setConnectedPatients(response.data);
       },
@@ -74,7 +77,7 @@ const Form = ({web3}) => {
     console.log("These are form values " + patientName + " " + description + " " + patientId + " " + patientPhone);
     // Deploying the contract 
 
-    let abi = require("../contracts/CMS.json");    
+    let abi = require("../contracts/ConsentManagementSystem.json")["abi"];    
     // let deploy_contract = new web3.eth.Contract(abi)
 
     // let payload = {
@@ -92,7 +95,7 @@ const Form = ({web3}) => {
     // console.log(deploy_contract);
 
     // // 0x71950D6FCf532febDeC198761C0DC358c75BC7F9
-    let CONTRACT_ADDRESS="0xf037F438832DeBc059131cE73CB6bdE735736b38";
+    // let CONTRACT_ADDRESS="0xf037F438832DeBc059131cE73CB6bdE735736b38";
     // await deploy_contract.deploy(payload).send(parameter, (err, transactionHash) => {
     //   console.log('Transaction Hash :', transactionHash);
     // }).on('confirmation', () => {}).then((newContractInstance) => {
@@ -103,7 +106,7 @@ const Form = ({web3}) => {
     // console.log(CONTRACT_ADDRESS);
 
     // // Accessing the deployed contract
-    let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
+    // let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
     
     // console.log(contract);
 
@@ -120,7 +123,7 @@ const Form = ({web3}) => {
 
     // console.log("ConsentFileExists is working")
     
-    await contract.methods.requestConsent(description,patientId).send({from: user.account, gas: 4712388}).then(console.log);
+    // await contract.methods.requestConsent(description,patientId).send({from: user.account, gas: 4712388}).then(console.log);
 
     console.log("requestConsent is working")
 

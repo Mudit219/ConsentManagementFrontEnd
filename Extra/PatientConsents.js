@@ -10,13 +10,27 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Grid } from "@mui/material";
 // import Form from "../Components/Login-Register/Login-Form";
 import './PatientConsent.css'
+import axios from "axios";
+import baseURL from "../BackendApi/BackendConnection";
+import { useSelector } from "react-redux";
+import { selectUser } from "../Components/Redux/userSlice";
+import { useEffect } from "react";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
+import CONTRACT_ADDRESS from "../contracts/ContractAddress";
+import DatePicker from "react-datepicker";
 
 
-
-function AllConsents({web3}) {
+const AllConsents = ({ web3 }) => {
     const [open, setOpen] = React.useState(false);
-    const [value, SetValue] = React.useState('hello')
-    const [records, SetRecords] = React.useState([]);   
+    const [value, SetValue] = React.useState([]);
+    const [doctorId, setDoctorId] = useState("");
+    const [records, SetRecords] = React.useState(["mrinal", "parithi"]);
+    const user = useSelector(selectUser);
+    const [connectedDoctors, setConnectedDoctors] = useState([]);
+    const [patientRecords, setPatientRecords] = useState([]);
+    const [fromDate, setFromDate] = useState(new Date());
+    const [toDate, setToDate] = useState(new Date());
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -24,23 +38,61 @@ function AllConsents({web3}) {
     const handleClose = () => {
         setOpen(false);
     };
-    const empty = () => {
+    const addRecord = () => {
         SetRecords([...records, value])
         SetValue('')
+        setFromDate(new Date())
+        setToDate(new Date())
         { console.log(records) }
     }
 
-    const handleSave = () => {
-        let abi = require("../contracts/CMS.json");    
-        // // 0x71950D6FCf532febDeC198761C0DC358c75BC7F9
-        let CONTRACT_ADDRESS="0xf037F438832DeBc059131cE73CB6bdE735736b38";
-        
-        // // Accessing the deployed contract
-        let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
-        
-        await contract.methods.createConsent(doctor,records).send({from: user.account, gas: 4712388}).then(console.log);
+    useEffect(() => {
+        loadDoctor();
+        getRecords();
+    }, []);
+    const loadDoctor = () => {
+        axios.get(`${baseURL}/${user.role}${user.account}/Get-Connections`, 
+        {
+            headers: { 
+                'Authorization': user.token,
+                'Content-Type' : 'application/json'
+            }
+        }).then(
+            (response) => {
+                //   console.log("fhjasdkfhasdjk");
+                setConnectedDoctors(response.data);
+            },
+            (error) => {
+                throw (error);
+            }
+        )
+    }
 
-        console.log("createConsent is working")
+    const getRecords = () => {
+        axios.get(`${baseURL}/${user.role}${user.account}/E-Health-Records`, 
+        {
+            headers: { 
+                'Authorization': user.token,
+                'Content-Type' : 'application/json'
+            }
+        }).then(
+            (response) => {
+                //   console.log("bla bla bla bla:",response);
+                setPatientRecords(response.data);
+            },
+            (error) => {
+                // console.log("bla bla bla blasdfadsfsdf:",error);
+                throw (error);
+            }
+        )
+    }
+
+
+    const saveConsent = async () => {
+        let abi = require("../contracts/CMS.json");
+        let contract = new web3.eth.Contract(abi, CONTRACT_ADDRESS);
+        await contract.methods.createConsent(doctorId, records).send({ from: user.account, gas: 4712388 }).then(console.log);
+        handleClose();
     }
 
     return (
@@ -49,87 +101,93 @@ function AllConsents({web3}) {
                 Create Consent
             </Button>
             <Dialog open={open} onClose={handleClose} className='DialogBox'>
-                <DialogTitle>CreateConsent</DialogTitle>
+                <DialogTitle>Create Consent</DialogTitle>
                 <DialogContent>
-                    {/* <DialogContentText>
-                        To subscribe to this website, please enter your email address here. We
-                        will send updates occasionally.
-                    </DialogContentText> */}
+                    <h2>Doctor</h2>
                     <div className="parent">
                         <div className="child">
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="name"
-                                label="ConsentID"
-                                type="consentid"
-                                fullWidth
-                                variant="standard"
-                            />
-                        </div>
-                        <div className="child">
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="name"
+                            <Select
+                                // autoFocus
+                                // margin="dense"
+                                id="DoctorName"
                                 label="Doctor"
-                                type="Doctor"
-                                fullWidth
+                                type="text"
+                                // fullWidth
                                 variant="standard"
-                            />
+                                select
+                                required
+                                value={doctorId}
+                                style={{ marginTop: '10px', width: '300px' }}
+                                onChange={(e) => setDoctorId(e.target.value)}
+                            // defaultValue={""}
+                            >
+                                {
+                                    connectedDoctors.map((item) => (
+                                        <MenuItem key={item.doctorName} value={item.doctorId} >
+                                            {item.doctorName + " (" + item.doctorId + ")"}
+                                        </MenuItem>
+                                    ))
+                                }
+
+                            </Select>
                         </div>
                     </div>
                     <div>
                         <h2> Records</h2>
                         <div>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="name"
+                            <Select
+                                // margin="dense"
+                                id="Record"
                                 label="Record"
-                                type="Record"
+                                type="text"
                                 fullWidth
                                 variant="standard"
                                 value={value}
                                 onChange={(e) => SetValue(e.target.value)}
-                            />
+                                // select
+                                required
+                            >
+                                {
+                                    patientRecords.map((item) => (
+                                        <MenuItem key={item.ehrId} value={item.ehrId} >
+                                            {item.ehrId}
+                                        </MenuItem>
+                                    ))
+                                }
+                            </Select>
                         </div>
-                        {/* <h2>Parameters</h2>
-                        <div className="parameters">
-                            <div className="childparameters">
-                                <TextField
-                                    autoFocus
-                                    margin="dense"
-                                    id="name"
-                                    label="From Date"
-                                    type="From Date"
-                                    fullWidth
-                                    variant="standard"
-                                />
+                        <div className='rowC'>
+                            <h4> From</h4>
+                            <div>
+                                <DatePicker
+                                    dateFormat="dd/MM/yyyy"
+                                    className="inputStyles"
+                                    selected={fromDate} onChange={date => setFromDate(date)} />
                             </div>
-                            <div className="childparameters">
-                                <TextField
-                                    autoFocus
-                                    margin="dense"
-                                    id="name"
-                                    label="To Date"
-                                    type="To Date"
-                                    fullWidth
-                                    variant="standard"
-                                />
+                            <h4> To</h4>
+                            <div>
+                                <DatePicker
+                                    dateFormat="dd/MM/yyyy"
+
+                                    className="inputStyles"
+                                    selected={toDate} onChange={date => setToDate(date)} />
                             </div>
-                        </div> */}
-                        <Button className="add" onClick={empty}>+Add Record</Button>
+                        </div>
+                        <Button className="add" onClick={addRecord}>+Add Record</Button>
+                    </div>
+                    <div>
+                        {
+                            records.map((r) => { return (<span>{r} </span>) })
+                        }
                     </div>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleSave}>Save Consent</Button>
+                    <Button onClick={saveConsent}>Save Consent</Button>
                 </DialogActions>
             </Dialog >
         </Grid >
     );
 }
-
 
 export default AllConsents;

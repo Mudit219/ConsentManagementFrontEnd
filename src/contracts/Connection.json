@@ -1,0 +1,2635 @@
+{
+  "contractName": "Connection",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_doctor",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_patient",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "cancel",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "enum Connection.Status",
+          "name": "state",
+          "type": "uint8"
+        }
+      ],
+      "name": "setStatus",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getDoctor",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getPatient",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getStatus",
+      "outputs": [
+        {
+          "internalType": "enum Connection.Status",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_doctor\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_patient\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"constant\":false,\"inputs\":[],\"name\":\"cancel\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"getDoctor\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"getPatient\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"getStatus\",\"outputs\":[{\"internalType\":\"enum Connection.Status\",\"name\":\"\",\"type\":\"uint8\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"enum Connection.Status\",\"name\":\"state\",\"type\":\"uint8\"}],\"name\":\"setStatus\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"project:/contracts/Connection.sol\":\"Connection\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/Connection.sol\":{\"keccak256\":\"0xab2715aa99b4642cd1f9d12947c796bc24535ed58d9c31160d304b871c9eea56\",\"urls\":[\"bzz-raw://51d6b97a2f0526714ce1b96c7fe2555d0ce8d4b16c4db845d08f8b982801cf06\",\"dweb:/ipfs/QmbS5XL4qGijn5rQ1ZQBKCPGoTauKjSFg4sSorhJkYchg9\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b506040516103b63803806103b683398101604081905261002f91610078565b600080546001600160a01b039384166001600160a01b031991821617909155600180549290931691161760ff60a01b191690556100da565b8051610072816100c3565b92915050565b6000806040838503121561008b57600080fd5b60006100978585610067565b92505060206100a885828601610067565b9150509250929050565b60006001600160a01b038216610072565b6100cc816100b2565b81146100d757600080fd5b50565b6102cd806100e96000396000f3fe608060405234801561001057600080fd5b50600436106100575760003560e01c80632e49d78b1461005c5780633aaa5920146100715780634e69d5601461008f5780637b0f9a36146100a4578063ea8a1af0146100ac575b600080fd5b61006f61006a3660046101e5565b6100b4565b005b610079610107565b6040516100869190610223565b60405180910390f35b610097610144565b6040516100869190610231565b610079610182565b61006f6101bf565b6000546001600160a01b03163214806100d757506001546001600160a01b031632145b6100e057600080fd5b6001805482919060ff60a01b1916600160a01b8360038111156100ff57fe5b021790555050565b600080546001600160a01b031632148061012b57506001546001600160a01b031632145b61013457600080fd5b506000546001600160a01b031690565b600080546001600160a01b031632148061016857506001546001600160a01b031632145b61017157600080fd5b50600154600160a01b900460ff1690565b600080546001600160a01b03163214806101a657506001546001600160a01b031632145b6101af57600080fd5b506001546001600160a01b031690565b6001805460ff60a01b1916600360a01b179055565b80356101df8161027d565b92915050565b6000602082840312156101f757600080fd5b600061020384846101d4565b949350505050565b6102148161023f565b82525050565b61021481610265565b602081016101df828461020b565b602081016101df828461021a565b60006101df82610259565b8061025481610270565b919050565b6001600160a01b031690565b60006101df8261024a565b6004811061027a57fe5b50565b6004811061027a57600080fdfea365627a7a723158207dddea192f36f400f10f2483b3492222c7b8c6e24579c3af0ba4e591792331e76c6578706572696d656e74616cf564736f6c63430005100040",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100575760003560e01c80632e49d78b1461005c5780633aaa5920146100715780634e69d5601461008f5780637b0f9a36146100a4578063ea8a1af0146100ac575b600080fd5b61006f61006a3660046101e5565b6100b4565b005b610079610107565b6040516100869190610223565b60405180910390f35b610097610144565b6040516100869190610231565b610079610182565b61006f6101bf565b6000546001600160a01b03163214806100d757506001546001600160a01b031632145b6100e057600080fd5b6001805482919060ff60a01b1916600160a01b8360038111156100ff57fe5b021790555050565b600080546001600160a01b031632148061012b57506001546001600160a01b031632145b61013457600080fd5b506000546001600160a01b031690565b600080546001600160a01b031632148061016857506001546001600160a01b031632145b61017157600080fd5b50600154600160a01b900460ff1690565b600080546001600160a01b03163214806101a657506001546001600160a01b031632145b6101af57600080fd5b506001546001600160a01b031690565b6001805460ff60a01b1916600360a01b179055565b80356101df8161027d565b92915050565b6000602082840312156101f757600080fd5b600061020384846101d4565b949350505050565b6102148161023f565b82525050565b61021481610265565b602081016101df828461020b565b602081016101df828461021a565b60006101df82610259565b8061025481610270565b919050565b6001600160a01b031690565b60006101df8261024a565b6004811061027a57fe5b50565b6004811061027a57600080fdfea365627a7a723158207dddea192f36f400f10f2483b3492222c7b8c6e24579c3af0ba4e591792331e76c6578706572696d656e74616cf564736f6c63430005100040",
+  "sourceMap": "62:1195:1:-;;;611:151;8:9:-1;5:2;;;30:1;27;20:12;5:2;611:151:1;;;;;;;;;;;;;;;;;;;;;675:6;:16;;-1:-1:-1;;;;;675:16:1;;;-1:-1:-1;;;;;;675:16:1;;;;;;;-1:-1:-1;702:18:1;;;;;;;;;-1:-1:-1;;;;731:23:1;;;62:1195;;5:134:-1;83:13;;101:33;83:13;101:33;;;68:71;;;;;146:399;;;278:2;266:9;257:7;253:23;249:32;246:2;;;294:1;291;284:12;246:2;329:1;346:64;402:7;382:9;346:64;;;336:74;;308:108;447:2;465:64;521:7;512:6;501:9;497:22;465:64;;;455:74;;426:109;240:305;;;;;;552:91;;-1:-1;;;;;712:54;;614:24;695:76;778:117;847:24;865:5;847:24;;;840:5;837:35;827:2;;886:1;883;876:12;827:2;821:74;;;62:1195:1;;;;;;",
+  "deployedSourceMap": "62:1195:1:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;62:1195:1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;852:86;;;;;;;;;:::i;:::-;;946:95;;;:::i;:::-;;;;;;;;;;;;;;;;1158:94;;;:::i;:::-;;;;;;;;1053:97;;;:::i;770:74::-;;;:::i;852:86::-;527:6;;-1:-1:-1;;;;;527:6:1;514:9;:19;;513:47;;-1:-1:-1;552:7:1;;-1:-1:-1;;;;;552:7:1;539:9;:20;513:47;505:56;;;;;;916:6;:14;;925:5;;916:6;-1:-1:-1;;;;916:14:1;-1:-1:-1;;;925:5:1;916:14;;;;;;;;;;;;;852:86;:::o;946:95::-;1000:7;527:6;;-1:-1:-1;;;;;527:6:1;514:9;:19;;513:47;;-1:-1:-1;552:7:1;;-1:-1:-1;;;;;552:7:1;539:9;:20;513:47;505:56;;;;;;-1:-1:-1;1027:6:1;;-1:-1:-1;;;;;1027:6:1;;946:95::o;1158:94::-;1212:6;527;;-1:-1:-1;;;;;527:6:1;514:9;:19;;513:47;;-1:-1:-1;552:7:1;;-1:-1:-1;;;;;552:7:1;539:9;:20;513:47;505:56;;;;;;-1:-1:-1;1238:6:1;;-1:-1:-1;;;1238:6:1;;;;;1158:94::o;1053:97::-;1108:7;527:6;;-1:-1:-1;;;;;527:6:1;514:9;:19;;513:47;;-1:-1:-1;552:7:1;;-1:-1:-1;;;;;552:7:1;539:9;:20;513:47;505:56;;;;;;-1:-1:-1;1135:7:1;;-1:-1:-1;;;;;1135:7:1;;1053:97::o;770:74::-;811:6;:25;;-1:-1:-1;;;;811:25:1;-1:-1:-1;;;811:25:1;;;770:74::o;5:152:-1:-;83:20;;108:44;83:20;108:44;;;68:89;;;;;164:263;;279:2;267:9;258:7;254:23;250:32;247:2;;;295:1;292;285:12;247:2;330:1;347:64;403:7;383:9;347:64;;;337:74;241:186;-1:-1;;;;241:186;434:113;517:24;535:5;517:24;;;512:3;505:37;499:48;;;554:144;646:46;686:5;646:46;;705:213;823:2;808:18;;837:71;812:9;881:6;837:71;;925:231;1052:2;1037:18;;1066:80;1041:9;1119:6;1066:80;;1163:91;;1225:24;1243:5;1225:24;;1261:128;1334:5;1340:44;1334:5;1340:44;;;1317:72;;;;1396:121;-1:-1;;;;;1458:54;;1441:76;1524:128;;1612:35;1641:5;1612:35;;1659:102;1739:1;1732:5;1729:12;1719:2;;1745:9;1719:2;1713:48;;1768:105;1848:1;1841:5;1838:12;1828:2;;1864:1;1861;1854:12",
+  "source": "pragma solidity ^0.5.2;\r\npragma experimental ABIEncoderV2;\r\n\r\ncontract Connection {\r\n    \r\n    address doctor;\r\n    address patient;\r\n\r\n    enum Status {  /* The giver has denied the consent */\r\n        created,\r\n        accepted,  /* The giver has accepted the consent */ \r\n        requested, /* The company has requested a consent, user has not yet responded */\r\n        cancelled  /* The company has cancelled the consent because he no longer needs it */\r\n    }\r\n\r\n    modifier onlyByBoth() {\r\n        require((tx.origin == doctor) || (tx.origin == patient));\r\n        _;\r\n    }\r\n\r\n    Status status;\r\n\r\n    constructor(address _doctor,address _patient) public {\r\n        doctor = _doctor;\r\n        patient = _patient;\r\n        status = Status.created;\r\n    }\r\n\r\n    function cancel() public\r\n    {\r\n        status = Status.cancelled;\r\n    }\r\n\r\n    function setStatus(Status state) onlyByBoth() public {\r\n        status = state;\r\n    }\r\n\r\n    function getDoctor() onlyByBoth() public view returns(address) {\r\n        return doctor;\r\n    }\r\n    \r\n    function getPatient() onlyByBoth() public view returns(address) {\r\n        return patient;\r\n    }\r\n\r\n    function getStatus() onlyByBoth() public view returns(Status) {\r\n        return status;\r\n    }\r\n\r\n}\r\n",
+  "sourcePath": "C:\\dev\\Healthcare-CMS\\ScratchFrontend\\ConsentManagementFrontEnd\\contract-testing\\contracts\\Connection.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/Connection.sol",
+    "exportedSymbols": {
+      "Connection": [
+        1102
+      ]
+    },
+    "id": 1103,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 999,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:1"
+      },
+      {
+        "id": 1000,
+        "literals": [
+          "experimental",
+          "ABIEncoderV2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "25:33:1"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 1102,
+        "linearizedBaseContracts": [
+          1102
+        ],
+        "name": "Connection",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 1002,
+            "name": "doctor",
+            "nodeType": "VariableDeclaration",
+            "scope": 1102,
+            "src": "95:14:1",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 1001,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "95:7:1",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1004,
+            "name": "patient",
+            "nodeType": "VariableDeclaration",
+            "scope": 1102,
+            "src": "116:15:1",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 1003,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "116:7:1",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "canonicalName": "Connection.Status",
+            "id": 1009,
+            "members": [
+              {
+                "id": 1005,
+                "name": "created",
+                "nodeType": "EnumValue",
+                "src": "203:7:1"
+              },
+              {
+                "id": 1006,
+                "name": "accepted",
+                "nodeType": "EnumValue",
+                "src": "221:8:1"
+              },
+              {
+                "id": 1007,
+                "name": "requested",
+                "nodeType": "EnumValue",
+                "src": "283:9:1"
+              },
+              {
+                "id": 1008,
+                "name": "cancelled",
+                "nodeType": "EnumValue",
+                "src": "373:9:1"
+              }
+            ],
+            "name": "Status",
+            "nodeType": "EnumDefinition",
+            "src": "140:324:1"
+          },
+          {
+            "body": {
+              "id": 1026,
+              "nodeType": "Block",
+              "src": "494:87:1",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "commonType": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        "id": 1022,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "argumentTypes": null,
+                          "components": [
+                            {
+                              "argumentTypes": null,
+                              "commonType": {
+                                "typeIdentifier": "t_address",
+                                "typeString": "address"
+                              },
+                              "id": 1015,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "leftExpression": {
+                                "argumentTypes": null,
+                                "expression": {
+                                  "argumentTypes": null,
+                                  "id": 1012,
+                                  "name": "tx",
+                                  "nodeType": "Identifier",
+                                  "overloadedDeclarations": [],
+                                  "referencedDeclaration": 2200,
+                                  "src": "514:2:1",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_magic_transaction",
+                                    "typeString": "tx"
+                                  }
+                                },
+                                "id": 1013,
+                                "isConstant": false,
+                                "isLValue": false,
+                                "isPure": false,
+                                "lValueRequested": false,
+                                "memberName": "origin",
+                                "nodeType": "MemberAccess",
+                                "referencedDeclaration": null,
+                                "src": "514:9:1",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_address_payable",
+                                  "typeString": "address payable"
+                                }
+                              },
+                              "nodeType": "BinaryOperation",
+                              "operator": "==",
+                              "rightExpression": {
+                                "argumentTypes": null,
+                                "id": 1014,
+                                "name": "doctor",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 1002,
+                                "src": "527:6:1",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_address",
+                                  "typeString": "address"
+                                }
+                              },
+                              "src": "514:19:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_bool",
+                                "typeString": "bool"
+                              }
+                            }
+                          ],
+                          "id": 1016,
+                          "isConstant": false,
+                          "isInlineArray": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "nodeType": "TupleExpression",
+                          "src": "513:21:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "||",
+                        "rightExpression": {
+                          "argumentTypes": null,
+                          "components": [
+                            {
+                              "argumentTypes": null,
+                              "commonType": {
+                                "typeIdentifier": "t_address",
+                                "typeString": "address"
+                              },
+                              "id": 1020,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "leftExpression": {
+                                "argumentTypes": null,
+                                "expression": {
+                                  "argumentTypes": null,
+                                  "id": 1017,
+                                  "name": "tx",
+                                  "nodeType": "Identifier",
+                                  "overloadedDeclarations": [],
+                                  "referencedDeclaration": 2200,
+                                  "src": "539:2:1",
+                                  "typeDescriptions": {
+                                    "typeIdentifier": "t_magic_transaction",
+                                    "typeString": "tx"
+                                  }
+                                },
+                                "id": 1018,
+                                "isConstant": false,
+                                "isLValue": false,
+                                "isPure": false,
+                                "lValueRequested": false,
+                                "memberName": "origin",
+                                "nodeType": "MemberAccess",
+                                "referencedDeclaration": null,
+                                "src": "539:9:1",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_address_payable",
+                                  "typeString": "address payable"
+                                }
+                              },
+                              "nodeType": "BinaryOperation",
+                              "operator": "==",
+                              "rightExpression": {
+                                "argumentTypes": null,
+                                "id": 1019,
+                                "name": "patient",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 1004,
+                                "src": "552:7:1",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_address",
+                                  "typeString": "address"
+                                }
+                              },
+                              "src": "539:20:1",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_bool",
+                                "typeString": "bool"
+                              }
+                            }
+                          ],
+                          "id": 1021,
+                          "isConstant": false,
+                          "isInlineArray": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "nodeType": "TupleExpression",
+                          "src": "538:22:1",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          }
+                        },
+                        "src": "513:47:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      ],
+                      "id": 1011,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        2191,
+                        2192
+                      ],
+                      "referencedDeclaration": 2191,
+                      "src": "505:7:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
+                        "typeString": "function (bool) pure"
+                      }
+                    },
+                    "id": 1023,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "505:56:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 1024,
+                  "nodeType": "ExpressionStatement",
+                  "src": "505:56:1"
+                },
+                {
+                  "id": 1025,
+                  "nodeType": "PlaceholderStatement",
+                  "src": "572:1:1"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 1027,
+            "name": "onlyByBoth",
+            "nodeType": "ModifierDefinition",
+            "parameters": {
+              "id": 1010,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "491:2:1"
+            },
+            "src": "472:109:1",
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1029,
+            "name": "status",
+            "nodeType": "VariableDeclaration",
+            "scope": 1102,
+            "src": "589:13:1",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_enum$_Status_$1009",
+              "typeString": "enum Connection.Status"
+            },
+            "typeName": {
+              "contractScope": null,
+              "id": 1028,
+              "name": "Status",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 1009,
+              "src": "589:6:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_enum$_Status_$1009",
+                "typeString": "enum Connection.Status"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 1049,
+              "nodeType": "Block",
+              "src": "664:98:1",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 1038,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 1036,
+                      "name": "doctor",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 1002,
+                      "src": "675:6:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 1037,
+                      "name": "_doctor",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 1031,
+                      "src": "684:7:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "src": "675:16:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 1039,
+                  "nodeType": "ExpressionStatement",
+                  "src": "675:16:1"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 1042,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 1040,
+                      "name": "patient",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 1004,
+                      "src": "702:7:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 1041,
+                      "name": "_patient",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 1033,
+                      "src": "712:8:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "src": "702:18:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 1043,
+                  "nodeType": "ExpressionStatement",
+                  "src": "702:18:1"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 1047,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 1044,
+                      "name": "status",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 1029,
+                      "src": "731:6:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_Status_$1009",
+                        "typeString": "enum Connection.Status"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 1045,
+                        "name": "Status",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 1009,
+                        "src": "740:6:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_enum$_Status_$1009_$",
+                          "typeString": "type(enum Connection.Status)"
+                        }
+                      },
+                      "id": 1046,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "memberName": "created",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "740:14:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_Status_$1009",
+                        "typeString": "enum Connection.Status"
+                      }
+                    },
+                    "src": "731:23:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_Status_$1009",
+                      "typeString": "enum Connection.Status"
+                    }
+                  },
+                  "id": 1048,
+                  "nodeType": "ExpressionStatement",
+                  "src": "731:23:1"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 1050,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1034,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1031,
+                  "name": "_doctor",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1050,
+                  "src": "623:15:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1030,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "623:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1033,
+                  "name": "_patient",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1050,
+                  "src": "639:16:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1032,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "639:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "622:34:1"
+            },
+            "returnParameters": {
+              "id": 1035,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "664:0:1"
+            },
+            "scope": 1102,
+            "src": "611:151:1",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 1058,
+              "nodeType": "Block",
+              "src": "800:44:1",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 1056,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 1053,
+                      "name": "status",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 1029,
+                      "src": "811:6:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_Status_$1009",
+                        "typeString": "enum Connection.Status"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 1054,
+                        "name": "Status",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 1009,
+                        "src": "820:6:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_enum$_Status_$1009_$",
+                          "typeString": "type(enum Connection.Status)"
+                        }
+                      },
+                      "id": 1055,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "memberName": "cancelled",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "820:16:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_Status_$1009",
+                        "typeString": "enum Connection.Status"
+                      }
+                    },
+                    "src": "811:25:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_Status_$1009",
+                      "typeString": "enum Connection.Status"
+                    }
+                  },
+                  "id": 1057,
+                  "nodeType": "ExpressionStatement",
+                  "src": "811:25:1"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 1059,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "cancel",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1051,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "785:2:1"
+            },
+            "returnParameters": {
+              "id": 1052,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "800:0:1"
+            },
+            "scope": 1102,
+            "src": "770:74:1",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 1070,
+              "nodeType": "Block",
+              "src": "905:33:1",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 1068,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 1066,
+                      "name": "status",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 1029,
+                      "src": "916:6:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_Status_$1009",
+                        "typeString": "enum Connection.Status"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 1067,
+                      "name": "state",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 1061,
+                      "src": "925:5:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_Status_$1009",
+                        "typeString": "enum Connection.Status"
+                      }
+                    },
+                    "src": "916:14:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_Status_$1009",
+                      "typeString": "enum Connection.Status"
+                    }
+                  },
+                  "id": 1069,
+                  "nodeType": "ExpressionStatement",
+                  "src": "916:14:1"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 1071,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "arguments": [],
+                "id": 1064,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 1063,
+                  "name": "onlyByBoth",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 1027,
+                  "src": "885:10:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_modifier$__$",
+                    "typeString": "modifier ()"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "885:12:1"
+              }
+            ],
+            "name": "setStatus",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1062,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1061,
+                  "name": "state",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1071,
+                  "src": "871:12:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_Status_$1009",
+                    "typeString": "enum Connection.Status"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 1060,
+                    "name": "Status",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 1009,
+                    "src": "871:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_Status_$1009",
+                      "typeString": "enum Connection.Status"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "870:14:1"
+            },
+            "returnParameters": {
+              "id": 1065,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "905:0:1"
+            },
+            "scope": 1102,
+            "src": "852:86:1",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 1080,
+              "nodeType": "Block",
+              "src": "1009:32:1",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 1078,
+                    "name": "doctor",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 1002,
+                    "src": "1027:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "functionReturnParameters": 1077,
+                  "id": 1079,
+                  "nodeType": "Return",
+                  "src": "1020:13:1"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 1081,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "arguments": [],
+                "id": 1074,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 1073,
+                  "name": "onlyByBoth",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 1027,
+                  "src": "967:10:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_modifier$__$",
+                    "typeString": "modifier ()"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "967:12:1"
+              }
+            ],
+            "name": "getDoctor",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1072,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "964:2:1"
+            },
+            "returnParameters": {
+              "id": 1077,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1076,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1081,
+                  "src": "1000:7:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1075,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1000:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "999:9:1"
+            },
+            "scope": 1102,
+            "src": "946:95:1",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 1090,
+              "nodeType": "Block",
+              "src": "1117:33:1",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 1088,
+                    "name": "patient",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 1004,
+                    "src": "1135:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "functionReturnParameters": 1087,
+                  "id": 1089,
+                  "nodeType": "Return",
+                  "src": "1128:14:1"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 1091,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "arguments": [],
+                "id": 1084,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 1083,
+                  "name": "onlyByBoth",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 1027,
+                  "src": "1075:10:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_modifier$__$",
+                    "typeString": "modifier ()"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "1075:12:1"
+              }
+            ],
+            "name": "getPatient",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1082,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1072:2:1"
+            },
+            "returnParameters": {
+              "id": 1087,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1086,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1091,
+                  "src": "1108:7:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1085,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1108:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1107:9:1"
+            },
+            "scope": 1102,
+            "src": "1053:97:1",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 1100,
+              "nodeType": "Block",
+              "src": "1220:32:1",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 1098,
+                    "name": "status",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 1029,
+                    "src": "1238:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_Status_$1009",
+                      "typeString": "enum Connection.Status"
+                    }
+                  },
+                  "functionReturnParameters": 1097,
+                  "id": 1099,
+                  "nodeType": "Return",
+                  "src": "1231:13:1"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 1101,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "arguments": [],
+                "id": 1094,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 1093,
+                  "name": "onlyByBoth",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 1027,
+                  "src": "1179:10:1",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_modifier$__$",
+                    "typeString": "modifier ()"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "1179:12:1"
+              }
+            ],
+            "name": "getStatus",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1092,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1176:2:1"
+            },
+            "returnParameters": {
+              "id": 1097,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1096,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1101,
+                  "src": "1212:6:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_Status_$1009",
+                    "typeString": "enum Connection.Status"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 1095,
+                    "name": "Status",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 1009,
+                    "src": "1212:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_Status_$1009",
+                      "typeString": "enum Connection.Status"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1211:8:1"
+            },
+            "scope": 1102,
+            "src": "1158:94:1",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 1103,
+        "src": "62:1195:1"
+      }
+    ],
+    "src": "0:1259:1"
+  },
+  "legacyAST": {
+    "attributes": {
+      "absolutePath": "project:/contracts/Connection.sol",
+      "exportedSymbols": {
+        "Connection": [
+          1102
+        ]
+      }
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "^",
+            "0.5",
+            ".2"
+          ]
+        },
+        "id": 999,
+        "name": "PragmaDirective",
+        "src": "0:23:1"
+      },
+      {
+        "attributes": {
+          "literals": [
+            "experimental",
+            "ABIEncoderV2"
+          ]
+        },
+        "id": 1000,
+        "name": "PragmaDirective",
+        "src": "25:33:1"
+      },
+      {
+        "attributes": {
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "contract",
+          "documentation": null,
+          "fullyImplemented": true,
+          "linearizedBaseContracts": [
+            1102
+          ],
+          "name": "Connection",
+          "scope": 1103
+        },
+        "children": [
+          {
+            "attributes": {
+              "constant": false,
+              "name": "doctor",
+              "scope": 1102,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "address",
+              "value": null,
+              "visibility": "internal"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "address",
+                  "stateMutability": "nonpayable",
+                  "type": "address"
+                },
+                "id": 1001,
+                "name": "ElementaryTypeName",
+                "src": "95:7:1"
+              }
+            ],
+            "id": 1002,
+            "name": "VariableDeclaration",
+            "src": "95:14:1"
+          },
+          {
+            "attributes": {
+              "constant": false,
+              "name": "patient",
+              "scope": 1102,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "address",
+              "value": null,
+              "visibility": "internal"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "address",
+                  "stateMutability": "nonpayable",
+                  "type": "address"
+                },
+                "id": 1003,
+                "name": "ElementaryTypeName",
+                "src": "116:7:1"
+              }
+            ],
+            "id": 1004,
+            "name": "VariableDeclaration",
+            "src": "116:15:1"
+          },
+          {
+            "attributes": {
+              "canonicalName": "Connection.Status",
+              "name": "Status"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "created"
+                },
+                "id": 1005,
+                "name": "EnumValue",
+                "src": "203:7:1"
+              },
+              {
+                "attributes": {
+                  "name": "accepted"
+                },
+                "id": 1006,
+                "name": "EnumValue",
+                "src": "221:8:1"
+              },
+              {
+                "attributes": {
+                  "name": "requested"
+                },
+                "id": 1007,
+                "name": "EnumValue",
+                "src": "283:9:1"
+              },
+              {
+                "attributes": {
+                  "name": "cancelled"
+                },
+                "id": 1008,
+                "name": "EnumValue",
+                "src": "373:9:1"
+              }
+            ],
+            "id": 1009,
+            "name": "EnumDefinition",
+            "src": "140:324:1"
+          },
+          {
+            "attributes": {
+              "documentation": null,
+              "name": "onlyByBoth",
+              "visibility": "internal"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 1010,
+                "name": "ParameterList",
+                "src": "491:2:1"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "isStructConstructorCall": false,
+                          "lValueRequested": false,
+                          "names": [
+                            null
+                          ],
+                          "type": "tuple()",
+                          "type_conversion": false
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": [
+                                {
+                                  "typeIdentifier": "t_bool",
+                                  "typeString": "bool"
+                                }
+                              ],
+                              "overloadedDeclarations": [
+                                2191,
+                                2192
+                              ],
+                              "referencedDeclaration": 2191,
+                              "type": "function (bool) pure",
+                              "value": "require"
+                            },
+                            "id": 1011,
+                            "name": "Identifier",
+                            "src": "505:7:1"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "commonType": {
+                                "typeIdentifier": "t_bool",
+                                "typeString": "bool"
+                              },
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "operator": "||",
+                              "type": "bool"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "isConstant": false,
+                                  "isInlineArray": false,
+                                  "isLValue": false,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "type": "bool"
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "commonType": {
+                                        "typeIdentifier": "t_address",
+                                        "typeString": "address"
+                                      },
+                                      "isConstant": false,
+                                      "isLValue": false,
+                                      "isPure": false,
+                                      "lValueRequested": false,
+                                      "operator": "==",
+                                      "type": "bool"
+                                    },
+                                    "children": [
+                                      {
+                                        "attributes": {
+                                          "argumentTypes": null,
+                                          "isConstant": false,
+                                          "isLValue": false,
+                                          "isPure": false,
+                                          "lValueRequested": false,
+                                          "member_name": "origin",
+                                          "referencedDeclaration": null,
+                                          "type": "address payable"
+                                        },
+                                        "children": [
+                                          {
+                                            "attributes": {
+                                              "argumentTypes": null,
+                                              "overloadedDeclarations": [
+                                                null
+                                              ],
+                                              "referencedDeclaration": 2200,
+                                              "type": "tx",
+                                              "value": "tx"
+                                            },
+                                            "id": 1012,
+                                            "name": "Identifier",
+                                            "src": "514:2:1"
+                                          }
+                                        ],
+                                        "id": 1013,
+                                        "name": "MemberAccess",
+                                        "src": "514:9:1"
+                                      },
+                                      {
+                                        "attributes": {
+                                          "argumentTypes": null,
+                                          "overloadedDeclarations": [
+                                            null
+                                          ],
+                                          "referencedDeclaration": 1002,
+                                          "type": "address",
+                                          "value": "doctor"
+                                        },
+                                        "id": 1014,
+                                        "name": "Identifier",
+                                        "src": "527:6:1"
+                                      }
+                                    ],
+                                    "id": 1015,
+                                    "name": "BinaryOperation",
+                                    "src": "514:19:1"
+                                  }
+                                ],
+                                "id": 1016,
+                                "name": "TupleExpression",
+                                "src": "513:21:1"
+                              },
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "isConstant": false,
+                                  "isInlineArray": false,
+                                  "isLValue": false,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "type": "bool"
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "commonType": {
+                                        "typeIdentifier": "t_address",
+                                        "typeString": "address"
+                                      },
+                                      "isConstant": false,
+                                      "isLValue": false,
+                                      "isPure": false,
+                                      "lValueRequested": false,
+                                      "operator": "==",
+                                      "type": "bool"
+                                    },
+                                    "children": [
+                                      {
+                                        "attributes": {
+                                          "argumentTypes": null,
+                                          "isConstant": false,
+                                          "isLValue": false,
+                                          "isPure": false,
+                                          "lValueRequested": false,
+                                          "member_name": "origin",
+                                          "referencedDeclaration": null,
+                                          "type": "address payable"
+                                        },
+                                        "children": [
+                                          {
+                                            "attributes": {
+                                              "argumentTypes": null,
+                                              "overloadedDeclarations": [
+                                                null
+                                              ],
+                                              "referencedDeclaration": 2200,
+                                              "type": "tx",
+                                              "value": "tx"
+                                            },
+                                            "id": 1017,
+                                            "name": "Identifier",
+                                            "src": "539:2:1"
+                                          }
+                                        ],
+                                        "id": 1018,
+                                        "name": "MemberAccess",
+                                        "src": "539:9:1"
+                                      },
+                                      {
+                                        "attributes": {
+                                          "argumentTypes": null,
+                                          "overloadedDeclarations": [
+                                            null
+                                          ],
+                                          "referencedDeclaration": 1004,
+                                          "type": "address",
+                                          "value": "patient"
+                                        },
+                                        "id": 1019,
+                                        "name": "Identifier",
+                                        "src": "552:7:1"
+                                      }
+                                    ],
+                                    "id": 1020,
+                                    "name": "BinaryOperation",
+                                    "src": "539:20:1"
+                                  }
+                                ],
+                                "id": 1021,
+                                "name": "TupleExpression",
+                                "src": "538:22:1"
+                              }
+                            ],
+                            "id": 1022,
+                            "name": "BinaryOperation",
+                            "src": "513:47:1"
+                          }
+                        ],
+                        "id": 1023,
+                        "name": "FunctionCall",
+                        "src": "505:56:1"
+                      }
+                    ],
+                    "id": 1024,
+                    "name": "ExpressionStatement",
+                    "src": "505:56:1"
+                  },
+                  {
+                    "id": 1025,
+                    "name": "PlaceholderStatement",
+                    "src": "572:1:1"
+                  }
+                ],
+                "id": 1026,
+                "name": "Block",
+                "src": "494:87:1"
+              }
+            ],
+            "id": 1027,
+            "name": "ModifierDefinition",
+            "src": "472:109:1"
+          },
+          {
+            "attributes": {
+              "constant": false,
+              "name": "status",
+              "scope": 1102,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "enum Connection.Status",
+              "value": null,
+              "visibility": "internal"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "contractScope": null,
+                  "name": "Status",
+                  "referencedDeclaration": 1009,
+                  "type": "enum Connection.Status"
+                },
+                "id": 1028,
+                "name": "UserDefinedTypeName",
+                "src": "589:6:1"
+              }
+            ],
+            "id": 1029,
+            "name": "VariableDeclaration",
+            "src": "589:13:1"
+          },
+          {
+            "attributes": {
+              "documentation": null,
+              "implemented": true,
+              "isConstructor": true,
+              "kind": "constructor",
+              "modifiers": [
+                null
+              ],
+              "name": "",
+              "scope": 1102,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "_doctor",
+                      "scope": 1050,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "stateMutability": "nonpayable",
+                          "type": "address"
+                        },
+                        "id": 1030,
+                        "name": "ElementaryTypeName",
+                        "src": "623:7:1"
+                      }
+                    ],
+                    "id": 1031,
+                    "name": "VariableDeclaration",
+                    "src": "623:15:1"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "_patient",
+                      "scope": 1050,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "stateMutability": "nonpayable",
+                          "type": "address"
+                        },
+                        "id": 1032,
+                        "name": "ElementaryTypeName",
+                        "src": "639:7:1"
+                      }
+                    ],
+                    "id": 1033,
+                    "name": "VariableDeclaration",
+                    "src": "639:16:1"
+                  }
+                ],
+                "id": 1034,
+                "name": "ParameterList",
+                "src": "622:34:1"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 1035,
+                "name": "ParameterList",
+                "src": "664:0:1"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "address"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 1002,
+                              "type": "address",
+                              "value": "doctor"
+                            },
+                            "id": 1036,
+                            "name": "Identifier",
+                            "src": "675:6:1"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 1031,
+                              "type": "address",
+                              "value": "_doctor"
+                            },
+                            "id": 1037,
+                            "name": "Identifier",
+                            "src": "684:7:1"
+                          }
+                        ],
+                        "id": 1038,
+                        "name": "Assignment",
+                        "src": "675:16:1"
+                      }
+                    ],
+                    "id": 1039,
+                    "name": "ExpressionStatement",
+                    "src": "675:16:1"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "address"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 1004,
+                              "type": "address",
+                              "value": "patient"
+                            },
+                            "id": 1040,
+                            "name": "Identifier",
+                            "src": "702:7:1"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 1033,
+                              "type": "address",
+                              "value": "_patient"
+                            },
+                            "id": 1041,
+                            "name": "Identifier",
+                            "src": "712:8:1"
+                          }
+                        ],
+                        "id": 1042,
+                        "name": "Assignment",
+                        "src": "702:18:1"
+                      }
+                    ],
+                    "id": 1043,
+                    "name": "ExpressionStatement",
+                    "src": "702:18:1"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "enum Connection.Status"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 1029,
+                              "type": "enum Connection.Status",
+                              "value": "status"
+                            },
+                            "id": 1044,
+                            "name": "Identifier",
+                            "src": "731:6:1"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "lValueRequested": false,
+                              "member_name": "created",
+                              "referencedDeclaration": null,
+                              "type": "enum Connection.Status"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 1009,
+                                  "type": "type(enum Connection.Status)",
+                                  "value": "Status"
+                                },
+                                "id": 1045,
+                                "name": "Identifier",
+                                "src": "740:6:1"
+                              }
+                            ],
+                            "id": 1046,
+                            "name": "MemberAccess",
+                            "src": "740:14:1"
+                          }
+                        ],
+                        "id": 1047,
+                        "name": "Assignment",
+                        "src": "731:23:1"
+                      }
+                    ],
+                    "id": 1048,
+                    "name": "ExpressionStatement",
+                    "src": "731:23:1"
+                  }
+                ],
+                "id": 1049,
+                "name": "Block",
+                "src": "664:98:1"
+              }
+            ],
+            "id": 1050,
+            "name": "FunctionDefinition",
+            "src": "611:151:1"
+          },
+          {
+            "attributes": {
+              "documentation": null,
+              "implemented": true,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "cancel",
+              "scope": 1102,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 1051,
+                "name": "ParameterList",
+                "src": "785:2:1"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 1052,
+                "name": "ParameterList",
+                "src": "800:0:1"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "enum Connection.Status"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 1029,
+                              "type": "enum Connection.Status",
+                              "value": "status"
+                            },
+                            "id": 1053,
+                            "name": "Identifier",
+                            "src": "811:6:1"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "lValueRequested": false,
+                              "member_name": "cancelled",
+                              "referencedDeclaration": null,
+                              "type": "enum Connection.Status"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 1009,
+                                  "type": "type(enum Connection.Status)",
+                                  "value": "Status"
+                                },
+                                "id": 1054,
+                                "name": "Identifier",
+                                "src": "820:6:1"
+                              }
+                            ],
+                            "id": 1055,
+                            "name": "MemberAccess",
+                            "src": "820:16:1"
+                          }
+                        ],
+                        "id": 1056,
+                        "name": "Assignment",
+                        "src": "811:25:1"
+                      }
+                    ],
+                    "id": 1057,
+                    "name": "ExpressionStatement",
+                    "src": "811:25:1"
+                  }
+                ],
+                "id": 1058,
+                "name": "Block",
+                "src": "800:44:1"
+              }
+            ],
+            "id": 1059,
+            "name": "FunctionDefinition",
+            "src": "770:74:1"
+          },
+          {
+            "attributes": {
+              "documentation": null,
+              "implemented": true,
+              "isConstructor": false,
+              "kind": "function",
+              "name": "setStatus",
+              "scope": 1102,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "state",
+                      "scope": 1071,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "enum Connection.Status",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "contractScope": null,
+                          "name": "Status",
+                          "referencedDeclaration": 1009,
+                          "type": "enum Connection.Status"
+                        },
+                        "id": 1060,
+                        "name": "UserDefinedTypeName",
+                        "src": "871:6:1"
+                      }
+                    ],
+                    "id": 1061,
+                    "name": "VariableDeclaration",
+                    "src": "871:12:1"
+                  }
+                ],
+                "id": 1062,
+                "name": "ParameterList",
+                "src": "870:14:1"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 1065,
+                "name": "ParameterList",
+                "src": "905:0:1"
+              },
+              {
+                "attributes": {
+                  "arguments": [
+                    null
+                  ]
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "overloadedDeclarations": [
+                        null
+                      ],
+                      "referencedDeclaration": 1027,
+                      "type": "modifier ()",
+                      "value": "onlyByBoth"
+                    },
+                    "id": 1063,
+                    "name": "Identifier",
+                    "src": "885:10:1"
+                  }
+                ],
+                "id": 1064,
+                "name": "ModifierInvocation",
+                "src": "885:12:1"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "enum Connection.Status"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 1029,
+                              "type": "enum Connection.Status",
+                              "value": "status"
+                            },
+                            "id": 1066,
+                            "name": "Identifier",
+                            "src": "916:6:1"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 1061,
+                              "type": "enum Connection.Status",
+                              "value": "state"
+                            },
+                            "id": 1067,
+                            "name": "Identifier",
+                            "src": "925:5:1"
+                          }
+                        ],
+                        "id": 1068,
+                        "name": "Assignment",
+                        "src": "916:14:1"
+                      }
+                    ],
+                    "id": 1069,
+                    "name": "ExpressionStatement",
+                    "src": "916:14:1"
+                  }
+                ],
+                "id": 1070,
+                "name": "Block",
+                "src": "905:33:1"
+              }
+            ],
+            "id": 1071,
+            "name": "FunctionDefinition",
+            "src": "852:86:1"
+          },
+          {
+            "attributes": {
+              "documentation": null,
+              "implemented": true,
+              "isConstructor": false,
+              "kind": "function",
+              "name": "getDoctor",
+              "scope": 1102,
+              "stateMutability": "view",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 1072,
+                "name": "ParameterList",
+                "src": "964:2:1"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "",
+                      "scope": 1081,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "stateMutability": "nonpayable",
+                          "type": "address"
+                        },
+                        "id": 1075,
+                        "name": "ElementaryTypeName",
+                        "src": "1000:7:1"
+                      }
+                    ],
+                    "id": 1076,
+                    "name": "VariableDeclaration",
+                    "src": "1000:7:1"
+                  }
+                ],
+                "id": 1077,
+                "name": "ParameterList",
+                "src": "999:9:1"
+              },
+              {
+                "attributes": {
+                  "arguments": [
+                    null
+                  ]
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "overloadedDeclarations": [
+                        null
+                      ],
+                      "referencedDeclaration": 1027,
+                      "type": "modifier ()",
+                      "value": "onlyByBoth"
+                    },
+                    "id": 1073,
+                    "name": "Identifier",
+                    "src": "967:10:1"
+                  }
+                ],
+                "id": 1074,
+                "name": "ModifierInvocation",
+                "src": "967:12:1"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "functionReturnParameters": 1077
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "overloadedDeclarations": [
+                            null
+                          ],
+                          "referencedDeclaration": 1002,
+                          "type": "address",
+                          "value": "doctor"
+                        },
+                        "id": 1078,
+                        "name": "Identifier",
+                        "src": "1027:6:1"
+                      }
+                    ],
+                    "id": 1079,
+                    "name": "Return",
+                    "src": "1020:13:1"
+                  }
+                ],
+                "id": 1080,
+                "name": "Block",
+                "src": "1009:32:1"
+              }
+            ],
+            "id": 1081,
+            "name": "FunctionDefinition",
+            "src": "946:95:1"
+          },
+          {
+            "attributes": {
+              "documentation": null,
+              "implemented": true,
+              "isConstructor": false,
+              "kind": "function",
+              "name": "getPatient",
+              "scope": 1102,
+              "stateMutability": "view",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 1082,
+                "name": "ParameterList",
+                "src": "1072:2:1"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "",
+                      "scope": 1091,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "stateMutability": "nonpayable",
+                          "type": "address"
+                        },
+                        "id": 1085,
+                        "name": "ElementaryTypeName",
+                        "src": "1108:7:1"
+                      }
+                    ],
+                    "id": 1086,
+                    "name": "VariableDeclaration",
+                    "src": "1108:7:1"
+                  }
+                ],
+                "id": 1087,
+                "name": "ParameterList",
+                "src": "1107:9:1"
+              },
+              {
+                "attributes": {
+                  "arguments": [
+                    null
+                  ]
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "overloadedDeclarations": [
+                        null
+                      ],
+                      "referencedDeclaration": 1027,
+                      "type": "modifier ()",
+                      "value": "onlyByBoth"
+                    },
+                    "id": 1083,
+                    "name": "Identifier",
+                    "src": "1075:10:1"
+                  }
+                ],
+                "id": 1084,
+                "name": "ModifierInvocation",
+                "src": "1075:12:1"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "functionReturnParameters": 1087
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "overloadedDeclarations": [
+                            null
+                          ],
+                          "referencedDeclaration": 1004,
+                          "type": "address",
+                          "value": "patient"
+                        },
+                        "id": 1088,
+                        "name": "Identifier",
+                        "src": "1135:7:1"
+                      }
+                    ],
+                    "id": 1089,
+                    "name": "Return",
+                    "src": "1128:14:1"
+                  }
+                ],
+                "id": 1090,
+                "name": "Block",
+                "src": "1117:33:1"
+              }
+            ],
+            "id": 1091,
+            "name": "FunctionDefinition",
+            "src": "1053:97:1"
+          },
+          {
+            "attributes": {
+              "documentation": null,
+              "implemented": true,
+              "isConstructor": false,
+              "kind": "function",
+              "name": "getStatus",
+              "scope": 1102,
+              "stateMutability": "view",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 1092,
+                "name": "ParameterList",
+                "src": "1176:2:1"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "",
+                      "scope": 1101,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "enum Connection.Status",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "contractScope": null,
+                          "name": "Status",
+                          "referencedDeclaration": 1009,
+                          "type": "enum Connection.Status"
+                        },
+                        "id": 1095,
+                        "name": "UserDefinedTypeName",
+                        "src": "1212:6:1"
+                      }
+                    ],
+                    "id": 1096,
+                    "name": "VariableDeclaration",
+                    "src": "1212:6:1"
+                  }
+                ],
+                "id": 1097,
+                "name": "ParameterList",
+                "src": "1211:8:1"
+              },
+              {
+                "attributes": {
+                  "arguments": [
+                    null
+                  ]
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "overloadedDeclarations": [
+                        null
+                      ],
+                      "referencedDeclaration": 1027,
+                      "type": "modifier ()",
+                      "value": "onlyByBoth"
+                    },
+                    "id": 1093,
+                    "name": "Identifier",
+                    "src": "1179:10:1"
+                  }
+                ],
+                "id": 1094,
+                "name": "ModifierInvocation",
+                "src": "1179:12:1"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "functionReturnParameters": 1097
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "overloadedDeclarations": [
+                            null
+                          ],
+                          "referencedDeclaration": 1029,
+                          "type": "enum Connection.Status",
+                          "value": "status"
+                        },
+                        "id": 1098,
+                        "name": "Identifier",
+                        "src": "1238:6:1"
+                      }
+                    ],
+                    "id": 1099,
+                    "name": "Return",
+                    "src": "1231:13:1"
+                  }
+                ],
+                "id": 1100,
+                "name": "Block",
+                "src": "1220:32:1"
+              }
+            ],
+            "id": 1101,
+            "name": "FunctionDefinition",
+            "src": "1158:94:1"
+          }
+        ],
+        "id": 1102,
+        "name": "ContractDefinition",
+        "src": "62:1195:1"
+      }
+    ],
+    "id": 1103,
+    "name": "SourceUnit",
+    "src": "0:1259:1"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.16+commit.9c3226ce.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.2",
+  "updatedAt": "2022-04-29T13:13:31.179Z",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}
