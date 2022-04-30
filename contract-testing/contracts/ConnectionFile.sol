@@ -12,29 +12,29 @@ contract ConnectionFile {
 
   /* The owner of the file */
   address payable user;
-
+  
   enum Role {
     doctor,
     patient,
     nominee
   }
-
+  
 
   Role private role;
 
   /* The list of all consents */
   Connection[] listOfConnections;
-
+  
   /* Events that are sent when things happen */
   event ConnectionAdded(address indexed file,address indexed user, Role role, address indexed connection);
-
+  
   /* A modifier */
   modifier onlyByUser()
   {
     require(tx.origin == user);
     _;
   }
-
+  
   modifier CMSorUser()
   {
     require ((tx.origin == user) || (msg.sender == CMS));
@@ -62,7 +62,7 @@ contract ConnectionFile {
   function GetTypeConnections(Connection.Status state) CMSorUser() public view returns(address[] memory) {
     uint256 TypeCnt = GetNumTypeConnections(state);
     address[] memory ReqConnections = new address[](TypeCnt);
-
+    
     uint256 cnt = 0;
     for(uint i=0;i<listOfConnections.length;i++) {
         // listOfConnections[i].getStatus();
@@ -79,7 +79,7 @@ contract ConnectionFile {
     }
     return ReqConnections;
   }
-
+    
     function getAssociatedConnection(address _otherUser,ConnectionFile _otherUserConnFile) CMSorUser() public returns(bool,Connection) {
     if(role == Role.doctor) {
       for(uint i=0;i < listOfConnections.length;i++) {
@@ -102,7 +102,7 @@ contract ConnectionFile {
   }
 
   /* Adds a new consent to the file */
-  function AddConnection(Connection _connect) CMSorUser() public
+  function AddConnection(Connection _connect) CMSorUser() public 
   {
     listOfConnections.push(_connect);
     emit ConnectionAdded(address(this), user, role, address(_connect));
@@ -119,5 +119,5 @@ contract ConnectionFile {
   {
     return user;
   }
-
+  
 }

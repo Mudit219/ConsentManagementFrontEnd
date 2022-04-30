@@ -2,7 +2,7 @@ pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
 contract Connection {
-
+    
     address doctor;
     address patient;
 
@@ -11,7 +11,7 @@ contract Connection {
 
     enum Status {  /* The giver has denied the consent */
         created,
-        accepted,  /* The giver has accepted the consent */
+        accepted,  /* The giver has accepted the consent */ 
         requested, /* The company has requested a consent, user has not yet responded */
         cancelled  /* The company has cancelled the consent because he no longer needs it */
     }
@@ -26,7 +26,7 @@ contract Connection {
         _;
     }
 
-
+    
     Status status;
 
     constructor(address _doctor,address _patient,address _DocConnectionFile, address _PatConnectionFile) public {
@@ -50,7 +50,7 @@ contract Connection {
     function getDoctor() onlyByBothOrConsentFile() public view returns(address) {
         return doctor;
     }
-
+    
     function getPatient() onlyByBothOrConsentFile() public view returns(address) {
         return patient;
     }

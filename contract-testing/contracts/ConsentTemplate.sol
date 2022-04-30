@@ -6,14 +6,14 @@ contract ConsentTemplate {
   address private consent;
 
   address private patient;      /* Creator of this template */
-  address private doctor;      /* Creator of this template */
+  address private doctor;      /* Creator of this template */  
   address private validator;
   string[]  private recordIds;     /* What purpouse the template is for */
   string  private requestedRecordDesc;        /* The title of the consent */
   uint8 version;
 
   /* Creates the contract and set the values of the contract. */
-  constructor (address _patient, address payable _doctor, address _consent) public
+  constructor (address _patient, address payable _doctor, address _consent) public 
   {
     patient = _patient;
     doctor = _doctor;
@@ -36,7 +36,7 @@ contract ConsentTemplate {
       require((doctor == tx.origin) || (patient == tx.origin));
       _;
     }
-
+    
     modifier ConsentOrBoth()
     {
       require((msg.sender == consent) || (doctor == tx.origin) || (patient == tx.origin));
@@ -67,7 +67,7 @@ contract ConsentTemplate {
   {
     return requestedRecordDesc;
   }
-
+  
   function GetAssociatedConsent() public view returns(address) {
     return consent;
   }

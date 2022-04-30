@@ -5,16 +5,16 @@ import "./Consent.sol";
 contract ConsentFile {
 
   address CMS;
-
+  
   /* The owner of the file */
   address payable user;
-
+  
   enum Role {
     doctor,
     patient,
     nominee
   }
-
+  
 
   Role private role;
 
@@ -30,7 +30,7 @@ contract ConsentFile {
     require(tx.origin == user);
     _;
   }
-
+  
   modifier CMSorUser()
   {
     require ((tx.origin == user) || (msg.sender == CMS));
@@ -89,7 +89,7 @@ contract ConsentFile {
     }
     return cnt;
   }
-
+  
 
   function RecordsExists(string[] memory records) CMSorUser() public view returns(bool) {
     if(role == Role.doctor) {
@@ -127,10 +127,10 @@ contract ConsentFile {
       return (false,nc);
     }
   }
-
+    
 
   /* Adds a new consent to the file */
-  function addConsent(Consent _consent) CMSorUser() public
+  function addConsent(Consent _consent) CMSorUser() public 
   {
     listOfConsents.push(address(_consent));
     emit ConsentFileConsentAdded(address(this), address(_consent));

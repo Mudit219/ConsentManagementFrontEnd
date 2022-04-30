@@ -1,41 +1,28 @@
-import React, { useState } from "react";
-import Popup from "../PatientDashboard/Popup";
+import React from "react";
 import { Button } from "@mui/material";
 import Dialog from '@material-ui/core/Dialog';
 import TextField from '@mui/material/TextField';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Grid } from "@mui/material";
 // import Form from "../Components/Login-Register/Login-Form";
 import './ConnectDoctor.css'
-import { Select } from "@mui/material";
-<<<<<<< HEAD
-import {useSelector} from "react-redux";
-import {selectUser} from "../Redux/userSlice";
-
-const ConnectDoctor = ({ web3 }) => {
-    const [open, setOpen] = React.useState(false);
-    // const [value, SetValue] = React.useState([]);
-    // const [doctorId, setDoctorId] = useState("");
-    // const [records, SetRecords] = React.useState(["mrinal", "parithi"]);
-    const user = useSelector(selectUser);
-    // const [connectedDoctors, setConnectedDoctors] = useState([]);
-    // const [patientRecords, setPatientRecords] = useState([]);
-=======
 import axios from 'axios';
 import baseURL from '../../BackendApi/BackendConnection'
 import { MenuItem } from "@mui/material";
+import {selectUser} from "../Redux/userSlice";
+import {useSelector} from "react-redux";
+import {useState} from "react";
 
 
 const ConnectDoctor = ({ web3 }) => {
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
     const [availableDoctors,setAvaialbleDoctors] = useState([]);
     const [selectedDoc,setSelectedDoc] = useState([]);
     const [selectedHospital,setSelectedHospital] = useState([]);
-    var availableHospitals = [... new Set(availableDoctors.map((item)=>item.hospitalName))]
->>>>>>> e22ea5fb22d708f97b2a855846ea08e222dbbeac
+    const availableHospitals = [... new Set(availableDoctors.map((item)=>item.hospitalName))]
+    const user = useSelector(selectUser);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -56,49 +43,28 @@ const ConnectDoctor = ({ web3 }) => {
         setOpen(false);
     };
 
-    const connectDoctor = async (meta_id_doctor) => {
+    const SendConnectionToBlockchain = async (e) => {
+        e.preventDefault();
         setOpen(false);
-
+        setSelectedDoc(selectedDoc.substr(0,selectedDoc.indexOf("(")))
+        console.log(selectedDoc);
+        
         let abi = require("../../contracts/ConsentManagementSystem.json")["abi"];
-        let CONTRACT_ADDRESS= require("../../contracts/ContractAddress")["default"];
+        let CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACTADDRESS;
         
         console.log(CONTRACT_ADDRESS,web3);
         let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
       
         console.log(contract);
     
-        await contract.methods.PatientCreateConnection(meta_id_doctor).send({from : user.account, gas: 4720000}).then(console.log)
+        await contract.methods.PatientCreateConnection(selectedDoc).send({from : user.account, gas: 4712388}).then(console.log)
         .catch(console.error);
 
         console.log("Patient has sent the connection successfully");
         return;
     }
-<<<<<<< HEAD
 
-    const GetConnections = async () =>  {
-        let abi = require("../../contracts/ConsentManagementSystem.json")["abi"];
-        let CONTRACT_ADDRESS= require("../../contracts/ContractAddress")["default"];
-        
-        console.log(CONTRACT_ADDRESS,web3,user.account);
-        let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS);
-        
-        // contract.methods.GetConnectionFile.call().then(console.log);
-
-        await contract.methods.GetConnectionFile().call({from : user.account},async function(err,res) {
-
-            let ConnectionFileAbi = require("../../contracts/ConnectionFile.json")["abi"];
-            let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
-            
-            
-            await ConnectionFileContract.methods.getListOfConnections().call({from : user.account},async(err,ConnectionList) => {
-                console.log(ConnectionList)
-                ConnectionList.forEach(connection => {
-                    console.log(connection);
-                });
-            })
-        })
-        .catch(console.error);
-    }
+    
 
     // const loadDoctor = () => {
     //     axios.get(`${baseURL}/${user.role}${user.account}/Get-Connections`).then(
@@ -125,8 +91,6 @@ const ConnectDoctor = ({ web3 }) => {
     //     )
     // }
 
-=======
->>>>>>> e22ea5fb22d708f97b2a855846ea08e222dbbeac
 
 
     return (
@@ -135,10 +99,10 @@ const ConnectDoctor = ({ web3 }) => {
             <Button className='mainbutton' variant="outlined" onClick={handleClickOpen}>
                 Connect With New Doctor
             </Button>
-            <Dialog open={open} onClose={handleClose} className='DialogBox'>
+            <Dialog open={open} onClose={handleClose} className='DialogBox' disableEnforceFocus>
                 <DialogTitle>Connect to a Doctor</DialogTitle>
                 <DialogContent>
-                <form onSubmit={connectDoctor} style={{ backgroundColor: "#FFFFFF",marginTop:"5%" }}>
+                <form onSubmit={SendConnectionToBlockchain} style={{ backgroundColor: "#FFFFFF",marginTop:"5%" }}>
                     <Grid container spacing={5}>    
                         <Grid item lg={12}>
                             <TextField
@@ -169,24 +133,6 @@ const ConnectDoctor = ({ web3 }) => {
                                 onChange={(e)=>setSelectedDoc(e.target.value)}
                                 label="Doctor"
                                 type="text"
-<<<<<<< HEAD
-                                fullWidth
-                                variant="standard"
-                                // value={value}
-                                // onChange={(e) => SetValue(e.target.value)}
-                                // select
-                                required
-                            >
-                            </Select>
-                        </div>
-                    </div>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={() => connectDoctor("0x2C8165A2b5CB576b9E8F2e28Ed3837f81C9E9D90")}>Connect</Button>
-                    <Button onClick={GetConnections}>connections</Button>
-                </DialogActions>
-=======
                                 select
                                 style={{ width: 450 }}
                                 multiline
@@ -196,6 +142,7 @@ const ConnectDoctor = ({ web3 }) => {
                                 {
                                     availableDoctors.map((item)=>{
                                         if(item.hospitalName == selectedHospital){
+                                            // console.log("Called multiple times")
                                             return (
                                             <MenuItem key={item.doctorMetaId} value={item.doctorMetaId}>
                                                 {item.doctorName + " (" + item.doctorMetaId + ")"}
@@ -208,13 +155,14 @@ const ConnectDoctor = ({ web3 }) => {
                         </Grid>
                        
                     </Grid>
+                    
+                    <DialogActions>
+                            <Button onClick={handleClose}>Cancel</Button>
+                        <Button type="submit">Connect</Button>
+                    </DialogActions>
                 </form>           
             </DialogContent>
-            <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={connectDoctor}>Connect</Button>
-            </DialogActions>
->>>>>>> e22ea5fb22d708f97b2a855846ea08e222dbbeac
+                
             </Dialog >
         </div>
     );

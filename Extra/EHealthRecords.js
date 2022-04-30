@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { selectUser } from "../Components/Redux/userSlice";
 import { useSelector } from "react-redux";
-import CONTRACT_ADDRESS from "../contracts/ContractAddress";
 import MUIDataTable from "mui-datatables";
 
 
@@ -51,7 +50,7 @@ const DisplayRecords = ({ web3 }) => {
     let abi = require("../contracts/CMS.json");
     console.log(web3);
     let consentJson = { "patientId": "", "recordIds": [] };
-    let contract = new web3.eth.Contract(abi, CONTRACT_ADDRESS);
+    let contract = new web3.eth.Contract(abi, process.env.REACT_APP_CONTRACTADDRESS);
     await contract.methods.GetConsents().call({ from: user.account, gas: 4712388 }).then(async function (consents) {
       var allConsetedRecords = [];
       console.log(consents.length);

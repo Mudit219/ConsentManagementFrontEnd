@@ -17,7 +17,6 @@ import { selectUser } from "../Components/Redux/userSlice";
 import { useEffect } from "react";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import CONTRACT_ADDRESS from "../contracts/ContractAddress";
 import DatePicker from "react-datepicker";
 import Fab from '@mui/material/Fab';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
@@ -55,7 +54,43 @@ const AllConsents =({web3})=> {
         loadDoctor();
         getRecords();
     },[]);
-    const loadDoctor=()=>{
+
+    const GetConnections = async () =>  {
+        let abi = require("../contracts/ConsentManagementSystem.json")["abi"];
+        let CONTRACT_ADDRESS= process.env.REACT_APP_CONTRACTADDRESS;
+        
+        // console.log(CONTRACT_ADDRESS,web3,user.account);
+        let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS);
+        
+        // contract.methods.GetConnectionFile.call().then(console.log);
+        var meta_ids_ConnDoc = [];
+
+        await contract.methods.GetConnectionFile().call({from : user.account},async function(err,res) {
+
+            let ConnectionFileAbi = require("../contracts/ConnectionFile.json")["abi"];
+            let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
+            
+            
+            await ConnectionFileContract.methods.getListOfConnections().call({from : user.account},async(err,ConnectionList) => {
+                // console.log(ConnectionList)
+                ConnectionList.forEach(async (connection) => {
+                    let ConnectionAbi = require("../contracts/Connection.json")["abi"];
+                    let ConnectionContract = new web3.eth.Contract(ConnectionAbi,connection);
+                    var ConnectedDoc = await ConnectionContract.methods.getDoctor().call({from : user.account})
+                    meta_ids_ConnDoc.push(ConnectedDoc);
+                });
+            })
+        })
+        .catch(console.error);
+
+        return meta_ids_ConnDoc;
+    }
+
+    const loadDoctor=async()=>{
+        
+        const meta_doc_ids = await GetConnections(); 
+        console.log(meta_doc_ids)
+
         axios.get(`${baseURL}/${user.role}/${user.account}/Get-Connections`, 
         {
             headers: { 
@@ -94,9 +129,16 @@ const AllConsents =({web3})=> {
 
     
     const saveConsent=async()=>{
-        // let abi = require("../contracts/CMS.json");    
-        // let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
-        // await contract.methods.createConsent(doctorId,records).send({from: user.account, gas: 4712388}).then(console.log);
+        let abi = require("../contracts/ConsentManagementSystem.json")["abi"];
+        let CONTRACT_ADDRESS= process.env.REACT_APP_CONTRACTADDRESS;
+        console.log(CONTRACT_ADDRESS)    
+        
+        let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
+        
+        console.log(contract);
+    
+        await contract.methods.createConsent("0xFDE6feAE166C983A7Fe07616BA2E22617D486977",["a1","a2"]).send({from: user.account, gas: 4712388}).then(console.log);
+
         handleClose();
     }
 
@@ -186,7 +228,7 @@ const AllConsents =({web3})=> {
                         records.map((record) => (
                         <Grid item key={record}>
                             <Button color="primary" aria-label={record} sx={{fontSize:"15px",marginBottom:"20px", borderRadius: "10px"}} size="small" variant="contained" endIcon={<DeleteIcon />} 
-                            // onClick={()=>{setRecords(records.current.splice(records.current.indexOf({record}),1))}} 
+                            onClick={()=>{setRecords(records.splice(records.indexOf({record}) - 1,1))}} 
                             >
                                 {record}
                             </Button>

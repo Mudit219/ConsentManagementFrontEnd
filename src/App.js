@@ -42,6 +42,10 @@ export default function App() {
         startWeb3();
     },[])
     
+    useEffect(() => {
+
+    },[web3.current])
+
     return ( 
             
       <Router>

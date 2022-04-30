@@ -18,8 +18,8 @@ contract Consent {
 	       cancelled  /* The company has cancelled the consent because he no longer needs it */
   }
 
-   address DocConsentFile;
-  address PatConsentFile;
+   address DocConsentFile; 
+  address PatConsentFile; 
 
   /* State variables for the contract */
   // address payable private owner;  /* Who issues to consent form */
@@ -28,7 +28,7 @@ contract Consent {
 
   Status  private status; /* The status of the consent */
   ConsentTemplate consentTemplate; /* The template this consent is based on */
-
+  
   /* Event to signal that the status has changed */
   event ConsentStatusChanged(address indexed consent, Status status);
 
@@ -44,7 +44,7 @@ contract Consent {
     require(tx.origin == doctor);
     _;
   }
-
+  
   modifier onlyByBoth()
   {
     require ((tx.origin == patient) || (tx.origin == doctor));
@@ -56,7 +56,7 @@ contract Consent {
     require ((msg.sender == PatConsentFile) || (msg.sender == DocConsentFile) || (tx.origin == patient) || (tx.origin == doctor));
     _;
   }
-
+  
 
   /* This function is executed at initialization and sets the owner and the giver of the consent */
   /* as well as what it contains */
@@ -98,8 +98,8 @@ contract Consent {
     consentTemplate.setConsentedRecords(new string[](0));
     emit ConsentStatusChanged (address(this), Status.cancelled);
   }
-
-  /* Returns the status of the consent */
+  
+  /* Returns the status of the consent */    
   function getStatus() onlyByBothAndConsentFile() public view returns (Status)
   {
     return status;
@@ -108,7 +108,7 @@ contract Consent {
   function GetConsents() onlyByBothAndConsentFile() public view returns(string[] memory) {
     return consentTemplate.GetConsentedRecords();
   }
-
+  
   /* Returns the consent template that this consent is based on */
   function getTemplate() onlyByBothAndConsentFile()  public view returns (address)
   {
@@ -120,7 +120,7 @@ contract Consent {
   {
     return patient;
   }
-
+  
   function GetAssociatedDocConsentFile() public view returns (address) {
     return DocConsentFile;
   }

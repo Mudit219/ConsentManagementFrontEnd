@@ -15,8 +15,6 @@ import axios from "axios";
 import baseURL from "../../BackendApi/BackendConnection";
 import { selectUser } from "../Redux/userSlice";
 // import abi from '../contracts/ConsentManagementSystem.json'
-import owner_id from '../../contracts/Owner_credentials'
-import CONTRACT_ADDRESS from '../../contracts/ContractAddress'
 import { ToastContainer, toast } from 'react-toastify';
 import { Fab } from "@mui/material";
 
@@ -76,7 +74,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
 
   const Register = async () => {
     let abi = require("../../contracts/ConsentManagementSystem.json")["abi"];
-    let CONTRACT_ADDRESS= require("../../contracts/ContractAddress")["default"];
+    let CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACTADDRESS;
     
     console.log(abi)
     console.log(CONTRACT_ADDRESS);
@@ -85,15 +83,18 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
   
     console.log(contract);
 
-    if(role === "Doc"){
-      await contract.methods.AddNewUser(account,"doctor").send({from : owner_id , gas: 4712388}).then(console.log)
-      await contract.methods.DoctorExists().call({from:account}).then(console.log);
-      console.log("You have successfully registered on the CMS Platform");
-    }
-    else if(role === "Pat"){
-      await contract.methods.AddNewUser(account,"patient").send({from : owner_id , gas: 4712388}).then(console.log)
-      console.log("You have successfully registered on the CMS Platform");
-    }
+    // You'lll do a backend call here to store on this user on the blockchain
+
+    // if(role === "Doc"){
+    //   await contract.methods.AddNewUser(account,"doctor").send({from : process.env.REACT_APP_OWNERADDRESS , gas: 4712388}).then(console.log)
+    //   await contract.methods.DoctorExists().call({from:account}).then(console.log);
+    //   console.log("You have successfully registered on the CMS Platform");
+    // }
+    // else if(role === "Pat"){
+    //   await contract.methods.AddNewUser(account,"patient").send({from : process.env.REACT_APP_OWNERADDRESS , gas: 4712388}).then(console.log)
+    //   console.log("You have successfully registered on the CMS Platform");
+    // }
+
   };
 
   
