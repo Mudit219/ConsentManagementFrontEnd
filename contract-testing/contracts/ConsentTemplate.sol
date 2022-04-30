@@ -3,17 +3,22 @@ pragma experimental ABIEncoderV2;
 
 contract ConsentTemplate {
 
+  address private consent;
+
   address private patient;      /* Creator of this template */
-  address private doctor;      /* Creator of this template */  
+  address private doctor;      /* Creator of this template */
+  address private validator;
   string[]  private recordIds;     /* What purpouse the template is for */
   string  private requestedRecordDesc;        /* The title of the consent */
   uint8 version;
 
   /* Creates the contract and set the values of the contract. */
-  constructor (address _patient, address _doctor) public 
+  constructor (address _patient, address payable _doctor, address _consent) public
   {
     patient = _patient;
     doctor = _doctor;
+    consent = _consent;
+
     // recordIds = [];
     requestedRecordDesc = "";
     version = 0;
@@ -32,6 +37,12 @@ contract ConsentTemplate {
       _;
     }
 
+    modifier ConsentOrBoth()
+    {
+      require((msg.sender == consent) || (doctor == tx.origin) || (patient == tx.origin));
+      _;
+    }
+
   modifier onlyByPatient()
   {
     require(tx.origin == patient);
@@ -47,14 +58,17 @@ contract ConsentTemplate {
   }
 
   /* Set of getters for the contract */
-  function GetConsentedRecords()  onlyByBoth()  public view returns(string[] memory)
+  function GetConsentedRecords()  ConsentOrBoth()  public view returns(string[] memory)
   {
     return recordIds;
   }
 
-  function GetRequestedDesc() onlyByBoth() public view returns  (string memory)
+  function GetRequestedDesc() ConsentOrBoth() public view returns  (string memory)
   {
     return requestedRecordDesc;
   }
-  
+
+  function GetAssociatedConsent() public view returns(address) {
+    return consent;
+  }
 }

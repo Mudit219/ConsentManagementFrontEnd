@@ -2,13 +2,16 @@ pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
 contract Connection {
-    
+
     address doctor;
     address patient;
 
+    address DocConnectionFile;
+    address PatConnectionFile;
+
     enum Status {  /* The giver has denied the consent */
         created,
-        accepted,  /* The giver has accepted the consent */ 
+        accepted,  /* The giver has accepted the consent */
         requested, /* The company has requested a consent, user has not yet responded */
         cancelled  /* The company has cancelled the consent because he no longer needs it */
     }
@@ -18,11 +21,20 @@ contract Connection {
         _;
     }
 
+    modifier onlyByBothOrConsentFile() {
+        require((msg.sender == DocConnectionFile) || (msg.sender == PatConnectionFile) || (tx.origin == doctor) || (tx.origin == patient));
+        _;
+    }
+
+
     Status status;
 
-    constructor(address _doctor,address _patient) public {
+    constructor(address _doctor,address _patient,address _DocConnectionFile, address _PatConnectionFile) public {
         doctor = _doctor;
         patient = _patient;
+        DocConnectionFile = _DocConnectionFile;
+        PatConnectionFile = _PatConnectionFile;
+
         status = Status.created;
     }
 
@@ -35,15 +47,15 @@ contract Connection {
         status = state;
     }
 
-    function getDoctor() onlyByBoth() public view returns(address) {
+    function getDoctor() onlyByBothOrConsentFile() public view returns(address) {
         return doctor;
     }
-    
-    function getPatient() onlyByBoth() public view returns(address) {
+
+    function getPatient() onlyByBothOrConsentFile() public view returns(address) {
         return patient;
     }
 
-    function getStatus() onlyByBoth() public view returns(Status) {
+    function getStatus() onlyByBothOrConsentFile() public view returns(Status) {
         return status;
     }
 
