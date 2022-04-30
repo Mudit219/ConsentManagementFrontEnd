@@ -17,7 +17,6 @@ import { selectUser } from "../Components/Redux/userSlice";
 import { useEffect } from "react";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import CONTRACT_ADDRESS from "../contracts/ContractAddress";
 import DatePicker from "react-datepicker";
 import './connectDoctor.css'
 
@@ -70,7 +69,7 @@ const ConnectDoctor = ({ web3 }) => {
 
     // const saveConsent = async () => {
     //     let abi = require("../contracts/CMS.json");
-    //     let contract = new web3.eth.Contract(abi, CONTRACT_ADDRESS);
+    //     let contract = new web3.eth.Contract(abi, process.env.REACT_APP_CONTRACTADDRESS);
     //     await contract.methods.createConsent(doctorId, records).send({ from: user.account, gas: 4712388 }).then(console.log);
     //     handleClose();
     // }

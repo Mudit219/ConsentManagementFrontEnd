@@ -15,8 +15,6 @@ import axios from "axios";
 import baseURL from "../../BackendApi/BackendConnection";
 import { selectUser } from "../Redux/userSlice";
 // import abi from '../contracts/ConsentManagementSystem.json'
-import owner_id from '../../contracts/Owner_credentials'
-import CONTRACT_ADDRESS from '../../contracts/ContractAddress'
 import { ToastContainer, toast } from 'react-toastify';
 import { Fab } from "@mui/material";
 
@@ -75,22 +73,28 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
 
 
   const Register = async () => {
+    let abi = require("../../contracts/ConsentManagementSystem.json")["abi"];
+    let CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACTADDRESS;
+    
+    console.log(abi)
+    console.log(CONTRACT_ADDRESS);
 
-    // let abi = require("../../contracts/CMS.json");
-    // let CONTRACT_ADDRESS="0xf037F438832DeBc059131cE73CB6bdE735736b38";
-    // let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
+    let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
   
-    // console.log(contract);
+    console.log(contract);
+
+    // You'lll do a backend call here to store on this user on the blockchain
 
     // if(role === "Doc"){
-    //   await contract.methods.AddNewUser(account,"doctor").send({from : owner_id , gas: 4712388}).then(console.log)
+    //   await contract.methods.AddNewUser(account,"doctor").send({from : process.env.REACT_APP_OWNERADDRESS , gas: 4712388}).then(console.log)
     //   await contract.methods.DoctorExists().call({from:account}).then(console.log);
     //   console.log("You have successfully registered on the CMS Platform");
     // }
     // else if(role === "Pat"){
-    //   await contract.methods.AddNewUser(account,"patient").send({from : owner_id , gas: 4712388}).then(console.log)
+    //   await contract.methods.AddNewUser(account,"patient").send({from : process.env.REACT_APP_OWNERADDRESS , gas: 4712388}).then(console.log)
     //   console.log("You have successfully registered on the CMS Platform");
     // }
+
   };
 
   
@@ -108,7 +112,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
         });
     }
     if (firstLogin) {
-        Register();
+        // Register();
         if(role === "Doc" && account){
           axios
             .post(`${baseURL}/admin/Add${role}`, {
@@ -119,6 +123,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
             })
             .then(
               (response) => {
+                Register();
                 console.log("Working!!!!" + response.data);
                 toast.success('Registeration Successful!', {
                   position: "top-right",
@@ -160,6 +165,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
             })
             .then(
               (response) => {
+                Register();
                 toast.success('Registeration Successful!', {
                   position: "top-right",
                     autoClose: 2000,

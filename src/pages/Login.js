@@ -5,9 +5,6 @@ import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import baseURL from '../BackendApi/BackendConnection';
 import './Login.css';
-import owner_id from '../contracts/Owner_credentials';
-import bytecode from '../contracts/Bytecode';
-import logo from '../Images/Login.png'
 
 const Login = ({web3}) => {
   // declare a new state variable for modal open

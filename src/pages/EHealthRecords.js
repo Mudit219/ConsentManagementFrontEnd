@@ -31,7 +31,7 @@ const DisplayRecords=({web3})=>{
     },[]);
 
     useEffect(async ()=>{
-      // await accessConsents();
+      await accessConsents();
       // console.log(ConsentedRecords);
       // displayEHR();
     },[]);
@@ -48,10 +48,10 @@ const DisplayRecords=({web3})=>{
     }
     
     const accessConsents= async ()=>{
-      let abi = require("../contracts/CMS.json");  
+      let abi = require("../contracts/ConsentManagementSystem.json")["abi"];  
       console.log(web3);  
       let consentJson = {"patientId":"","recordIds":[]};
-      let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
+      let contract = new web3.eth.Contract(abi,process.env.REACT_APP_CONTRACTADDRESS); 
       await contract.methods.GetConsents().call({from: user.account, gas: 4712388}).then(async function (consents){
         var allConsetedRecords = [];
         console.log(consents.length);
@@ -63,7 +63,7 @@ const DisplayRecords=({web3})=>{
               let consentTemplate_abi = require("../contracts/ConsentTemplate.json")["abi"];
               const _template = new web3.eth.Contract(consentTemplate_abi,template);
               var consentRecords = await _template.methods.GetConsentedRecords().call({from: user.account, gas: 4712388});
-              // console.log(consentRecords);
+              console.log("Consent Records",consentRecords);
               consentJson["recordIds"]=[...consentRecords];
               console.log(consentJson);
               // return consentJson;

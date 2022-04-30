@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import baseURL from "../../BackendApi/BackendConnection";
+import baseURL from "../src/BackendApi/BackendConnection";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "../Components/Redux/userSlice";

@@ -18,6 +18,10 @@ const patientMenu=[
     {
         text:"My Profile",
         path:"/Profile"
+    },
+    {
+        text:"Connected Doctors",
+        path:"/Connected-Doctors"
     }
     
 ]

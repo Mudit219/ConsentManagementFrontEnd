@@ -13,21 +13,26 @@ import Button from "@material-ui/core/Button";
 import './RequestConsent.css'
 
 
-const account_ids = {
-    owner: owner_id,
-    doctor: "0x22e6D372bfd0D97F883623952187d99331C52e80",
-    patient: "0x4278C94eB9bFb39dda0eCD27d14F5Ff75F6db979"
-  }
+// const account_ids = {
+//     owner: process.env.REACT_APP_OWNERADDRESS,
+//     doctor: "0x22e6D372bfd0D97F883623952187d99331C52e80",
+//     patient: "0x4278C94eB9bFb39dda0eCD27d14F5Ff75F6db979"
+//   }
 
 
-const RequestConsent = ({ account }) => {
+const RequestConsent = ({ web3, account }) => {
     const [PatientId, SetPatientId] = useState('')
     const [Description, SetDescription] = useState('')
     const [connectedPatients,setConnectedPatients] = useState([]);
     const user = useSelector(selectUser);
   
+    const SendConsentToBlockchain = () => {
+        return None
+    }
+
     const Click = () => {
         return (
+            // SendConsentToBlockchain()
             SetPatientId(''),
             SetDescription(''),
             alert("Request Send Successfully")
