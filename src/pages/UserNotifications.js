@@ -1,22 +1,31 @@
 import React from 'react';
+import {useState,useEffect} from 'react'
+import { Card,CardHeader,CardContent } from '@mui/material';
+import { typography } from '@mui/system';
 
 const UserNotifications=()=>{
+
+    useEffect(()=>{
+        fetchConnectionRequests();
+        fetchConsentRequest();
+    },[])
+
+    const [requestedRecords,setRequestedRecords] = useState([]);
+    const [connectionRequest,setConnectionRequest] = useState([]);
+
+    const fetchConsentRequest=()=>{
+
+    }
+
+    const fetchConnectionRequests=()=>{
+
+    }
+
+
     return (
         <Grid lg={12} key={post.title}>
-            <Card sx={{ width: "60%", height: "100%"}}>
+            {/* <Card sx={{ width: "60%", height: "100%"}}>
                 <CardHeader title={post.title} />
-
-                <Grid container>
-                    {
-                        post.skills.map((item) => (
-                            <Grid item key={item.id}>
-                                <Fab color="secondary" aria-label={item.id} sx={{ fontSize: "15px", marginBottom: "10px", marginLeft: "20px", borderRadius: "5px" }} size="small" variant="extended">
-                                    {item.skill}
-                                </Fab>
-                            </Grid>
-                        ))  // console.log(post.skills)
-                    }
-                </Grid>
                 <CardContent className="subtitle">
                     <typography  variant="body2" color="text.secondary">
                         {"By: " + post.id}
@@ -29,7 +38,7 @@ const UserNotifications=()=>{
                     </typography>
                 </CardContent>
                 <Button size="small" variant="contained" onClick={handleAddInterest} sx={{ marginLeft: "700px", position: "static" }}> Interested</Button>
-            </Card>
+            </Card> */}
         </Grid>
     );
 }
