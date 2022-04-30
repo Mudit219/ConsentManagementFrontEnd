@@ -13,6 +13,7 @@ import {selectUser} from "./Components/Redux/userSlice";
 import doctorMenu from './Components/DoctorDashboard/DoctorMenu'
 import patientMenu from './Components/PatientDashboard/PatientMenu'
 import AllConsents from './pages/PatientConsents'
+import ConnectedDoctors from './pages/ConnectedDoctors';
 // import PrivateRoute from './Components/Login-Register/Authentication';
 // import Profile from "./Components/Profile/profile";
 
@@ -21,6 +22,7 @@ import DisplayRecords from './pages/EHealthRecords';
 import UserProfile from './pages/Profile';
 import RequestConsent from './pages/RequestConsent';
 import MetaNavigate from './Components/General/MetaMaskNavigate';
+// import UserNotifications from './pages/UserNotifications';
 
 
 
@@ -43,7 +45,7 @@ export default function App() {
         if(library && !web3) {
           startWeb3()
         }
-    })
+    },[])
     
     return ( 
             
@@ -67,6 +69,7 @@ export default function App() {
                       <Route exact path={"/E-Health-Records"} element = {<DisplayRecords web3={web3} />} />
                       <Route exact path={"/Profile"} element={<UserProfile/>} />
                       <Route exact path={"/Request-Consent"} element={<RequestConsent web3={web3}/>} />
+                      {/* <Route exact path={"/Notifications"} element={<UserNotifications web3={web3}/>} /> */}
                       <Route exact path="/login" element={user && (<Navigate replace to= "/E-Health-Records"/>)} />
                       <Route exact path="/" element={user && (<Navigate replace to= "/E-Health-Records"/>)} />
                     </Routes>
@@ -80,6 +83,7 @@ export default function App() {
                       <Route exact path={"/E-Health-Records"} element = {<DisplayRecords web3={web3} />} />
                       <Route exact path={"/Profile"} element={<UserProfile />} />
                       <Route exact path={"/Consents"} element={<AllConsents web3={web3}/>} />
+                      <Route exact path={"/Connected-Doctors"} element={<ConnectedDoctors/>} />
                       <Route exact path="/login" element={user && (<Navigate replace to= "/E-Health-Records"/>)} />
                       <Route exact path="/" element={user && (<Navigate replace to= "/E-Health-Records"/>)} />
                     </Routes>

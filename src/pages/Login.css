@@ -11,7 +11,7 @@
   }
   .Login {
     height: 100vh;
-    background-color: #27043d;
+    background-color: #A8D0E6; 
   }
   .logo {
     box-sizing: border-box;
@@ -34,23 +34,13 @@
   .logoPat {
     height: 100px;
     width: 150px;
-    /* margin-left: 250px;
-    margin-top: 40px; */
     margin: auto;
     padding-right: 3.3rem;
     margin-left: 5px;
   }
   .logoDoc {
-    /* height: 100px;
-    width: 150px;
-    padding-right: 1rem;
-    margin-left: 250px;
-    margin-top: 40px;
-    margin: auto; */
     height: 100px;
     width: 150px;
-    /* margin-left: 250px;
-    margin-top: 40px; */
     margin: auto;
     padding-right: 3.3rem;
     margin-left: 5px;

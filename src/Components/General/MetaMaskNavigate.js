@@ -14,7 +14,7 @@ function MetaNavigate(){
       navigate("/login");
     }
     window.ethereum.on('accountsChanged', function (accounts) {
-        if(accounts[0]){
+        if(user){
             ReleaseAccount();
         }
         else{
