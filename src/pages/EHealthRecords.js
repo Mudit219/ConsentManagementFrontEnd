@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import {selectUser} from "../Components/Redux/userSlice";
 import {useSelector} from "react-redux";
-import CONTRACT_ADDRESS from "../contracts/ContractAddress";
 import MUIDataTable from "mui-datatables";
 
 
@@ -78,14 +77,7 @@ const DisplayRecords=({web3})=>{
 
       });
     }
-    const titleCase =(records)=>{
-      for(var i in records){
-        for(var j in records[i]){
-          records[i][j] = records[i][j].replace(/([A-Z])/g, " $1");
-        }
-      }
-      return records;
-    }
+    
     const displayEHR=()=>{       
       if(user.role === "Doc"){
         // if(ConsentedRecords.length!==0){

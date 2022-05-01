@@ -6,25 +6,41 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Grid } from "@mui/material";
-// import Form from "../Components/Login-Register/Login-Form";
-import './ConnectDoctor.css'
-import axios from 'axios';
-import baseURL from '../../BackendApi/BackendConnection'
+import './RequestConnection.css'
 import { MenuItem } from "@mui/material";
 import {selectUser} from "../Redux/userSlice";
 import {useSelector} from "react-redux";
 import {useState} from "react";
 
 
-const ConnectDoctor = ({ web3,open,handleClose,connectDoctor,availableDoctors }) => {
+const RequestConnection = ({ web3,open,handleClose,availableDoctors }) => {
     const [selectedDoc,setSelectedDoc] = useState([]);
     const [selectedHospital,setSelectedHospital] = useState([]);
     const availableHospitals = [... new Set(availableDoctors.map((item)=>item.hospitalName))]
     const user = useSelector(selectUser);
 
+    const SendConnectionToBlockchain = async (e) => {
+        e.preventDefault();
+        handleClose();
+        setSelectedDoc(selectedDoc.substr(0,selectedDoc.indexOf("(")))
+        console.log(selectedDoc);
+        
+        let abi = require("../../contracts/ConsentManagementSystem.json")["abi"];
+        let CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACTADDRESS;
+        
+        console.log(CONTRACT_ADDRESS,web3,abi);
+        let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
+      
+        console.log(contract);
+    
+        await contract.methods.PatientCreateConnection(selectedDoc).send({from : user.account, gas: 5500000}).then(console.log)
+        .catch(console.error);
+        return;
+    }
+
     return (
         <div>
-            <Dialog open={open} onClose={handleClose} className='DialogBox'>
+            <Dialog open={open} onClose={handleClose} className='DialogBox' disableEnforceFocus>
                 <DialogTitle>Connect to a Doctor</DialogTitle>
                 <DialogContent>
                 <form onSubmit={SendConnectionToBlockchain} style={{ backgroundColor: "#FFFFFF",marginTop:"5%" }}>
@@ -32,7 +48,7 @@ const ConnectDoctor = ({ web3,open,handleClose,connectDoctor,availableDoctors })
                         <Grid item lg={12}>
                             <TextField
                                 id="hospital"
-                                value={selectedHospital}
+                                value={selectedHospital}    
                                 onChange={(e)=>setSelectedHospital(e.target.value)}
                                 label="Hospital"
                                 type="text"
@@ -92,4 +108,4 @@ const ConnectDoctor = ({ web3,open,handleClose,connectDoctor,availableDoctors })
     );
 }
 
-export default ConnectDoctor;
+export default RequestConnection;

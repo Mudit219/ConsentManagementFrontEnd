@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useRef } from "react";
 import Popup from "../Components/PatientDashboard/Popup";
 import { Button } from "@mui/material";
 import Dialog from '@material-ui/core/Dialog';
@@ -8,8 +8,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Grid } from "@mui/material";
-// import Form from "../Components/Login-Register/Login-Form";
-import './PatientConsent.css'
+import './CreateConsent.css'
 import axios from "axios";
 import baseURL from "../BackendApi/BackendConnection";
 import { useSelector } from "react-redux";
@@ -23,22 +22,21 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-
-
-
-
 const AllConsents =({web3})=> {
     const [open, setOpen] = React.useState(false);
     const [value, SetValue] = React.useState([]);
-    const [doctorId,setDoctorId] = useState("");
     const [records,setRecords] = useState([]);
     const user = useSelector(selectUser);
-    const [connectedDoctors,setConnectedDoctors]=useState([]);
+    const [connections,setConnections]=useState([]);
     const [patientRecords,setPatientRecords]=useState([]);
     const [fromDate, setFromDate] = useState(new Date());
     const [toDate, setToDate] = useState(new Date());
+    const selectedDoc = useRef("")
+
     const handleClickOpen = () => {
         setOpen(true);
+        GetDoctorConnections();
+        getRecords();
     };
 
     const handleClose = () => {
@@ -50,63 +48,32 @@ const AllConsents =({web3})=> {
         { console.log(records) }
     }
 
-    useEffect(()=>{
-        loadDoctor();
-        getRecords();
-    },[]);
-
-    const GetConnections = async () =>  {
+    const GetDoctorConnections = async () =>  {
         let abi = require("../contracts/ConsentManagementSystem.json")["abi"];
-        let CONTRACT_ADDRESS= process.env.REACT_APP_CONTRACTADDRESS;
+        let CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACTADDRESS;
         
-        // console.log(CONTRACT_ADDRESS,web3,user.account);
-        let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS);
-        
-        // contract.methods.GetConnectionFile.call().then(console.log);
-        var meta_ids_ConnDoc = [];
+        let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS);        
 
         await contract.methods.GetConnectionFile().call({from : user.account},async function(err,res) {
 
             let ConnectionFileAbi = require("../contracts/ConnectionFile.json")["abi"];
             let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
             
-            
-            await ConnectionFileContract.methods.getListOfConnections().call({from : user.account},async(err,ConnectionList) => {
-                // console.log(ConnectionList)
-                ConnectionList.forEach(async (connection) => {
-                    let ConnectionAbi = require("../contracts/Connection.json")["abi"];
-                    let ConnectionContract = new web3.eth.Contract(ConnectionAbi,connection);
-                    var ConnectedDoc = await ConnectionContract.methods.getDoctor().call({from : user.account})
-                    meta_ids_ConnDoc.push(ConnectedDoc);
+            await ConnectionFileContract.methods.GetTypeConnections(1).call({from : user.account},
+                async(err,AcceptedConnectionList) => {
+                console.log(AcceptedConnectionList)
+                AcceptedConnectionList.forEach(async (doctorId) => {
+                    console.log(doctorId);
+                    axios.get(`${baseURL}/Doc/${doctorId}/Profile-public`).then(
+                        (response)=>{
+                            setConnections([...connections,response.data]);
+                        }
+                    )
                 });
             })
         })
         .catch(console.error);
-
-        return meta_ids_ConnDoc;
     }
-
-    const loadDoctor=async()=>{
-        
-        const meta_doc_ids = await GetConnections(); 
-        console.log(meta_doc_ids)
-
-        axios.get(`${baseURL}/${user.role}/${user.account}/Get-Connections`, 
-        {
-            headers: { 
-                'Authorization': user.token,
-                'Content-Type' : 'application/json'
-            }
-        }).then(
-          (response)=>{
-            //   console.log("fhjasdkfhasdjk");
-              setConnectedDoctors(response.data);
-          },
-          (error)=>{
-            throw(error);
-          }
-        )
-      }
     
     const getRecords=()=>{
         axios.get(`${baseURL}/${user.role}/${user.account}/E-Health-Records`, 
@@ -136,8 +103,11 @@ const AllConsents =({web3})=> {
         let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
         
         console.log(contract);
+        selectedDoc.current = selectedDoc.current.substring(selectedDoc.current.indexOf('(')+1,selectedDoc.current.indexOf(')'))
+        console.log("This is id: ",selectedDoc.current);
+        console.log("These are records:",records)
     
-        await contract.methods.createConsent("0xFDE6feAE166C983A7Fe07616BA2E22617D486977",["a1","a2"]).send({from: user.account, gas: 4712388}).then(console.log);
+        await contract.methods.createConsent(selectedDoc.current,["a1","a2"]).send({from: user.account, gas: 4712388}).then(console.log);
 
         handleClose();
     }
@@ -164,15 +134,15 @@ const AllConsents =({web3})=> {
                             variant="standard"
                             select
                             required
-                            value={doctorId}
+                            value={selectedDoc.current}
                             style={{ marginTop: '10px', width: '300px' }}
-                            onChange={(e) => setDoctorId(e.target.value)}
+                            onChange={(e) => selectedDoc.current = e.target.value}
                         // defaultValue={""}
                         >
                             {
-                                connectedDoctors.map((item) => (
-                                    <MenuItem key={item.doctorName} value={item.doctorId} >
-                                        {item.doctorName + " (" + item.doctorId + ")"}
+                                connections.map((item) => (
+                                    <MenuItem key={item.name} value={item.name + "(" + item.metaId + ")"} >
+                                        {item.name + "(" + item.metaId + ")"}
                                     </MenuItem>
                                 ))
                             }

@@ -1,5 +1,5 @@
-import React from "react";
-import ConnectDoctor from "../Components/PatientDashboard/ConnectDoctor";
+import React, { useEffect } from "react";
+import RequestConnection from "../Components/PatientDashboard/RequestConnection";
 import { Container, Select } from "@mui/material";
 import axios from 'axios';
 import { useState } from "react";
@@ -7,39 +7,16 @@ import baseURL from '../BackendApi/BackendConnection'
 import { Button } from "@mui/material";
 import ConnectionProfile from "../Components/General/ConnectionProfile";
 import {Grid} from '@mui/material'
+import { useSelector } from "react-redux";
+import { selectUser } from "../Components/Redux/userSlice";
+
 
 
 const ConnectedDoctors=({web3})=>{
     const [open, setOpen] = React.useState(false);
     const [availableDoctors,setAvaialbleDoctors] = useState([]);
-    const [connections,setConnections] = useState([{
-        "name": "Rajeev Sharma",
-        "phone": "8843922129",
-        "metaId": "1290",
-        "email": "rajev12@yahoo.co.in",
-        "gender": "M",
-        "specialization": "General Physician",
-        "doctorLicense": "#DC2312",
-        "doctorImage": "https://as2.ftcdn.net/v2/jpg/02/60/04/09/1000_F_260040900_oO6YW1sHTnKxby4GcjCvtypUCWjnQRg5.jpg",
-        "authorities": [
-            {
-                "id": 7,
-                "authority": "records_doctor:read"
-            },
-            {
-                "id": 5,
-                "authority": "profile_doctor:read"
-            },
-            {
-                "id": 6,
-                "authority": "profile_doctor:write"
-            },
-            {
-                "id": 1,
-                "authority": "ROLE_DOCTOR"
-            }
-        ]
-    }]);
+    const user = useSelector(selectUser);
+    const [connections,setConnections] = useState([]);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -60,9 +37,36 @@ const ConnectedDoctors=({web3})=>{
         setOpen(false);
     };
 
-    const connectDoctor = () => {
-        setOpen(false);
-        return;
+    useEffect(()=>{
+        GetConnections();
+    },[])
+
+    const GetConnections = async () =>  {
+        let abi = require("../contracts/ConsentManagementSystem.json")["abi"];
+        let CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACTADDRESS;
+        
+        let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS);        
+
+        await contract.methods.GetConnectionFile().call({from : user.account},async function(err,res) {
+
+            let ConnectionFileAbi = require("../contracts/ConnectionFile.json")["abi"];
+            let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
+            
+            await ConnectionFileContract.methods.GetTypeConnections(1).call({from : user.account},
+                async(err,AcceptedConnectionList) => {
+                console.log(AcceptedConnectionList)
+                AcceptedConnectionList.forEach(async (doctorId) => {
+                    console.log(doctorId);
+                    axios.get(`${baseURL}/Doc/${doctorId}/Profile-public`).then(
+                        (response)=>{
+                            setConnections([...connections,response.data]);
+                        }
+                    )
+                });
+            })
+        })
+        .catch(console.error);
+
     }
 
     return (
@@ -72,7 +76,7 @@ const ConnectedDoctors=({web3})=>{
             <Button className='mainbutton' variant="outlined" onClick={handleClickOpen} style={{marginBottom:"10%"}}>
                 Connect With New Doctor
             </Button>
-            <ConnectDoctor open={open} handleClose={handleClose} connectDoctor={connectDoctor} web3={web3} 
+            <RequestConnection open={open} handleClose={handleClose} web3={web3} 
             availableDoctors={availableDoctors} />
             <Grid container>
                 {

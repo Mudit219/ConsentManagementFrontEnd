@@ -100,6 +100,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
   
   const RegisterSubmit = (e) => {
     e.preventDefault();
+    console.log("dsfadsf");
     if(!account){
       toast.warn('Please connnect your Metamask', {
         position: "top-right",
