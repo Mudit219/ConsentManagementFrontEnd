@@ -6,99 +6,40 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Grid } from "@mui/material";
-// import Form from "../Components/Login-Register/Login-Form";
-import './ConnectDoctor.css'
-import axios from 'axios';
-import baseURL from '../../BackendApi/BackendConnection'
+import './RequestConnection.css'
 import { MenuItem } from "@mui/material";
 import {selectUser} from "../Redux/userSlice";
 import {useSelector} from "react-redux";
 import {useState} from "react";
 
 
-const ConnectDoctor = ({ web3 }) => {
-    const [open, setOpen] = useState(false);
-    const [availableDoctors,setAvaialbleDoctors] = useState([]);
+const RequestConnection = ({ web3,open,handleClose,availableDoctors }) => {
     const [selectedDoc,setSelectedDoc] = useState([]);
     const [selectedHospital,setSelectedHospital] = useState([]);
     const availableHospitals = [... new Set(availableDoctors.map((item)=>item.hospitalName))]
     const user = useSelector(selectUser);
 
-    const handleClickOpen = () => {
-        setOpen(true);
-        axios.get(`${baseURL}/admin/Get-AvailableDoctors`).then(
-            (response)=>{
-                console.log(response.data);
-                setAvaialbleDoctors(response.data);
-                console.log(response.data.map((item)=>item.hospitalName));
-            },
-            (error)=>{
-                console.log("No Doctors");
-                throw(error);
-            }
-        )
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
     const SendConnectionToBlockchain = async (e) => {
         e.preventDefault();
-        setOpen(false);
+        handleClose();
         setSelectedDoc(selectedDoc.substr(0,selectedDoc.indexOf("(")))
         console.log(selectedDoc);
         
         let abi = require("../../contracts/ConsentManagementSystem.json")["abi"];
         let CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACTADDRESS;
         
-        console.log(CONTRACT_ADDRESS,web3);
+        console.log(CONTRACT_ADDRESS,web3,abi);
         let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
       
         console.log(contract);
     
-        await contract.methods.PatientCreateConnection(selectedDoc).send({from : user.account, gas: 4712388}).then(console.log)
+        await contract.methods.PatientCreateConnection(selectedDoc).send({from : user.account, gas: 5500000}).then(console.log)
         .catch(console.error);
-
-        console.log("Patient has sent the connection successfully");
         return;
     }
 
-    
-
-    // const loadDoctor = () => {
-    //     axios.get(`${baseURL}/${user.role}${user.account}/Get-Connections`).then(
-    //         (response) => {
-    //             //   console.log("fhjasdkfhasdjk");
-    //             setConnectedDoctors(response.data);
-    //         },
-    //         (error) => {
-    //             throw (error);
-    //         }
-    //     )
-    // }
-
-    // const getRecords = () => {
-    //     axios.get(`${baseURL}/${user.role}${user.account}/E-Health-Records`).then(
-    //         (response) => {
-    //             //   console.log("bla bla bla bla:",response);
-    //             setPatientRecords(response.data);
-    //         },
-    //         (error) => {
-    //             // console.log("bla bla bla blasdfadsfsdf:",error);
-    //             throw (error);
-    //         }
-    //     )
-    // }
-
-
-
     return (
         <div>
-            <h2>Doctors</h2>
-            <Button className='mainbutton' variant="outlined" onClick={handleClickOpen}>
-                Connect With New Doctor
-            </Button>
             <Dialog open={open} onClose={handleClose} className='DialogBox' disableEnforceFocus>
                 <DialogTitle>Connect to a Doctor</DialogTitle>
                 <DialogContent>
@@ -107,7 +48,7 @@ const ConnectDoctor = ({ web3 }) => {
                         <Grid item lg={12}>
                             <TextField
                                 id="hospital"
-                                value={selectedHospital}
+                                value={selectedHospital}    
                                 onChange={(e)=>setSelectedHospital(e.target.value)}
                                 label="Hospital"
                                 type="text"
@@ -153,7 +94,6 @@ const ConnectDoctor = ({ web3 }) => {
                                 }
                             </TextField>
                         </Grid>
-                       
                     </Grid>
                     
                     <DialogActions>
@@ -168,4 +108,4 @@ const ConnectDoctor = ({ web3 }) => {
     );
 }
 
-export default ConnectDoctor;
+export default RequestConnection;

@@ -100,7 +100,20 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
   
   const RegisterSubmit = (e) => {
     e.preventDefault();
-    if (firstLogin ) {
+    console.log("dsfadsf");
+    if(!account){
+      toast.warn('Please connnect your Metamask', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    }
+    if (firstLogin) {
+        // Register();
         if(role === "Doc" && account){
           axios
             .post(`${baseURL}/admin/Add${role}`, {
@@ -305,27 +318,25 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
     <div>
       {
         !account && (
-          <Button variant="contained" onClick={ConnectWallet}>
+          <Button variant="contained" onClick={ConnectWallet} style={{marginTop:"10px",marginLeft:"50px"}}>
             Connect Metamask Wallet
           </Button>
         )
       }
       {
-        (firstLogin == true && account) ? (
+        (firstLogin == true) ? (
         <form className={classes.root} onSubmit={RegisterSubmit}>
-          <Fab variant="extended" color="secondary"  sx={{borderRadius:"20px"}}>{"Metamask: " + account}</Fab>
-          <p>
+          {account && (
+            <Fab variant="extended" color="secondary"  sx={{borderRadius:"20px"}}>{"Metamask: " + account}</Fab>
+          )}
+          <h4>
             {" "}
-            You are login for the first time, Please fill in the details:
-          </p>
-            <p>
-            {
-              loginError === "" ? <></> : loginError
-            }
-            </p>
+            Please fill in the details:
+          </h4>
             <TextField
               label="Full Name"
-              variant="filled"
+              variant="outlined"
+              multiline
               required
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
@@ -334,7 +345,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
             <TextField
               label="Password"
               type="password"
-              variant="filled"
+              variant="outlined"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -343,7 +354,8 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
             {role=="Pat" && (
               <TextField
               label="Phone Number"
-              variant="filled"
+              variant="outlined"
+              multiline
               required
               value={phoneNumber}
               onChange={(e) => setphoneNumber(e.target.value)}
@@ -353,7 +365,8 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
             {role == "Doc" && (
                 <TextField
                 label="Doctor License"
-                variant="filled"
+                variant="outlined"
+                multiline
                 required
                 value={doctorLicense}
                 onChange={(e) => setDoctorLicense(e.target.value)}
@@ -362,7 +375,6 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
             <Button type="submit" variant="contained" color="primary">
               Register
             </Button>
-            <ToastContainer position="top-right" />
         </form>
         )
         :(
@@ -379,7 +391,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
             <TextField
               type="password"
               label="Password"
-              variant="filled"
+              variant="outlined"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}

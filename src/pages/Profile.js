@@ -5,6 +5,9 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "../Components/Redux/userSlice";
 import baseURL from "../BackendApi/BackendConnection";
+import { Grid } from "@mui/material";
+import { TextField } from "@mui/material";
+import { Container,Typography } from "@mui/material";
 
 const UserProfile = () => {
 
@@ -31,43 +34,85 @@ const UserProfile = () => {
             }
         )
     }
+
+    const titleCase =(records)=>{
+        for(var i in records){
+          for(var j in records[i]){
+            records[i][j] = records[i][j].replace(/([A-Z])/g, " $1");
+          }
+        }
+        return records;
+    }
+
     return (
         <div>
-            <Card>
-                <CardContent>
+            {
+                Profile != null && user.role == "Pat" &&
+                    (
+            <Container>
+                <img src={Profile.patientImage} style={{height:"200px",width:"200px",borderRadius:"20%"}}/>
+            <Typography variant="h4" color="text.primary" >
+                    {Profile.name}
+            </Typography>
+            <form style={{ backgroundColor: "#FFFFFF",marginTop:"5%" }}>
+                <Grid container spacing={5}>
                     {
-                        Profile != null && user.role == "Pat" &&
-                            (<div className='card' key={Profile.metaId}>
-                                {/* <h3>{role} Dashboard</h3> */}
-                                <img src="https://t4.ftcdn.net/jpg/02/60/04/09/360_F_260040900_oO6YW1sHTnKxby4GcjCvtypUCWjnQRg5.jpg"></img>
-                                <p className='btc'>{user.role} Name : {Profile.name}</p>
-                                <p className='btc'>MobileNumber : {Profile.phone}</p>
-                                <p className='btc'>Gender : {Profile.gender}</p>
-                                <p className='btc'>EmailId : {Profile.email}</p>
-                            </div>
-                            )
-                        
-                    }
+                        Object.keys(Profile).filter(function(item){
+                            return item!='patientImage' && item!='authorities' && item!='name' && item!='metaId' && item!='password';
+                    }).map((field)=>(
+                        <Grid item lg={4}>
+                        <TextField
+                        id={field}
+                        label={field.replace(
+                            /\w\S*/g,
+                            function(txt) {
+                              return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()})}
+                        multiline
+                        variant="filled"
+                        defaultValue={Profile[field]}
+                        InputProps={{
+                            readOnly: true,
+                        }}/>
+                        </Grid>))} 
+                </Grid>
+            </form>
+            </Container>)
+            }
+            
+            {
+                Profile != null && user.role == "Doc" &&
+                    (
+            <Container>
+                <img src={Profile.doctorImage} style={{height:"200px",width:"200px",borderRadius:"20%"}}/>
+            <Typography variant="h4" color="text.primary" >
+                    {Profile.name}
+            </Typography>
+            <form style={{ backgroundColor: "#FFFFFF",marginTop:"5%" }}>
+                <Grid container spacing={5}>
                     {
-                        Profile != null && user.role == "Doc" &&
-                            (<div className='card' key={Profile.metaId}>
-                                {/* <h3>{role} Dashboard</h3> */}
-                                <img src="https://t4.ftcdn.net/jpg/02/60/04/09/360_F_260040900_oO6YW1sHTnKxby4GcjCvtypUCWjnQRg5.jpg"></img>
-                                <p className='btc'>{user.role} Name : {Profile.name}</p>
-                                <p className='btc'>Mobile Number : {Profile.phone}</p>
-                                <p className='btc'>Gender : {Profile.gender}</p>
-                                <p className='btc'>Email Id : {Profile.email}</p>
-                                <p className='btc'>Specialization : {Profile.specialization}</p>
-                                <p className='btc'>Doctor License : {Profile.doctorLicense}</p>
-                            </div>
-                            )
-                        
-                    }
-                    
-                </CardContent>
-            </Card>
-        </div>
-    )
+                        Object.keys(Profile).filter(function(item){
+                            return item!='doctorImage' && item!='authorities' && item!='name' && item!='metaId' && item!='password';
+                    }).map((field)=>(
+                        <Grid item lg={4}>
+                        <TextField
+                        id={field}
+                        label={field.replace(
+                            /\w\S*/g,
+                            function(txt) {
+                              return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()})}
+                        multiline
+                        variant="filled"
+                        defaultValue={Profile[field]}
+                        InputProps={{
+                            readOnly: true,
+                        }}/>
+                        </Grid>))} 
+                </Grid>
+            </form>
+            </Container>)
+            }
+            </div>       
+        );
 }
 
 export default UserProfile;

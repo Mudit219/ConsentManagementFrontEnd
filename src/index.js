@@ -12,7 +12,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import 'react-datepicker/dist/react-datepicker.css'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import './index.css'
 
 
 function getLibrary(provider){

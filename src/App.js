@@ -10,7 +10,6 @@ import {Box, Stack} from '@mui/material';
 import SideMenuPatient from './Components/General/Menu'
 import Header from './Components/General/Header'
 import {selectUser} from "./Components/Redux/userSlice";
-import PatientConsents from './pages/PatientConsents';
 import doctorMenu from './Components/DoctorDashboard/DoctorMenu'
 import patientMenu from './Components/PatientDashboard/PatientMenu'
 // import PrivateRoute from './Components/Login-Register/Authentication';
@@ -20,8 +19,10 @@ import Login from "./pages/Login";
 import DisplayRecords from './pages/EHealthRecords';
 import UserProfile from './pages/Profile';
 import RequestConsent from './pages/RequestConsent';
-import AllConsents from "./pages/PatientConsents";
+import AllConsents from "./pages/CreateConsents";
 import ConnectedDoctors from "./pages/ConnectedDoctors";
+import DoctorNotifications from './pages/DoctorNotifications';
+import PatientNotifications from './pages/PatientNotifications';
 
 export default function App() {
     
@@ -67,6 +68,7 @@ export default function App() {
                       <Route exact path={"/E-Health-Records"} element = {<DisplayRecords web3={web3.current} />} />
                       <Route exact path={"/Profile"} element={<UserProfile/>} />
                       <Route exact path={"/Request-Consent"} element={<RequestConsent web3={web3.current}/>} />
+                      <Route exact path={"/Notifications"} element={<DoctorNotifications web3={web3.current}/>} />
                       <Route exact path="/login" element={user && (<Navigate replace to= "/E-Health-Records"/>)} />
                       <Route exact path="/" element={user && (<Navigate replace to= "/E-Health-Records"/>)} />
                     </Routes>
@@ -81,6 +83,7 @@ export default function App() {
                       <Route exact path={"/Connected-Doctors"} element = {<ConnectedDoctors web3={web3.current}/>} />
                       <Route exact path={"/Profile"} element={<UserProfile />} />
                       <Route exact path={"/Consents"} element={<AllConsents web3={web3.current}/>} />
+                      <Route exact path={"/Notifications"} element={<PatientNotifications web3={web3.current}/>} />
                       <Route exact path="/login" element={user && (<Navigate replace to= "/E-Health-Records"/>)} />
                       <Route exact path="/" element={user && (<Navigate replace to= "/E-Health-Records"/>)} />
                     </Routes>

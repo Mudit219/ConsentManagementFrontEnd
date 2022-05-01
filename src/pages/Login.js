@@ -42,10 +42,11 @@ const Login = ({web3}) => {
 
   return (
   <div className='Login'>
-      <div className="logo">
+    {/* <img src={logo} style={{width:"100%",height:"100vh,",zIndex:'1',position:'fixed'}}/> */}
+      {/* <div className="logo" style={{zIndex:'2',position:'fixed'}}>
         <img className="logoImage" src='https://gdm-catalog-fmapi-prod.imgix.net/ProductScreenshot/d65416a4-8162-406b-add4-040305619de6.png?auto=format' />
-      </div>
-      <div className='LoginContainer'>
+      </div> */}
+      <div className='LoginContainer' style={{zIndex:'2',position:'fixed'}}>
         <h1>Login As</h1>
 
         <div className='PatientLogin'>

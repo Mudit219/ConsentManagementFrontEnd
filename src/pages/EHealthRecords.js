@@ -5,13 +5,21 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import {selectUser} from "../Components/Redux/userSlice";
 import {useSelector} from "react-redux";
+import MUIDataTable from "mui-datatables";
 
 
 const DisplayRecords=({web3})=>{
+    const _ = require('lodash');
+    const columnsPat = ["EhrID", "DoctorName", "Hospital Name", "diagnosis", "Prescription", "Date"]
+    const columnsDoc = ["EhrID", "PatientName","PatientPhone","DoctorName", "Hospital Name", "Diagnosis", "Prescription", "Date"]
     const user =  useSelector(selectUser);
     const [EHealthRecords,setEHealthRecord] = useState([]);
     const [ConsentedRecords,setConsentedRecords] = useState([]);
-
+    const options = {
+      filterType: 'dropdown',
+      search:'true'
+    };
+  
     // const 
     // console.log("These are the parameters: " + parameters.consentRecords);
     useEffect(()=>{
@@ -69,11 +77,14 @@ const DisplayRecords=({web3})=>{
 
       });
     }
+    
     const displayEHR=()=>{       
       if(user.role === "Doc"){
         // if(ConsentedRecords.length!==0){
           console.log("Blehasdafsd");
           console.log(ConsentedRecords);
+          console.log("asdfasdf");
+          // console.log(columnsDoc.map((item)=>_.camelCase(item)));
           axios.post(`${baseURL}/${user.role}/${user.account}/E-Health-Records`,ConsentedRecords, 
           {
               headers: { 
@@ -84,6 +95,9 @@ const DisplayRecords=({web3})=>{
             (response)=>{
               // console.log("bla bla bla bla:",response);
               setEHealthRecord(checkEHR(response.data));
+              console.log("dsaghasdfjk");
+              // setEHealthRecord(titleCase(EHealthRecords));
+              console.log(EHealthRecords);
             },
             (error)=>{
             // console.log("bla bla bla bla:",error);
@@ -113,55 +127,25 @@ const DisplayRecords=({web3})=>{
     }
     return (
         
-        <TableContainer sx={{width: window.innerWidth - 400 }} component={Paper}>
-      <Table sx={{width:'100%' }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Record ID</TableCell>
-            {
-              user.role == "Doc" && (
-                <Fragment>
-                  <TableCell align="right">Patient Name</TableCell>
-                  <TableCell align="right">Patient Phone</TableCell>
-                </Fragment>
-              ) 
-            }
-            <TableCell align="right">Doctor Name</TableCell>
-            <TableCell align="right">Hospital Name</TableCell>
-            <TableCell align="right">Diagnosis</TableCell>
-            <TableCell align="right">Prescription</TableCell>
-            <TableCell align="right">Date</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          { 
-            EHealthRecords.map((item) => (
-              <TableRow
-              key={item.ehrId}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
-                <TableCell component="th" scope="row"> {item.ehrId}</TableCell>
-                  {
-                  user.role === "Doc" && (
-                    <Fragment>
-                      <TableCell align="right">{item.patientName}</TableCell>
-                      <TableCell align="right">{item.patientPhone}</TableCell>
-                    </Fragment>
-                  ) 
-                  }
-                  {
-                    // console.log("fhasdjkfhdjkshfjkds")
-                    // console.log(EHealthRecords)
-                  }
-                <TableCell align="right">{item.doctorName}</TableCell>
-                <TableCell align="right">{item.hospitalName}</TableCell>
-                <TableCell align="right">{item.diagnosis}</TableCell>
-                <TableCell align="right">{item.prescription}</TableCell>
-                <TableCell align="right">{item.date}</TableCell>
-              </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+      <div>
+        {
+          user.role =="Pat"?(
+            <MUIDataTable
+          title={"E-Health-Records"}
+          data={EHealthRecords}
+          columns={columnsPat.map((item)=>_.camelCase(item))}
+          options={options}
+        />)
+        :(
+          <MUIDataTable
+          title={"E-Health-Records"}
+          data={EHealthRecords}
+          columns={columnsDoc.map((item)=>_.camelCase(item))}
+          options={options}
+        />
+        )
+        }
+      </div>
     )
 }
 

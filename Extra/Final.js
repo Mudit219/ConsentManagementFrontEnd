@@ -80,7 +80,7 @@ function AllConsents() {
     useEffect(()=>{
         loadDoctor();
         getRecords();
-    });
+    },[]);
 
     return (
         <Grid>
