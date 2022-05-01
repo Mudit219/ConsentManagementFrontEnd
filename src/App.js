@@ -5,7 +5,7 @@ import {useSelector} from "react-redux";
 import { useWeb3React } from '@web3-react/core'
 import Web3 from "web3/dist/web3.min";
 
-import {Box, Stack} from '@mui/material';
+import {Box, Stack, Container} from '@mui/material';
 
 import SideMenuPatient from './Components/General/Menu'
 import Header from './Components/General/Header'
@@ -23,6 +23,7 @@ import AllConsents from "./pages/CreateConsents";
 import ConnectedDoctors from "./pages/ConnectedDoctors";
 import DoctorNotifications from './pages/DoctorNotifications';
 import PatientNotifications from './pages/PatientNotifications';
+import Logs from "./pages/Logs";
 
 export default function App() {
     
@@ -54,8 +55,8 @@ export default function App() {
             user &&
             (
             <>
-            <Header />
-            <Box sx={{ display: 'flex' }}>
+            {/* <Header /> */}
+            <Box sx={{ display: 'flex',  backgroundColor: '#A8D0E6', padding: 10, minWidth: "98vw", minHeight: "98.7vh", overflow: "auto"   }}>
             
               {
                 // -----------------------------------------------------------------------------
@@ -69,6 +70,7 @@ export default function App() {
                       <Route exact path={"/Profile"} element={<UserProfile/>} />
                       <Route exact path={"/Request-Consent"} element={<RequestConsent web3={web3.current}/>} />
                       <Route exact path={"/Notifications"} element={<DoctorNotifications web3={web3.current}/>} />
+                      <Route exact path={"/Logs"} element={<Logs web3={web3.current}/>} />
                       <Route exact path="/login" element={user && (<Navigate replace to= "/E-Health-Records"/>)} />
                       <Route exact path="/" element={user && (<Navigate replace to= "/E-Health-Records"/>)} />
                     </Routes>
@@ -84,6 +86,7 @@ export default function App() {
                       <Route exact path={"/Profile"} element={<UserProfile />} />
                       <Route exact path={"/Consents"} element={<AllConsents web3={web3.current}/>} />
                       <Route exact path={"/Notifications"} element={<PatientNotifications web3={web3.current}/>} />
+                      <Route exact path={"/Logs"} element={<Logs web3={web3.current}/>} />
                       <Route exact path="/login" element={user && (<Navigate replace to= "/E-Health-Records"/>)} />
                       <Route exact path="/" element={user && (<Navigate replace to= "/E-Health-Records"/>)} />
                     </Routes>

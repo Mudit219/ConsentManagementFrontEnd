@@ -7,9 +7,9 @@ import { Grid } from "@mui/material";
 
 
 
-const NotificationProp=({title,data,button1Val,button2Val,button1ValClick,button2ValClick})=>{
+const LogProp=({title,data,button1Val,button2Val,button1ValClick,button2ValClick})=>{
     return (
-    <Grid item lg={12} key={data.metaId}>
+    <Grid item lg={12} key={title}>
         <Card sx={{height:"30vh",width: "100%"}}>
             <CardHeader title={title}/>
             <CardContent className="subtitle" style={{display:'flex',flexDirection:'row'}}>
@@ -18,20 +18,15 @@ const NotificationProp=({title,data,button1Val,button2Val,button1ValClick,button
                     {
                         data.name && (
                             <typography  variant="body2" color="text.secondary" style={{marginTop:"3%",fontSize:'1.5rem'}}>
-                                {data.name + data.msg}
-                            </typography >
-                        )
-                    }
-                    {
-                        data.description && (
-                            <typography  variant="body2" color="text.secondary" style={{marginTop:"3%",fontSize:'1.5rem'}}>
-                                {data.description}
+                                {data.name} 
+                                <br></br>
+                                {data.msg}
                             </typography >
                         )
                     }
                 </Container>
             </CardContent>
-            {
+            {/* {
                 console.log(button1Val!="",button2Val!="")
             }
             {
@@ -44,10 +39,10 @@ const NotificationProp=({title,data,button1Val,button2Val,button1ValClick,button
                         <Button size="small" onClick={button2ValClick} variant="contained" sx={{ marginLeft: "700px",backgroundColor:"#464866"}}> {button2Val}</Button>
                     </CardActions>
                 )
-            }
+            } */}
         </Card>
     </Grid> 
     )
 }
 
-export default NotificationProp;
+export default LogProp;

@@ -16,6 +16,10 @@ const patientMenu=[
         path:"/Notifications"
     },
     {
+        text:"Logs",
+        path:"/Logs",
+    },
+    {
         text:"My Profile",
         path:"/Profile"
     },

@@ -1,5 +1,5 @@
 import React from 'react';
-import {useState,useEffect} from 'react'
+import {useState,useEffect,useRef} from 'react'
 import { Card,CardHeader,CardContent,CardActions } from '@mui/material';
 import { typography } from '@mui/system';
 import { useSelector } from 'react-redux';
@@ -8,8 +8,21 @@ import axios from 'axios';
 import { Grid, Button,Container } from '@mui/material';
 import baseURL from '../BackendApi/BackendConnection';
 import NotificationProp from '../Components/General/NotficationProp';
+import CreateConsentDialog from '../Components/PatientDashboard/CreateConsentDialog';
 
 const PatientNotifications=({web3})=>{
+
+    const [open,setOpen] = useState(false);
+    const reqConsentDoc = useRef("")
+
+    const handleClickOpen=(request)=>{
+        reqConsentDoc.current = request.metaId;
+        console.log(reqConsentDoc.current)
+        setOpen(true);
+    }
+    const handleClose = () => {
+        setOpen(false);
+    }
 
     useEffect(()=>{
         fetchConnectionRequests();
@@ -20,11 +33,47 @@ const PatientNotifications=({web3})=>{
     const user = useSelector(selectUser);
     const [requestedConsents,setRequestedConsents] = useState([]);
 
+    const FilterEvents = async (events) => {
+        console.log(events);
+        events.forEach( async (event) => {
+            if(event['event'] == "CMSConnectionStatusEvent") {
+                let connection_abi = require("../contracts/Connection.json")["abi"];
+                const _connection = new web3.eth.Contract(connection_abi,event['returnValues']['conn']);
+                var associatedPatient = await _connection.methods.getPatient().call({from : user.account});
+                var status = await _connection.methods.getStatus().call({from : user.account});
+                if((status == 1) && (event['returnValues']['status'] == 1) && (associatedPatient == user.account) && (events[events.length - 1]['blockNumber'] - event['blockNumber'] < 5)) {
+                    console.log(event)
+                }
+            }
+            if(event["event"] == "CMSConsentRequestedEvent") {
+                let consent_abi = require("../contracts/Consent.json")["abi"];
+                const _consent = new web3.eth.Contract(consent_abi,event['returnValues']['consent']);
+                var associatedPatient = await _consent.methods.getPatient().call({from : user.account});
+                var status = await _consent.methods.getStatus().call({from : user.account});
+                if((status == 3) && (associatedPatient == user.account)) {
+                    console.log(event)
+                }
+            }
+        });
+    }
+    const GetNotificationViaEvents = async () => {
+        let abi = require("../contracts/ConsentManagementSystem.json")["abi"];
+        let CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACTADDRESS;
+        
+        let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
+        console.log(contract);
+        await contract.getPastEvents('AllEvents',{fromBlock:0,toBlock:'latest'},async function(err,res) {
+            console.log(FilterEvents(res));
+            // setRequestedConsents(res);
+        });
+    }
+
     const fetchConsentRequest = async () => {
     
       let abi = require("../contracts/ConsentManagementSystem.json")["abi"];  
       console.log(web3);  
       let consentJson = {"metaId":"","description":""};
+      console.log(process.env.REACT_APP_CONTRACTADDRESS);
       let contract = new web3.eth.Contract(abi,process.env.REACT_APP_CONTRACTADDRESS); 
       await contract.methods.GetConsents().call({from: user.account, gas: 4712388}).then(async function (consents){
         var allRequestedConsents = [];
@@ -46,13 +95,15 @@ const PatientNotifications=({web3})=>{
                 console.log(consentJson);
                 // return consentJson;
                 })
-            }
-            var consentDoctorId = await _consent.methods.getDoctor().call({from: user.account,gas: 4712388})
-            consentJson["metaId"]=consentDoctorId;
+                var consentDoctorId = await _consent.methods.getDoctor().call({from: user.account,gas: 4712388})
+                consentJson["metaId"] =consentDoctorId;
 
-            allRequestedConsents.push(consentJson);
+                allRequestedConsents.push(consentJson);
+            }
+            
         }
         setRequestedConsents(allRequestedConsents);
+        console.log(allRequestedConsents,requestedConsents);
         }).catch(console.error);
     }
 
@@ -63,7 +114,7 @@ const PatientNotifications=({web3})=>{
         let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS);        
 
         await contract.methods.GetConnectionFile().call({from : user.account},async function(err,res) {
-
+            console.log(res);
             let ConnectionFileAbi = require("../contracts/ConnectionFile.json")["abi"];
             let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
             
@@ -74,7 +125,9 @@ const PatientNotifications=({web3})=>{
                     console.log(doctorId);
                     axios.get(`${baseURL}/Doc/${doctorId}/Profile-public`).then(
                         (response)=>{
-                            setAcceptedConnection([...acceptedconnection,response.data]);
+                            var data = response.data;
+                            data['msg'] = " has accepted your connection request";
+                            setAcceptedConnection([...acceptedconnection,data]);
                         },
                         (error)=>{
                             console.log("No doctor");
@@ -89,8 +142,10 @@ const PatientNotifications=({web3})=>{
     }
 
 
+
     return (
         <Grid container spacing={5}>
+        <CreateConsentDialog open={open} handleClose={handleClose} web3={web3} whichDoctor={reqConsentDoc.current}/>
         {
             acceptedconnection.map((connection)=>{
                 return <NotificationProp title={"Accepted Connection"} data={connection}/>
@@ -98,10 +153,10 @@ const PatientNotifications=({web3})=>{
         }
         {
             requestedConsents.map((request)=>{
-                return <NotificationProp title={"Request Consent"} data={request} button1Val="Create Consent" button2Val="Reject" />
+            return <NotificationProp title={"Request Consent"} data={request} button1Val="Create Consent" button2Val="Reject" button1ValClick = {() => handleClickOpen(request)} button2ValClick={()=>{}} />
             })
         }
-
+        <Button onClick={GetNotificationViaEvents}> Calling All Events Data </Button>
         </Grid>
     );
 }

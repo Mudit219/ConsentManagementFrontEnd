@@ -18,6 +18,11 @@ const doctorMenu=[
         icon:<InboxIcon/>
     },
     {
+        text:"Logs",
+        path:"/Logs",
+        icon:<InboxIcon/>
+    },
+    {
         text:"My Profile",
         path:"/Profile",
         icon:<InboxIcon/>

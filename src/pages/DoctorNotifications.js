@@ -37,7 +37,7 @@ const DoctorNotifications=({web3})=>{
     }
 
     const fetchConsentRequest=()=>{
-
+        
     }
 
     const fetchConnectionRequests = async () =>  {
@@ -52,13 +52,15 @@ const DoctorNotifications=({web3})=>{
             let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
             
             await ConnectionFileContract.methods.GetTypeConnections(2).call({from : user.account},
-                async(err,AcceptedConnectionList) => {
-                console.log(AcceptedConnectionList)
-                AcceptedConnectionList.forEach(async (doctorId) => {
-                    console.log(doctorId);
-                    axios.get(`${baseURL}/Pat/${doctorId}/Profile-public`).then(
+                async(err,RequestedConnectionList) => {
+                console.log(RequestedConnectionList)
+                RequestedConnectionList.forEach(async (patientId) => {
+                    console.log(patientId);
+                    axios.get(`${baseURL}/Pat/${patientId}/Profile-public`).then(
                         (response)=>{
-                            setConnectionRequests([...connectionRequests,response.data]);
+                            var data = response.data;
+                            data['msg'] = " has requested to connect with you";
+                            setConnectionRequests([...connectionRequests,data]);
                         },
                         (error)=>{
                             console.log("No doctor");
@@ -77,7 +79,7 @@ const DoctorNotifications=({web3})=>{
         <Grid container>
         {
             connectionRequests.map((connection)=>{
-                return <NotificationProp title="Request Conneciton" data={connection} button1Val={"Accept Request"} button2Val={"Reject"} />
+                return <NotificationProp title="Request Conneciton" data={connection} button1Val={"Accept Request"} button2Val={"Reject"} button1ValClick={AcceptConnection} button2ValClick={() => {}} />
             })
         }
         </Grid>
