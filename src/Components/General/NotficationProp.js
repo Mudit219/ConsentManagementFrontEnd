@@ -15,13 +15,22 @@ const NotificationProp=({title,data,button1Val,button2Val,button1ValClick,button
             <CardContent className="subtitle" style={{display:'flex',flexDirection:'row'}}>
                 <img src='https://st.depositphotos.com/1771835/1477/i/450/depositphotos_14779771-stock-photo-portrait-of-confident-young-doctor.jpg' style={{height:"150px",width:"150px",borderRadius:"50%"}} />
                 <Container style={{display:'flex',flexDirection:'column'}}>
-                    {
-                        data.name && (
-                            <typography  variant="body2" color="text.secondary" style={{marginTop:"3%",fontSize:'1.5rem'}}>
-                                {data.name + data.msg}
-                            </typography >
-                        )
-                    }
+                    <div style={{display:'flex',flexDirection:'row'}}>
+                        {
+                            data.name && (
+                                <typography  variant="body2" color="text.secondary" style={{marginTop:"3%",fontSize:'1.5rem'}}>
+                                    {data.name}
+                                </typography >
+                            )
+                        }
+                        {
+                            data.msg && (
+                                <typography  variant="body2" color="text.secondary" style={{marginLeft: "1%", marginTop:"3%",fontSize:'1.5rem'}}>
+                                    {data.msg}
+                                </typography >
+                            )
+                        }
+                    </div>
                     {
                         data.description && (
                             <typography  variant="body2" color="text.secondary" style={{marginTop:"3%",fontSize:'1.5rem'}}>
@@ -38,7 +47,7 @@ const NotificationProp=({title,data,button1Val,button2Val,button1ValClick,button
                 button1Val && button2Val && (
                     <CardActions style={{marginLeft:"30%",marginTop:"-7%"}}>
                         {
-                            console.log("I ma here")
+                            // console.log("I ma here")
                         }
                         <Button size="small" onClick={() => button1ValClick(data.metaId)} variant="contained" sx={{ marginLeft: "700px",backgroundColor:"#2E9CCA"}}> {button1Val}</Button>
                         <Button size="small" onClick={button2ValClick} variant="contained" sx={{ marginLeft: "700px",backgroundColor:"#464866"}}> {button2Val}</Button>

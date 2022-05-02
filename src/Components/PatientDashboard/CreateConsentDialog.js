@@ -47,7 +47,8 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
     useEffect(()=>{
         GetDoctorConnections();
         getRecords();
-        // console.log("Is there anyone here",whichDoctor)
+        console.log("Is there anyone here",whichDoctor)
+
         if(whichDoctor){
             mapSelectedDoc();
         }
@@ -60,7 +61,7 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
     const mapSelectedDoc = () =>{
         connections.map((item)=>{
             console.log(item.name + "(" + item.metaId + ")" );
-            item.metaId == whichDoctor ? selectedDoc.current = item.name + "(" + item.metaId + ")" : selectedDoc.current=""}
+            item.metaId == whichDoctor ? setChosenDoc(item.name + "(" + item.metaId + ")") : setChosenDoc("")}
             )
     }
 
@@ -145,7 +146,10 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
         let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
         
         console.log(contract);
-        selectedDoc.current = chosenDoc.substring(selectedDoc.current.indexOf('(')+1,selectedDoc.current.indexOf(')'))
+        selectedDoc.current = chosenDoc.substring(chosenDoc.indexOf('(')+1,chosenDoc.indexOf(')'))
+        
+        console.log(chosenDoc,selectedDoc.current);
+
         console.log("This is id: ",selectedDoc.current);
         console.log("These are records:",Array.from(records))
     

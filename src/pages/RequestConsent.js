@@ -8,7 +8,7 @@ import axios from "axios";
 import baseURL from "../BackendApi/BackendConnection";
 import { useSelector } from "react-redux";
 import { selectUser } from "../Components/Redux/userSlice";
-import "./RequestConsent.css"
+// import "./RequestConsent.css"
 
 
 const RequestConsent = ({web3}) => {

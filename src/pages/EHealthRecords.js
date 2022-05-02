@@ -17,7 +17,9 @@ const DisplayRecords=({web3})=>{
     const [ConsentedRecords,setConsentedRecords] = useState([]);
     const options = {
       filterType: 'dropdown',
-      search:'true'
+      search:'true',
+      customToolbarSelect: () => {},
+      selectableRows: false
     };
   
     // const 
@@ -42,7 +44,7 @@ const DisplayRecords=({web3})=>{
     const checkEHR=(EHR)=>{
       const map = new Map(EHR.map(pos => [pos.ehrId, pos]));
       const AllRecords = [...map.values()];
-      console.log(EHealthRecords);
+      // console.log("This is the Ehealth Records:",EHealthRecords);
       return AllRecords;
     }
     

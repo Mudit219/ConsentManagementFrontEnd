@@ -54,7 +54,7 @@ const UserProfile = () => {
             <Typography variant="h4" color="text.primary" >
                     {Profile.name}
             </Typography>
-            <form style={{ backgroundColor: "#FFFFFF",marginTop:"5%" }}>
+            <form style={{marginTop:"5%" }}>
                 <Grid container spacing={5}>
                     {
                         Object.keys(Profile).filter(function(item){
@@ -87,7 +87,7 @@ const UserProfile = () => {
             <Typography variant="h4" color="text.primary" >
                     {Profile.name}
             </Typography>
-            <form style={{ backgroundColor: "#FFFFFF",marginTop:"5%" }}>
+            <form style={{marginTop:"5%" }}>
                 <Grid container spacing={5}>
                     {
                         Object.keys(Profile).filter(function(item){
@@ -96,16 +96,20 @@ const UserProfile = () => {
                         <Grid item lg={4}>
                         <TextField
                         id={field}
+                        sx = {{backgroundColor: '#DDDDDD', fontWeight: 'bold'}}
                         label={field.replace(
                             /\w\S*/g,
                             function(txt) {
                               return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()})}
                         multiline
-                        variant="filled"
+                        variant="outlined"
                         defaultValue={Profile[field]}
                         InputProps={{
                             readOnly: true,
-                        }}/>
+                        }}>
+                            {/* { this.value = Profile[field] } */}
+                        </TextField>
+
                         </Grid>))} 
                 </Grid>
             </form>

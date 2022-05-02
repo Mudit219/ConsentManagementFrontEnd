@@ -48,18 +48,21 @@ const Logs=({web3})=>{
                 let connection_abi = require("../contracts/Connection.json")["abi"];
                 const _connection = new web3.eth.Contract(connection_abi,event['returnValues']['conn']);
                 
+                var associatedDoctor = await _connection.methods.getDoctor().call({from : user.account});
+                var associatedPatient = await _connection.methods.getPatient().call({from : user.account});
+
                 if(user.role == "Doc") {
-                    var associatedDoctor = await _connection.methods.getDoctor().call({from : user.account});
-                    console.log(associatedDoctor,user.account)
                     if(associatedDoctor == user.account) {
+                        event["doctor"] = associatedDoctor;
+                        event["patient"] = associatedPatient;
                         associatedLogs.current = [...associatedLogs.current,event]
                     }
                     console.log(associatedLogs.current)
                 }
                 else {
-                    var associatedPatient = await _connection.methods.getPatient().call({from : user.account});
-                    console.log(associatedDoctor,user.account)
                     if(associatedPatient == user.account) {
+                        event["doctor"] = associatedDoctor;
+                        event["patient"] = associatedPatient;
                         associatedLogs.current = [...associatedLogs.current,event]
                     }
                 }
@@ -69,15 +72,21 @@ const Logs=({web3})=>{
                 let consent_abi = require("../contracts/Consent.json")["abi"];
                 const _consent = new web3.eth.Contract(consent_abi,event['returnValues']['consent']);
                 
+                
+                var associatedDoctor = await _consent.methods.getDoctor().call({from : user.account});
+                var associatedPatient = await _consent.methods.getPatient().call({from : user.account});
+
                 if(user.role == "Doc") {
-                    var associatedDoctor = await _consent.methods.getDoctor().call({from : user.account});
                     if(associatedDoctor == user.account) {
+                        event["doctor"] = associatedDoctor;
+                        event["patient"] = associatedPatient;
                         associatedLogs.current = [...associatedLogs.current,event]
                     }
                 }
                 else {
-                    var associatedPatient = await _consent.methods.getPatient().call({from : user.account});
-                    if(associatedPatient == user.account) {
+                    if(associatedPatient == user.account) {    
+                        event["doctor"] = associatedDoctor;
+                        event["patient"] = associatedPatient;
                         associatedLogs.current = [...associatedLogs.current,event]
                     }
                 }
@@ -89,33 +98,42 @@ const Logs=({web3})=>{
     
     const GetMessageFromEvent = (event) => {
         let message = ""
+        console.log(event)
         switch(event.event) {
             case "CMSConnectionStatusEvent":
-                message += "Connection : "
-                message += event.returnValues.conn;
+                message += "Patient : "
+                message += event["patient"];
+                message += "Doctor : ";
+                message += event["doctor"]
                 message += "\n"
                 message += "Status : "
                 message += ConnectionToStatus[event.returnValues.status];
                 break;
             case "CMSConsentCreatedEvent":
-                message += "Consent : "
-                message += event.returnValues.consent;
+                message += "Patient : "
+                message += event["patient"];
+                message += "Doctor : ";
+                message += event["doctor"]
                 message += "\n"
                 message += "Records : "
                 console.log(event.returnValues["Records"])
                 message += event.returnValues["Records"].toString();
                 break;
             case "CMSConsentRequestedEvent":
-                message += "Consent : "
-                message += event.returnValues.consent;
+                message += "Patient : "
+                message += event["patient"];
+                message += "Doctor : ";
+                message += event["doctor"]
                 message += "\n"
                 message += "Requested Desc : "
                 message += event.returnValues.desc;
                 break;
             case "ConsentStatusChanged":
-                message += "Connection : "
-                message += event.returnValues.consent;
-                message += "<br></br>"
+                message += "Patient : "
+                message += event["patient"];
+                message += "Doctor : ";
+                message += event["doctor"]
+                message += "\n"
                 message += "Status : "
                 message += ConsentToStatus[event.returnValues.status];
                 break;
