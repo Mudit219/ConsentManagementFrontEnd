@@ -33,7 +33,7 @@ const ConnectionProfileDialog=(props)=>{
                     <Grid container spacing={5}>
                         {
                             Object.keys(doctor).filter(function(item){
-                                return item!='doctorImage' && item!='authorities' && item!='name'
+                                return item!='img' && item!='authorities' && item!='name'
                             }).map((field)=>(
                                 <Grid item lg={4}>
                                     <TextField

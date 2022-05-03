@@ -44,7 +44,7 @@ const SideMenuPatient=({tabs})=> {
     }
 
     return (
-    <Box sx={{ display: 'flex', marginRight:"5%"}}>
+    <Box sx={{ marginRight:"5%"}}>
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, backgroundColor:"#25274D"}}>
         <Toolbar>
           <Typography variant="h5" noWrap component="div" style={{color:"white",fontWeight:"bold"}}>
@@ -62,10 +62,10 @@ const SideMenuPatient=({tabs})=> {
         }}
       >
         <Toolbar />
-        <Box sx={{ overflow: 'auto',marginTop:"20%" }}>
+        <Box sx={{ marginTop:"20%" }}>
           <List>
             {tabs.map((tab, index) => (
-              <ListItem id={tab.text} className ="Tabs" button key={tab.text} onClick={()=>handleTab(tab)} style={{marginTop:"10%"}}>
+              <ListItem id={tab.text} className ="Tabs" key={tab.text} onClick={()=>handleTab(tab)} style={{marginTop:"10%",position:"relative"}}>
                 <ListItemIcon style={{color:"white"}}>
                     {tab.icon}
                 </ListItemIcon>

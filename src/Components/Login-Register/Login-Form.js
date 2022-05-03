@@ -138,7 +138,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
                 handleClose();
                 },
               (error) => {
-                toast.error('Invalid Credentials!', {
+                toast.error('User already exists!', {
                   position: "top-right",
                     autoClose: 2000,
                     hideProgressBar: false,

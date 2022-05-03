@@ -6,14 +6,15 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Grid } from "@mui/material";
-import './RequestConnection.css'
+import './CreateConsentDialog.css'
 import { MenuItem } from "@mui/material";
 import {selectUser} from "../Redux/userSlice";
 import {useSelector} from "react-redux";
 import {useState} from "react";
+import {toast} from 'react-toastify';
 
 
-const RequestConnection = ({ web3,open,handleClose,availableDoctors }) => {
+const ConnectDoctorDialog = ({ web3,open,handleClose,availableDoctors }) => {
     const [selectedDoc,setSelectedDoc] = useState([]);
     const [selectedHospital,setSelectedHospital] = useState([]);
     const availableHospitals = [... new Set(availableDoctors.map((item)=>item.hospitalName))]
@@ -33,8 +34,31 @@ const RequestConnection = ({ web3,open,handleClose,availableDoctors }) => {
       
         console.log(contract);
     
-        await contract.methods.PatientCreateConnection(selectedDoc).send({from : user.account, gas: 5500000}).then(console.log)
-        .catch(console.error);
+        await contract.methods.PatientCreateConnection(selectedDoc).send({from : user.account, gas: 5500000}).then(
+            (response)=>{
+                toast.success('Request has been sent!', {
+                    position: "top-right",
+                      autoClose: 2000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                    });
+            },(error)=>{
+                toast.error('Something went wrong', {
+                    position: "top-right",
+                      autoClose: 2000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                    });
+                throw(error)
+            }
+        )
+        // .catch(console.error);
         return;
     }
 
@@ -108,4 +132,4 @@ const RequestConnection = ({ web3,open,handleClose,availableDoctors }) => {
     );
 }
 
-export default RequestConnection;
+export default ConnectDoctorDialog;

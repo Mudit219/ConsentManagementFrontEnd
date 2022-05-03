@@ -17,10 +17,10 @@ const DoctorNotifications=({web3})=>{
     const [timeBasedSequenceEvents,setTimeBasedSequenceEvents] = useState([]);
     const user = useSelector(selectUser);
 
-    useEffect(async ()=>{
-        await fetchConnectionRequests();
-        await fetchConsentGivenRequest();
-        await GetNotificationViaEvents();
+    useEffect(()=>{
+        fetchConnectionRequests();
+        // fetchConsentGivenRequest();
+        // GetNotificationViaEvents();
     },[])
 
 
@@ -126,16 +126,17 @@ const DoctorNotifications=({web3})=>{
         let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
       
         console.log(contract);
+        console.log("This is patient: ",patientId);
     
-        await contract.methods.DoctorAcceptConnection(patientId).send({from : user.account, gas: 5500000}).then(console.log)
+        await contract.methods.DoctorAcceptConnection(patientId).send({from : user.account, gas: 4712388}).then(console.log)
         .catch(console.error);
-        return;
     }
 
     const fetchConsentGivenRequest= async()=>{
         let abi = require("../contracts/ConsentManagementSystem.json")["abi"];  
         let contract = new web3.eth.Contract(abi,process.env.REACT_APP_CONTRACTADDRESS);
 
+        try{
         await contract.methods.GetConsents().call({from: user.account, gas: 4712388}).then(async function (consents){
         var allGivenConsents = [];
         console.log("Waited till here");
@@ -145,7 +146,7 @@ const DoctorNotifications=({web3})=>{
 
             const _consent = new web3.eth.Contract(consent_abi,consents[i]);
             const status = await _consent.methods.getStatus().call({from: user.account, gas: 4712388})
-            // console.log("Consent Status: " + status);
+            console.log("Consent Status: " + status);
             if(status == 2){
                 await _consent.methods.getTemplate().call({from: user.account, gas: 4712388}).then(async function (template){
                 let consentTemplate_abi = require("../contracts/ConsentTemplate.json")["abi"];
@@ -179,6 +180,11 @@ const DoctorNotifications=({web3})=>{
         console.log(allGivenConsents)
         setConsentedRecords(allGivenConsents);
         })
+    }
+    catch(error){
+        console.log("There is no consent yet!");
+        throw(error);
+    }
     
     }
 
@@ -188,14 +194,14 @@ const DoctorNotifications=({web3})=>{
         
         let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS);        
 
-        await contract.methods.GetConnectionFile().call({from : user.account},async function(err,res) {
+        await contract.methods.GetConnectionFile().call({from : user.account,gas: 4712388}).then(async function(res) {
 
             let ConnectionFileAbi = require("../contracts/ConnectionFile.json")["abi"];
             let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
             let AllRequestedConnections = [];
 
-            await ConnectionFileContract.methods.getListOfConnections().call({from : user.account},
-                async(err,connections) => {
+            await ConnectionFileContract.methods.getListOfConnections().call({from : user.account}).then(
+                async function (connections){
                     // console.log(connections);
                     for(var i=0;i<connections.length;i++){
                         let connectionJson = {"Id" : connections[i],"metaId" : "","name" : "","msg" : ""};
@@ -204,9 +210,9 @@ const DoctorNotifications=({web3})=>{
                         const status = await _connection.methods.getStatus().call({from : user.account, gas: 4712388})
                         console.log("Connection Status: " + status);
                         if(status == 2){
-                            var doctorMetaId = await _connection.methods.getDoctor().call({from : user.account, gas: 4712388})
-                            connectionJson['metaId'] = doctorMetaId;
-                            axios.get(`${baseURL}/Doc/${doctorMetaId}/Profile-public`).then(
+                            var patientMetaId = await _connection.methods.getPatient().call({from : user.account, gas: 4712388})
+                            connectionJson['metaId'] = patientMetaId;
+                            axios.get(`${baseURL}/Pat/${patientMetaId}/Profile-public`).then(
                                 (response)=>{
                                     var data = response.data;
                                     connectionJson['name'] = data['name'];

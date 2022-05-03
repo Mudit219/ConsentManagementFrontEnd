@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import RequestConnection from "../Components/PatientDashboard/RequestConnection";
+import ConnectDoctorDialog from "../Components/PatientDashboard/ConnectDoctorDialog";
 import { Container, Select } from "@mui/material";
 import axios from 'axios';
 import { useState } from "react";
@@ -76,7 +76,7 @@ const ConnectedDoctors=({web3})=>{
             <Button className='mainbutton' variant="outlined" onClick={handleClickOpen} style={{marginBottom:"10%"}}>
                 Connect With New Doctor
             </Button>
-            <RequestConnection open={open} handleClose={handleClose} web3={web3} 
+            <ConnectDoctorDialog open={open} handleClose={handleClose} web3={web3} 
             availableDoctors={availableDoctors} />
             <Grid container>
                 {

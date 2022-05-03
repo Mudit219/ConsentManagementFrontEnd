@@ -1,7 +1,8 @@
 .Tabs:hover{
     background-color: #151B54;
+    cursor: pointer;
 }
 
 .selected{
-    background-color: "black";
+    background-color: #151B54;
 }

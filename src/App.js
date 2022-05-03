@@ -8,7 +8,6 @@ import Web3 from "web3/dist/web3.min";
 import {Box, Stack, Container} from '@mui/material';
 
 import SideMenuPatient from './Components/General/Menu'
-import Header from './Components/General/Header'
 import {selectUser} from "./Components/Redux/userSlice";
 import doctorMenu from './Components/DoctorDashboard/DoctorMenu'
 import patientMenu from './Components/PatientDashboard/PatientMenu'
