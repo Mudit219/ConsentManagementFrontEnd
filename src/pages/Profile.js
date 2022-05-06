@@ -45,7 +45,7 @@ const UserProfile = () => {
     }
 
     return (
-        <div>
+        <Container>
             {
                 Profile != null && user.role == "Pat" &&
                     (
@@ -115,7 +115,7 @@ const UserProfile = () => {
             </form>
             </Container>)
             }
-            </div>       
+            </Container>       
         );
 }
 

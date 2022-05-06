@@ -9,8 +9,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Toolbar from '@mui/material/Toolbar';
 import Divider from '@mui/material/Divider';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import {useDispatch} from "react-redux";
-import { logout } from "../Redux/userSlice";
+import {useDispatch, useSelector} from "react-redux";
+import { logout, selectUser } from "../Redux/userSlice";
 import './Menu.css'
 const drawerWidth = 280;
 
@@ -18,12 +18,13 @@ const drawerWidth = 280;
 const SideMenuPatient=({tabs})=> {
     // const classes = useStyles();
     const navigate = useNavigate();
+    const user = useSelector(selectUser)
 
 
     const dispatch = useDispatch();
         
     const ReleaseAccount = () => {
-        console.log("Dispatching the account ")
+        // console.log("Dispatching the account ")
         navigate("/login");
         dispatch(logout());
     }
@@ -34,7 +35,7 @@ const SideMenuPatient=({tabs})=> {
         for(var i=0;i<tabs.length;i++){
             if(tabs[i]==currentTab){
                 tabs[i].classList.add('selected')
-                console.log(tabs[i])
+                // console.log(tabs[i])
             }
             else{
                 tabs[i].classList.remove('selected')
@@ -44,13 +45,18 @@ const SideMenuPatient=({tabs})=> {
     }
 
     return (
-    <Box sx={{ display: 'flex', marginRight:"5%"}}>
+    <Box sx={{ marginRight:"5%"}}>
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, backgroundColor:"#25274D"}}>
         <Toolbar>
           <Typography variant="h5" noWrap component="div" style={{color:"white",fontWeight:"bold"}}>
             Consent Management
           </Typography>
-          <Button onClick={ReleaseAccount} variant="contained" style={{marginLeft:"80%", color:"white",backgroundColor:"#464866"}}>Logout</Button>
+          <Box style={{marginLeft:"50%",display:'flex',flexDirection:'row'}}>
+            <Typography variant="h6" component="div" style={{color:"white",fontWeight:"bold"}}>
+              {user.account}
+            </Typography>
+            <Button onClick={ReleaseAccount} variant="contained" style={{marginLeft:'40px',color:"white",backgroundColor:"#464866"}}>Logout</Button>
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -62,10 +68,10 @@ const SideMenuPatient=({tabs})=> {
         }}
       >
         <Toolbar />
-        <Box sx={{ overflow: 'auto',marginTop:"20%" }}>
+        <Box sx={{ marginTop:"20%" }}>
           <List>
             {tabs.map((tab, index) => (
-              <ListItem id={tab.text} className ="Tabs" button key={tab.text} onClick={()=>handleTab(tab)} style={{marginTop:"10%"}}>
+              <ListItem id={tab.text} className ="Tabs" key={tab.text} onClick={()=>handleTab(tab)} style={{marginTop:"10%",position:"relative"}}>
                 <ListItemIcon style={{color:"white"}}>
                     {tab.icon}
                 </ListItemIcon>

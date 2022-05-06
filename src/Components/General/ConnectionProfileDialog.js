@@ -23,7 +23,7 @@ const ConnectionProfileDialog=(props)=>{
             aria-labelledby={doctor.name}
             maxWidth="md">
             <DialogTitle id="scroll-dialog-title" style={{textAlign:"center"}} >
-            <img src={doctor.doctorImage} style={{height:"200px",width:"200px",borderRadius:"20%"}}/>
+            <img src={doctor.img} style={{height:"200px",width:"200px",borderRadius:"20%"}}/>
                 <Typography variant="h4" color="text.primary" >
                         {doctor.name}
                 </Typography>
@@ -33,7 +33,7 @@ const ConnectionProfileDialog=(props)=>{
                     <Grid container spacing={5}>
                         {
                             Object.keys(doctor).filter(function(item){
-                                return item!='doctorImage' && item!='authorities' && item!='name'
+                                return item!='img' && item!='authorities' && item!='name'
                             }).map((field)=>(
                                 <Grid item lg={4}>
                                     <TextField

@@ -13,7 +13,7 @@ export const userSlice = createSlice({
         }
     }
 });
-console.log("Came till this file",userSlice)
+// console.log("Came till this file",userSlice)
 
 export const {login,logout} = userSlice.actions;
 

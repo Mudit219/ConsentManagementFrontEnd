@@ -6,11 +6,12 @@ import axios from "axios";
 import {selectUser} from "../Components/Redux/userSlice";
 import {useSelector} from "react-redux";
 import MUIDataTable from "mui-datatables";
+import { Container } from "@mui/material";
 
 
 const DisplayRecords=({web3})=>{
     const _ = require('lodash');
-    const columnsPat = ["EhrID", "DoctorName", "Hospital Name", "diagnosis", "Prescription", "Date"]
+    const columnsPat = ["EhrID", "AbhaID","DoctorName", "Hospital Name", "diagnosis", "Prescription", "Date"]
     const columnsDoc = ["EhrID", "PatientName","PatientPhone","DoctorName", "Hospital Name", "Diagnosis", "Prescription", "Date"]
     const user =  useSelector(selectUser);
     const [EHealthRecords,setEHealthRecord] = useState([]);
@@ -19,7 +20,9 @@ const DisplayRecords=({web3})=>{
       filterType: 'dropdown',
       search:'true',
       customToolbarSelect: () => {},
-      selectableRows: false
+      selectableRows: false,
+      download:false,
+      print:false
     };
   
     // const 
@@ -50,12 +53,12 @@ const DisplayRecords=({web3})=>{
     
     const accessConsents= async ()=>{
       let abi = require("../contracts/ConsentManagementSystem.json")["abi"];  
-      console.log(web3);  
+      // console.log(web3);  
       let consentJson = {"patientId":"","recordIds":[]};
       let contract = new web3.eth.Contract(abi,process.env.REACT_APP_CONTRACTADDRESS); 
       await contract.methods.GetConsents().call({from: user.account, gas: 4712388}).then(async function (consents){
         var allConsetedRecords = [];
-        console.log(consents.length);
+        // console.log(consents.length);
         for(var i=0;i<consents.length;i++){
             consentJson = {"patientId":"","recordIds":[]};
             let consent_abi = require("../contracts/Consent.json")["abi"];
@@ -64,13 +67,13 @@ const DisplayRecords=({web3})=>{
               let consentTemplate_abi = require("../contracts/ConsentTemplate.json")["abi"];
               const _template = new web3.eth.Contract(consentTemplate_abi,template);
               var consentRecords = await _template.methods.GetConsentedRecords().call({from: user.account, gas: 4712388});
-              console.log("Consent Records",consentRecords);
+              // console.log("Consent Records",consentRecords);
               consentJson["recordIds"]=[...consentRecords];
-              console.log(consentJson);
+              // console.log(consentJson);
               // return consentJson;
             }
           )
-          console.log(consentJson["recordIds"]);
+          // console.log(consentJson["recordIds"]);
           var consentPatientId = await _consent.methods.getPatient().call({from: user.account,gas: 4712388})
           consentJson["patientId"]=consentPatientId;
           allConsetedRecords.push(consentJson);
@@ -83,9 +86,9 @@ const DisplayRecords=({web3})=>{
     const displayEHR=()=>{       
       if(user.role === "Doc"){
         // if(ConsentedRecords.length!==0){
-          console.log("Blehasdafsd");
-          console.log(ConsentedRecords);
-          console.log("asdfasdf");
+          // console.log("Blehasdafsd");
+          // console.log(ConsentedRecords);
+          // console.log("asdfasdf");
           // console.log(columnsDoc.map((item)=>_.camelCase(item)));
           axios.post(`${baseURL}/${user.role}/${user.account}/E-Health-Records`,ConsentedRecords, 
           {
@@ -95,11 +98,16 @@ const DisplayRecords=({web3})=>{
               }
           }).then(
             (response)=>{
-              // console.log("bla bla bla bla:",response);
-              setEHealthRecord(checkEHR(response.data));
-              console.log("dsaghasdfjk");
+
+              var records = response.data;
+              records.map((record) => {
+                record["ehrId"] = parseInt(record["ehrId"])
+              })
+              // console.log("ahahahahahahha",records)
+              setEHealthRecord(checkEHR(records));
               // setEHealthRecord(titleCase(EHealthRecords));
-              console.log(EHealthRecords);
+              
+              // console.log(EHealthRecords);
             },
             (error)=>{
             // console.log("bla bla bla bla:",error);
@@ -118,7 +126,13 @@ const DisplayRecords=({web3})=>{
         }).then(
           (response)=>{
             // console.log("bla bla bla bla:",response);
-            setEHealthRecord(response.data);
+
+            var records = response.data;
+            records.map((record) => {
+              record["ehrId"] = parseInt(record["ehrId"])
+            })
+            // console.log("ahahahahahahha",records)
+            setEHealthRecord(records);
           },
           (error)=>{
           // console.log("bla bla bla blasdfadsfsdf:",error);
@@ -129,7 +143,7 @@ const DisplayRecords=({web3})=>{
     }
     return (
         
-      <div>
+      <Container>
         {
           user.role =="Pat"?(
             <MUIDataTable
@@ -147,7 +161,7 @@ const DisplayRecords=({web3})=>{
         />
         )
         }
-      </div>
+      </Container>
     )
 }
 

@@ -20,6 +20,7 @@ const PatientNotifications=({web3})=>{
     const reqConsentDoc = useRef("")
 
     const handleClickOpen=(request)=>{
+        // console.log("this is my request",request.metaId)
         reqConsentDoc.current = request.metaId;
         // console.log(reqConsentDoc.current)
         setOpen(true);
@@ -47,53 +48,64 @@ const PatientNotifications=({web3})=>{
                 if(event['event'] == "CMSConnectionStatusEvent") {
                     let connection_abi = require("../contracts/Connection.json")["abi"];
                     const _connection = new web3.eth.Contract(connection_abi,event['returnValues']['conn']);
-                    var associatedPatient = await _connection.methods.getPatient().call({from : user.account});
-                    var status = await _connection.methods.getStatus().call({from : user.account});
-                    if((status == 1) && (event['returnValues']['status'] == 1) && (associatedPatient == user.account) && (events[events.length - 1]['blockNumber'] - event['blockNumber'] < 10)) {
-                        if(FilteredEvents.find(x => x["Id"] == event['returnValues']['conn'])) { 
-                            var index = FilteredEvents.findIndex(x => x["Id"] == event['returnValues']['conn']); 
-                            FilteredEvents.splice(index,1);
-                            FilteredEvents.push(
-                                {
-                                    "Id" : event['returnValues']['conn'],
-                                    "type" : "connection"
-                                }
-                            )
-                        }
-                        else {
-                            FilteredEvents.push(
-                                {
-                                    "Id" : event['returnValues']['conn'],
-                                    "type" : "connection"
-                                }
-                            )
+                    try{
+                        var associatedPatient = await _connection.methods.getPatient().call({from : user.account});
+                        var status = await _connection.methods.getStatus().call({from : user.account});
+                        if((status == 1) && (event['returnValues']['status'] == 1) && (associatedPatient == user.account) && (events[events.length - 1]['blockNumber'] - event['blockNumber'] < 10)) {
+                            if(FilteredEvents.find(x => x["Id"] == event['returnValues']['conn'])) { 
+                                var index = FilteredEvents.findIndex(x => x["Id"] == event['returnValues']['conn']); 
+                                FilteredEvents.splice(index,1);
+                                FilteredEvents.push(
+                                    {
+                                        "Id" : event['returnValues']['conn'],
+                                        "type" : "connection"
+                                    }
+                                )
+                            }
+                            else {
+                                FilteredEvents.push(
+                                    {
+                                        "Id" : event['returnValues']['conn'],
+                                        "type" : "connection"
+                                    }
+                                )
+                            }
                         }
                     }
+                    catch{
+                        
+                    }
+                    
                 }
                 if(event["event"] == "CMSConsentRequestedEvent") {
                     let consent_abi = require("../contracts/Consent.json")["abi"];
                     const _consent = new web3.eth.Contract(consent_abi,event['returnValues']['consent']);
-                    var associatedPatient = await _consent.methods.getPatient().call({from : user.account});
-                    var status = await _consent.methods.getStatus().call({from : user.account});
-                    if((status == 3) && (associatedPatient == user.account)) {
-                        if(FilteredEvents.find(x => x["Id"] == event['returnValues']['consent'])) { 
-                            var index = FilteredEvents.findIndex(x => x["Id"] == event['returnValues']['consent']); 
-                            FilteredEvents.splice(index,1);
-                            FilteredEvents.push(
-                                {
-                                    "Id" : event['returnValues']['consent'],
-                                    "type" : "consent"
-                                }
-                            )
+                    try{
+                        var associatedPatient = await _consent.methods.getPatient().call({from : user.account});
+                        var status = await _consent.methods.getStatus().call({from : user.account});
+                        if((status == 3) && (associatedPatient == user.account)) {
+                            if(FilteredEvents.find(x => x["Id"] == event['returnValues']['consent'])) { 
+                                var index = FilteredEvents.findIndex(x => x["Id"] == event['returnValues']['consent']); 
+                                FilteredEvents.splice(index,1);
+                                FilteredEvents.push(
+                                    {
+                                        "Id" : event['returnValues']['consent'],
+                                        "type" : "consent"
+                                    }
+                                )
+                            }
+                            else {
+                                FilteredEvents.push(
+                                    {
+                                        "Id" : event['returnValues']['consent'],
+                                        "type" : "consent"
+                                    }
+                                )
+                            }
                         }
-                        else {
-                            FilteredEvents.push(
-                                {
-                                    "Id" : event['returnValues']['consent'],
-                                    "type" : "consent"
-                                }
-                            )
-                        }
+                    }
+                    catch{
+
                     }
                 }
             }
@@ -109,11 +121,11 @@ const PatientNotifications=({web3})=>{
         let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
         // console.log(contract);
         await contract.getPastEvents('AllEvents',{fromBlock:0,toBlock:'latest'},async function(err,res) {
-            FilterEvents(res).then(async(responses) => {
-                console.log("Time based responses",responses)
+            FilterEvents(res.reverse()).then(async(responses) => {
+                // console.log("Time based responses",responses)
                 setTimeBasedSequenceEvents(responses);
                 
-                console.log("Time based Current responses",timeBasedSequenceEvents)
+                // console.log("Time based Current responses",timeBasedSequenceEvents)
 
             });
             
@@ -131,7 +143,7 @@ const PatientNotifications=({web3})=>{
         var allRequestedConsents = [];
         // console.log(consents.length);
         for(var i=0;i<consents.length;i++){
-            consentJson = {"Id" : consents[i],"metaId":"","description":"","name" : ""};
+            consentJson = {"Id" : consents[i],"metaId":"","description":"","name" : "","img":""};
             let consent_abi = require("../contracts/Consent.json")["abi"];
 
             const _consent = new web3.eth.Contract(consent_abi,consents[i]);
@@ -155,10 +167,11 @@ const PatientNotifications=({web3})=>{
                     (response)=>{
                         var data = response.data;
                         consentJson['name'] = data['name'];
+                        consentJson['img'] = data['img'];
                         // setRequestedConsents([...requestedConsents,consentJson]);
                     },
                     (error)=>{
-                        console.log("No doctor");
+                        // console.log("No doctor");
                         throw(error);
                     }
                 )
@@ -168,7 +181,7 @@ const PatientNotifications=({web3})=>{
             
         }
         setRequestedConsents(allRequestedConsents);
-        console.log("Requested Shit",allRequestedConsents);
+        // console.log("Requested Shit",allRequestedConsents);
 
         }).catch(console.error);
     }
@@ -184,15 +197,15 @@ const PatientNotifications=({web3})=>{
             let AllAcceptedConnections = [];
             let ConnectionFileAbi = require("../contracts/ConnectionFile.json")["abi"];
             let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
-            await ConnectionFileContract.methods.getListOfConnections().call({from : user.account},
+            await ConnectionFileContract.methods.getListOfConnections().call({from : user.account,gas:4712388},
                 async(err,connections) => {
                     // console.log(connections);
                     for(var i=0;i<connections.length;i++){
-                        connectionJson = {"Id" : connections[i],"metaId" : "","name" : "","msg" : ""};
+                        connectionJson = {"Id" : connections[i],"metaId" : "","name" : "","description" : "","img":""};
                         let connection_abi = require("../contracts/Connection.json")["abi"];
                         const _connection = new web3.eth.Contract(connection_abi,connections[i]);
                         const status = await _connection.methods.getStatus().call({from : user.account, gas: 4712388})
-                        console.log("Connection Status: " + status);
+                        // console.log("Connection Status: " + status);
                         if(status == 1){
                             var doctorMetaId = await _connection.methods.getDoctor().call({from : user.account, gas: 4712388})
                             connectionJson['metaId'] = doctorMetaId;
@@ -200,14 +213,15 @@ const PatientNotifications=({web3})=>{
                                 (response)=>{
                                     var data = response.data;
                                     connectionJson['name'] = data['name'];
-                                    connectionJson['msg'] = " has Accepted your connection";
+                                    connectionJson['description'] = " has Accepted your connection";
+                                    connectionJson['img'] = data['img'];
                                     AllAcceptedConnections.push(connectionJson)
                                     // setAcceptedConnection([...acceptedconnection,connectionJson]);
-                                    console.log(connectionJson);
+                                    // console.log(connectionJson);
                             
                                 },
                                 (error)=>{
-                                    console.log("No doctor");
+                                    // console.log("No doctor");
                                     throw(error);
                                 })
                         }
@@ -224,25 +238,28 @@ const PatientNotifications=({web3})=>{
     }
 
     return (
-        <Grid container spacing={5}>
+        <Container>
+        <Grid container spacing={2}>
         <CreateConsentDialog open={open} handleClose={handleClose} web3={web3} whichDoctor={reqConsentDoc.current}/>
         {
             // console.log("Time based render data is here",timeBasedSequenceEvents,timeBasedSequenceEvents.length)
             timeBasedSequenceEvents && requestedConsents && acceptedconnection && (
                 timeBasedSequenceEvents.map((elem) => {
-                    console.log("Display render Time Data:",requestedConsents,acceptedconnection)
+                    // console.log("Display render Time Data:",requestedConsents,acceptedconnection)
                     
                     
-                    console.log("I was here",elem)
+                    // console.log("I was here",elem)
 
                     if(elem["type"] == "consent"){
                         var request = requestedConsents.find(x => x["Id"] == elem["Id"]);
+                        // console.log(request)
                         if(request) {
                             return <NotificationProp title={"Request Consent"} data={request} button1Val="Create Consent" button2Val="Reject" button1ValClick = {() => handleClickOpen(request)} button2ValClick={()=>{}} />
                         }
                     } 
                     else{
                         var connection = acceptedconnection.find(x => x["Id"] == elem["Id"]);
+                        // console.log(connection)
                         if(connection) {
                             return <NotificationProp title={"Accepted Connection"} data={connection}/>
                         }
@@ -251,20 +268,9 @@ const PatientNotifications=({web3})=>{
             )
         }
         
-        {/* {
-            // console.log("ahahahahahahahahahah",acceptedconnection)
-            acceptedconnection.map((connection)=>{
-                return <NotificationProp title={"Accepted Connection"} data={connection}/>
-            })
-        }
-        {
-            // console.log(requestedConsents)
-            requestedConsents.map((request)=>{
-            return <NotificationProp title={"Request Consent"} data={request} button1Val="Create Consent" button2Val="Reject" button1ValClick = {() => handleClickOpen(request)} button2ValClick={()=>{}} />
-            })
-        } */}
-        <Button onClick={GetNotificationViaEvents}> Calling All Events Data </Button>
+        {/* <Button onClick={GetNotificationViaEvents}> Calling All Events Data </Button> */}
         </Grid>
+        </Container>
     );
 }
 

@@ -8,24 +8,31 @@ import { Grid } from "@mui/material";
 import MUIDataTable from "mui-datatables";
 import baseURL from "../BackendApi/BackendConnection";
 import axios from "axios"
+import { Container } from "@mui/material";
 
 const AllConsents =({web3})=> {
     const [open, setOpen] = React.useState(false);
     const [consents,setConsents] = React.useState();
     const reqDoctor = useRef("");
     
-    const ConsentHeader = [{
-    name: "id",
-    label: "#",
-    options: {
-        filter: true,
-        sort: true,
-        customBodyRender: (rowIndex, dataIndex) => dataIndex.rowIndex + 1 
+    const ConsentHeader = [
+    {
+        name: "id",
+        label: "#",
+        options: {
+            filter: true,
+            sort: true,
+            customBodyRender: (rowIndex, dataIndex) => dataIndex.rowIndex + 1 
     }},
-    "consentId","Patientname","Doctorname",{
+    "consentId",
+    "Patientname",
+    "Doctorname",
+    {
         name: "Consent Data",
         options: {
             customBodyRender: (value, tableMeta) => {
+                // console.log("MUII data table value",value,tableMeta)
+                    
                 return (
                     <button onClick={() => handleClickOpen(value) }>
                         View / Update
@@ -40,15 +47,17 @@ const AllConsents =({web3})=> {
         search:'true',
         customToolbarSelect: () => {},
         selectableRows: false,
+        download:false,
+        print:false
       };
       const _ = require('lodash'); 
 
     const user = useSelector(selectUser);
     
     const handleClickOpen = (value) => {
-        console.log(value);
-        setOpen(true);
+        // console.log(value,reqDoctor);
         reqDoctor.current = value;
+        setOpen(true);
     };
 
     const handleClose = () => {
@@ -60,71 +69,67 @@ const AllConsents =({web3})=> {
     }, [])
 
     useEffect(() => {
-        console.log(consents);
+        // console.log(consents);
     },[consents])
     
     const accessConsents = async ()=>{
         let abi = require("../contracts/ConsentManagementSystem.json")["abi"];  
-        console.log(web3);  
-        let consentJson = {"consentId" : "","Patientname":"","Doctorname":"","Update":""};
+        // console.log(web3);  
+        let consentJson = {"consentId" : "","Patientname":"","Doctorname":"","Consent Data":""};
         let contract = new web3.eth.Contract(abi,process.env.REACT_APP_CONTRACTADDRESS); 
         await contract.methods.GetConsents().call({from: user.account, gas: 4712388}).then(async function (consents){
             var allConsents = [];
-            console.log(consents.length);
+            // console.log(consents.length);
             for(var i=0;i<consents.length;i++){
-                consentJson = {"consentId" : consents[i],"Patientname":"","Doctorname":"","Update":""};
+                consentJson = {"consentId" : consents[i],"Patientname":"","Doctorname":"","Consent Data":""};
                 let consent_abi = require("../contracts/Consent.json")["abi"];
                 const _consent = new web3.eth.Contract(consent_abi,consents[i]);
-                await _consent.methods.getTemplate().call({from: user.account, gas: 4712388}).then(async function (template){
-                let consentTemplate_abi = require("../contracts/ConsentTemplate.json")["abi"];
-                const _template = new web3.eth.Contract(consentTemplate_abi,template);
-                var consentRecords = await _template.methods.GetConsentedRecords().call({from: user.account, gas: 4712388});
-                // console.log("Consent Records",consentRecords);
-                // consentJson["Update"]=consentRecords.toString();
-                // return consentJson;
-                }
-            )
-            console.log(consentJson["recordIds"]);
-            var consentPatientId = await _consent.methods.getPatient().call({from: user.account,gas: 4712388})
-            
-            await axios.get(`${baseURL}/Pat/${consentPatientId}/Profile-public`).then(
-                (response)=>{
-                    var data = response.data;
-                    consentJson['Patientname'] = data['name'];
-                },
-                (error)=>{
-                    console.log("No doctor");
-                    throw(error);
-                }
-            )
+                const status = await _consent.methods.getStatus().call({from: user.account, gas: 4712388})
+                // console.log("Consent Status: " + status);
+                if(status == 2 || status == 3){
+                    
+                    // console.log(consentJson["recordIds"]);
 
-            var consentDoctorId = await _consent.methods.getDoctor().call({from: user.account,gas: 4712388})
-            consentJson["Update"] = consentDoctorId
-
-            await axios.get(`${baseURL}/Doc/${consentDoctorId}/Profile-public`).then(
-                (response)=>{
-                    var data = response.data;
-                    consentJson['Doctorname'] = data['name'];
-                },
-                (error)=>{
-                    console.log("No doctor");
-                    throw(error);
-                }
-            )
-            console.log(consentJson);
+                    var consentPatientId = await _consent.methods.getPatient().call({from: user.account,gas: 4712388})
                 
-            allConsents.push(consentJson);
-            }
+                    await axios.get(`${baseURL}/Pat/${consentPatientId}/Profile-public`).then(
+                        (response)=>{
+                            var data = response.data;
+                            consentJson['Patientname'] = data['name'];
+                        },
+                        (error)=>{
+                            // console.log("No doctor");
+                            throw(error);
+                        }
+                    )
 
-            setConsents(allConsents);
+                    var consentDoctorId = await _consent.methods.getDoctor().call({from: user.account,gas: 4712388})
+                    consentJson["Consent Data"] = consentDoctorId
+
+                    await axios.get(`${baseURL}/Doc/${consentDoctorId}/Profile-public`).then(
+                        (response)=>{
+                            var data = response.data;
+                            consentJson['Doctorname'] = data['name'];
+                        },
+                        (error)=>{
+                            // console.log("No doctor");
+                            throw(error);
+                        }
+                    )
+                    // console.log(consentJson);
+                        
+                    allConsents.push(consentJson);
+                }
+        }
+        setConsents(allConsents);
 
         });
     }
 
     return (
     
-    <Grid>
-        <Button variant="outlined" onClick={handleClickOpen} >
+    <Container >
+        <Button variant="outlined" style={{margin:"10px"}} onClick={()=>handleClickOpen(null)} >
             Create Consent
         </Button>
        <CreateConsentDialog open={open} handleClose={handleClose} web3={web3} whichDoctor={reqDoctor.current}/>
@@ -136,7 +141,7 @@ const AllConsents =({web3})=> {
             options={options}
         />
         
-    </Grid >
+    </Container >
     );
 }
 

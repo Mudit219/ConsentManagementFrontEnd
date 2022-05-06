@@ -20,6 +20,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Grid } from "@mui/material";
 import axios from "axios";
 import baseURL from "../../BackendApi/BackendConnection";
+import { toast } from "react-toastify";
 import './CreateConsentDialog.css';
 
 
@@ -29,6 +30,7 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
 
     const [value, SetValue] = React.useState([]);
     const [records,setRecords] = useState(new Set());
+    // const records
     const user = useSelector(selectUser);
     const [connections,setConnections]=useState([]);
     const [patientRecords,setPatientRecords]=useState([]);
@@ -44,10 +46,10 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
     }
 
 
-    useEffect(()=>{
-        GetDoctorConnections();
+    useEffect(async()=>{
+        await GetDoctorConnections();
         getRecords();
-        console.log("Is there anyone here",whichDoctor)
+        // console.log("Is there anyone here",whichDoctor)
 
         if(whichDoctor){
             mapSelectedDoc();
@@ -60,7 +62,7 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
 
     const mapSelectedDoc = () =>{
         connections.map((item)=>{
-            console.log(item.name + "(" + item.metaId + ")" );
+            // console.log(item.name + "(" + item.metaId + ")" );
             item.metaId == whichDoctor ? setChosenDoc(item.name + "(" + item.metaId + ")") : setChosenDoc("")}
             )
     }
@@ -69,14 +71,14 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
         let abi = require("../../contracts/ConsentManagementSystem.json")["abi"];
         let contract = new web3.eth.Contract(abi,process.env.REACT_APP_CONTRACTADDRESS);
         
-        console.log("is this called ?")
+        // console.log("is this called ?")
         
         await contract.methods.GetConsents().call({from: user.account, gas: 4712388}).then(async function (consents){
         for(var i=0;i<consents.length;i++){
             let consent_abi = require("../../contracts/Consent.json")["abi"];
             const _consent = new web3.eth.Contract(consent_abi,consents[i]);
             var AssociatedDoc = await _consent.methods.getDoctor().call({from: user.account, gas: 4712388})
-            console.log(AssociatedDoc, chosenDoc)
+            // console.log(AssociatedDoc, chosenDoc)
             // console.log(chosenDoc)
             if(AssociatedDoc ==  chosenDoc.substring(chosenDoc.indexOf("(")+1,chosenDoc.indexOf(")"))) {
                 await _consent.methods.getTemplate().call({from: user.account, gas: 4712388}).then(async function (template){
@@ -84,7 +86,7 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
                     const _template = new web3.eth.Contract(consentTemplate_abi,template);
                     var consentRecords = await _template.methods.GetConsentedRecords().call({from: user.account, gas: 4712388});
                     setRecords(new Set([...records, ...consentRecords]));
-                    console.log(consentRecords,records);
+                    // console.log(consentRecords,records);
 
                 })
             }
@@ -117,16 +119,16 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
         
         let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS);        
 
-        await contract.methods.GetConnectionFile().call({from : user.account},async function(err,res) {
+        await contract.methods.GetConnectionFile().call({from : user.account,gas:4712388},async function(err,res) {
 
             let ConnectionFileAbi = require("../../contracts/ConnectionFile.json")["abi"];
             let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
             
-            await ConnectionFileContract.methods.GetTypeConnections(1).call({from : user.account},
+            await ConnectionFileContract.methods.GetTypeConnections(1).call({from : user.account,gas:4712388},
                 async(err,AcceptedConnectionList) => {
-                console.log(AcceptedConnectionList)
+                // console.log(AcceptedConnectionList)
                 AcceptedConnectionList.forEach(async (doctorId) => {
-                    console.log(doctorId);
+                    // console.log(doctorId);
                     axios.get(`${baseURL}/Doc/${doctorId}/Profile-public`).then(
                         (response)=>{
                             setConnections([...connections,response.data]);
@@ -141,19 +143,42 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
     const saveConsent=async()=>{
         let abi = require("../../contracts/ConsentManagementSystem.json")["abi"];
         let CONTRACT_ADDRESS= process.env.REACT_APP_CONTRACTADDRESS;
-        console.log(CONTRACT_ADDRESS)    
+        // console.log(CONTRACT_ADDRESS)    
         
         let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
         
-        console.log(contract);
+        // console.log(contract);
         selectedDoc.current = chosenDoc.substring(chosenDoc.indexOf('(')+1,chosenDoc.indexOf(')'))
         
-        console.log(chosenDoc,selectedDoc.current);
+        // console.log(chosenDoc,selectedDoc.current);
 
-        console.log("This is id: ",selectedDoc.current);
-        console.log("These are records:",Array.from(records))
+        // console.log("This is id: ",selectedDoc.current);
+        // console.log("These are records:",Array.from(records))
     
-        await contract.methods.createConsent(selectedDoc.current,Array.from(records)).send({from: user.account, gas: 4712388}).then(console.log);
+        await contract.methods.createConsent(selectedDoc.current,Array.from(records)).send({from: user.account, gas: 4712388}).then(
+                (response)=>{
+                    toast.success('Consent Created!', {
+                        position: "top-right",
+                          autoClose: 2000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                        });
+                },(error)=>{
+                    toast.error('Something went wrong', {
+                        position: "top-right",
+                          autoClose: 2000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                        });
+                    throw(error)
+                }
+        );
 
         handleClose();
     }
@@ -215,7 +240,7 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
                             }
                         </Select>
                     </div>
-                    <div className='rowC'>
+                    {/* <div className='rowC'>
                         <h4> From</h4>
                         <div>
                             <DatePicker
@@ -231,7 +256,7 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
                                 className="inputStyles"
                                 selected={toDate} onChange={date => setToDate(date)} />
                         </div>
-                    </div>
+                    </div> */}
                     <Button className="add" onClick={addRecord}>+Add Record</Button>
                     </div>
                 <Grid container>
@@ -239,7 +264,9 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
                         Array.from(records).map((record) => (
                         <Grid item key={record}>
                             <Button color="primary" aria-label={record} sx={{fontSize:"15px",marginBottom:"20px", borderRadius: "10px"}} size="small" variant="contained" endIcon={<DeleteIcon />} 
-                            onClick={()=>{setRecords(records.splice(records.indexOf({record}) - 1,1))}} 
+                            onClick={()=>{
+                                setRecords(Array.from(records).filter((x) => x != record))
+                            }} 
                             >
                                 {record}
                             </Button>

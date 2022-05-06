@@ -3,6 +3,10 @@ import {useState,useEffect,useRef} from 'react'
 import LogProps from '../Components/LogProp'
 import {selectUser} from "../Components/Redux/userSlice";
 import {useSelector} from "react-redux";
+import { Container,Grid } from '@mui/material';
+import axios from 'axios';
+import baseURL from '../BackendApi/BackendConnection';
+
 
 const Logs=({web3})=>{
 
@@ -40,31 +44,36 @@ const Logs=({web3})=>{
       }, [])
 
     const FilterEvents = async (events) => {
-        console.log(events);
+        // console.log(events);
 
         for(var i=0;i<events.length;i++) {
             var event = events[i];
             if(event['event'] == "CMSConnectionStatusEvent") {
                 let connection_abi = require("../contracts/Connection.json")["abi"];
                 const _connection = new web3.eth.Contract(connection_abi,event['returnValues']['conn']);
-                
-                var associatedDoctor = await _connection.methods.getDoctor().call({from : user.account});
-                var associatedPatient = await _connection.methods.getPatient().call({from : user.account});
+                try{
+                    var associatedDoctor = await _connection.methods.getDoctor().call({from : user.account});
+                    var associatedPatient = await _connection.methods.getPatient().call({from : user.account});
 
-                if(user.role == "Doc") {
-                    if(associatedDoctor == user.account) {
-                        event["doctor"] = associatedDoctor;
-                        event["patient"] = associatedPatient;
-                        associatedLogs.current = [...associatedLogs.current,event]
+                    if(user.role == "Doc") {
+                        if(associatedDoctor == user.account) {
+                            event["doctor"] = associatedDoctor;
+                            event["patient"] = associatedPatient;
+                            associatedLogs.current = [...associatedLogs.current,event]
+                        }
+                        // console.log(associatedLogs.current)
                     }
-                    console.log(associatedLogs.current)
+                    else {
+                        if(associatedPatient == user.account) {
+                            event["doctor"] = associatedDoctor;
+                            event["patient"] = associatedPatient;
+                            associatedLogs.current = [...associatedLogs.current,event]
+                        }
+                    }
+                
                 }
-                else {
-                    if(associatedPatient == user.account) {
-                        event["doctor"] = associatedDoctor;
-                        event["patient"] = associatedPatient;
-                        associatedLogs.current = [...associatedLogs.current,event]
-                    }
+                catch{
+
                 }
                 
             }
@@ -72,73 +81,80 @@ const Logs=({web3})=>{
                 let consent_abi = require("../contracts/Consent.json")["abi"];
                 const _consent = new web3.eth.Contract(consent_abi,event['returnValues']['consent']);
                 
-                
-                var associatedDoctor = await _consent.methods.getDoctor().call({from : user.account});
-                var associatedPatient = await _consent.methods.getPatient().call({from : user.account});
+                try{
+                    var associatedDoctor = await _consent.methods.getDoctor().call({from : user.account});
+                    var associatedPatient = await _consent.methods.getPatient().call({from : user.account});
 
-                if(user.role == "Doc") {
-                    if(associatedDoctor == user.account) {
-                        event["doctor"] = associatedDoctor;
-                        event["patient"] = associatedPatient;
-                        associatedLogs.current = [...associatedLogs.current,event]
+                    if(user.role == "Doc") {
+                        if(associatedDoctor == user.account) {
+                            event["doctor"] = associatedDoctor;
+                            event["patient"] = associatedPatient;
+                            associatedLogs.current = [...associatedLogs.current,event]
+                        }
+                    }
+                    else {
+                        if(associatedPatient == user.account) {    
+                            event["doctor"] = associatedDoctor;
+                            event["patient"] = associatedPatient;
+                            associatedLogs.current = [...associatedLogs.current,event]
+                        }
                     }
                 }
-                else {
-                    if(associatedPatient == user.account) {    
-                        event["doctor"] = associatedDoctor;
-                        event["patient"] = associatedPatient;
-                        associatedLogs.current = [...associatedLogs.current,event]
-                    }
+                catch{
+                    
                 }
+                
             }
         }
         console.log("Associated Logs: ",associatedLogs.current)
         return associatedLogs.current
     }
     
-    const GetMessageFromEvent = (event) => {
+    const GetMessageFromEvent = (event,pat_name,doc_name) => {
         let message = ""
-        console.log(event)
+        let desc = ""
+        
+        // console.log(event)
         switch(event.event) {
             case "CMSConnectionStatusEvent":
-                message += "Patient : "
+                message += "Patient : "+ pat_name + " "
                 message += event["patient"];
-                message += "Doctor : ";
+                message += "Doctor : " + doc_name + " ";
                 message += event["doctor"]
-                message += "\n"
-                message += "Status : "
-                message += ConnectionToStatus[event.returnValues.status];
+                // message += "\n"
+                desc += "Connection Status : "
+                desc += ConnectionToStatus[event.returnValues.status];
                 break;
             case "CMSConsentCreatedEvent":
-                message += "Patient : "
+                message += "Patient : "+ pat_name+ " "
                 message += event["patient"];
-                message += "Doctor : ";
+                message += "Doctor : " + doc_name+ " ";
                 message += event["doctor"]
-                message += "\n"
-                message += "Records : "
-                console.log(event.returnValues["Records"])
-                message += event.returnValues["Records"].toString();
+                // message += "\n"
+                desc += "Records Granted : "
+                // console.log(event.returnValues["Records"])
+                desc += event.returnValues["Records"].toString();
                 break;
             case "CMSConsentRequestedEvent":
-                message += "Patient : "
+                message += "Patient : "+ pat_name+ " "
                 message += event["patient"];
-                message += "Doctor : ";
+                message += "Doctor : " + doc_name+ " ";
                 message += event["doctor"]
-                message += "\n"
-                message += "Requested Desc : "
-                message += event.returnValues.desc;
+                // message += "\n"
+                desc += "Requested Description : "
+                desc += event.returnValues.desc;
                 break;
             case "ConsentStatusChanged":
-                message += "Patient : "
+                message += "Patient : "+ pat_name+ " "
                 message += event["patient"];
-                message += "Doctor : ";
+                message += "Doctor : " + doc_name+ " ";
                 message += event["doctor"]
-                message += "\n"
-                message += "Status : "
-                message += ConsentToStatus[event.returnValues.status];
+                // message += "\n"
+                desc += "Consent Status : "
+                desc += ConsentToStatus[event.returnValues.status];
                 break;
         }
-        return message;
+        return [message,desc];
     }
 
     
@@ -150,17 +166,37 @@ const Logs=({web3})=>{
         console.log(contract);
         await contract.getPastEvents('AllEvents',{fromBlock:0,toBlock:'latest'},async (err,res) => {
             var notifs = []
-            
             associatedLogs.current = await FilterEvents(res.reverse());
             
-            console.log(associatedLogs.current);
+            // console.log([...new Set(associatedLogs.current.map((item) => item["doctor"]))]);
+            await axios.post(`${baseURL}/Pat/Profile-public`,[...new Set(associatedLogs.current.map((item) => item["patient"]))]).then(
+                (response)=>{
+                    // doctorConnections.push(response.data);
+                    // console.log("Thidfhiasdf",response.data)
+                    associatedLogs.current['AllPatients'] =  response.data; 
+                }
+            )
+
+            await axios.post(`${baseURL}/Doc/Profile-public`,[...new Set(associatedLogs.current.map((item) => item["doctor"]))]).then(
+                (response)=>{
+                    // doctorConnections.push(response.data);
+                    console.log("Thidfhiasdf",response.data)
+                    associatedLogs.current['AllDoctors'] =  response.data; 
+                }
+            )
 
             associatedLogs.current.forEach(log_data => {
                 var log = {}
                 log["event"] = log_data["event"]
                 log["name"] = mapEventToText[log_data['event']] + "\n"
-                log["msg"] = GetMessageFromEvent(log_data)
-                console.log(log);
+                log["patient_data"] = associatedLogs.current['AllPatients'].find(x => x["metaId"] == log_data["patient"])
+                log["doctor_data"] = associatedLogs.current['AllDoctors'].find(x => x["metaId"] == log_data["doctor"])
+                console.log(GetMessageFromEvent(log_data,log['patient_data'].name,log['doctor_data'].name))
+                let data = GetMessageFromEvent(log_data,log['patient_data'].name,log['doctor_data'].name)
+                log["msg"] = data[0];
+                log["description"]=data[1];
+                // log["doctor_data"] = 
+                // console.log(log);
                 notifs.push(log);
             });
             setLogs(notifs);
@@ -170,13 +206,16 @@ const Logs=({web3})=>{
 
 
     return (
-        <div>
+        <Container>
+        <Grid container spacing={3}>
             {
+                // console.log(logs)
                 logs.map((log) => (
-                    <LogProps key={log.name} title={log.event} data={log}/>
+                    <LogProps title={log.event} data={log}/>
                 ))
             }
-        </div>
+        </Grid>
+        </Container>
     );
 }
 

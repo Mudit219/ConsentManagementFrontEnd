@@ -17,12 +17,12 @@ const ConnectionProfile=({doctor})=>{
     }
 
     return (
-        <Grid item key={doctor.name}>
+        <Grid item key={doctor.metaId} lg={3}>
             <Card sx={{width:"100%"}}>
                 <CardMedia
                     component="img"
                     height="200"
-                    image={doctor.doctorImage}
+                    image={doctor.img}
                     alt="doctor"
                 />
                 <CardHeader title={doctor.name} style={{marginBottom:"-20%",display:'inline-flex'}} />

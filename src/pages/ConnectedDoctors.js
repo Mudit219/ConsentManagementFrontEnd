@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import RequestConnection from "../Components/PatientDashboard/RequestConnection";
+import ConnectDoctorDialog from "../Components/PatientDashboard/ConnectDoctorDialog";
 import { Container, Select } from "@mui/material";
 import axios from 'axios';
 import { useState } from "react";
@@ -9,6 +9,7 @@ import ConnectionProfile from "../Components/General/ConnectionProfile";
 import {Grid} from '@mui/material'
 import { useSelector } from "react-redux";
 import { selectUser } from "../Components/Redux/userSlice";
+import { Cookie } from "@mui/icons-material";
 
 
 
@@ -22,12 +23,12 @@ const ConnectedDoctors=({web3})=>{
         setOpen(true);
         axios.get(`${baseURL}/admin/Get-AvailableDoctors`).then(
             (response)=>{
-                console.log(response.data);
+                // console.log(response.data);
                 setAvaialbleDoctors(response.data);
-                console.log(response.data.map((item)=>item.hospitalName));
+                // console.log(response.data.map((item)=>item.hospitalName));
             },
             (error)=>{
-                console.log("No Doctors");
+                // console.log("No Doctors");
                 throw(error);
             }
         )
@@ -37,9 +38,14 @@ const ConnectedDoctors=({web3})=>{
         setOpen(false);
     };
 
-    useEffect(()=>{
-        GetConnections();
+    useEffect(async ()=>{
+       await GetConnections();
     },[])
+
+    useEffect(()=>{
+        // console.log("fsdjkafhajksdfh",connections)
+    },[connections])
+
 
     const GetConnections = async () =>  {
         let abi = require("../contracts/ConsentManagementSystem.json")["abi"];
@@ -52,17 +58,20 @@ const ConnectedDoctors=({web3})=>{
             let ConnectionFileAbi = require("../contracts/ConnectionFile.json")["abi"];
             let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
             
-            await ConnectionFileContract.methods.GetTypeConnections(1).call({from : user.account},
+            await ConnectionFileContract.methods.GetTypeConnections(1).call({from : user.account,gas:4712388},
                 async(err,AcceptedConnectionList) => {
-                console.log(AcceptedConnectionList)
-                AcceptedConnectionList.forEach(async (doctorId) => {
-                    console.log(doctorId);
-                    axios.get(`${baseURL}/Doc/${doctorId}/Profile-public`).then(
+                // console.log(AcceptedConnectionList)
+                var doctorConnections=[];
+                // await Promise.all(AcceptedConnectionList.forEach(async (doctorId) => {
+                //     console.log("This is doctor id",doctorId);
+                axios.post(`${baseURL}/Doc/Profile-public`,AcceptedConnectionList).then(
                         (response)=>{
-                            setConnections([...connections,response.data]);
+                            // doctorConnections.push(response.data);
+                            // console.log("Thidfhiasdf",response.data)
+                            setConnections(response.data); 
                         }
-                    )
-                });
+                )
+                // setConnections(doctorConnections);
             })
         })
         .catch(console.error);
@@ -70,23 +79,21 @@ const ConnectedDoctors=({web3})=>{
     }
 
     return (
-        <div>
-            <Container>
+        <Container>
             <h2>Doctors</h2>
-            <Button className='mainbutton' variant="outlined" onClick={handleClickOpen} style={{marginBottom:"10%"}}>
+            <Button className='mainbutton' variant="outlined" onClick={handleClickOpen} style={{marginBottom:"5%"}}>
                 Connect With New Doctor
             </Button>
-            <RequestConnection open={open} handleClose={handleClose} web3={web3} 
+            <ConnectDoctorDialog open={open} handleClose={handleClose} web3={web3} 
             availableDoctors={availableDoctors} />
-            <Grid container>
+            <Grid container spacing={5}>
                 {
-                    connections.map((connection)=>(
-                        <ConnectionProfile doctor={connection}/>
+                     connections.map((connection)=>(
+                        <ConnectionProfile key={connection.metaId} doctor={connection}/>
                     ))
                 }
             </Grid>
-            </Container>
-        </div>
+        </Container>
     );
 }
 

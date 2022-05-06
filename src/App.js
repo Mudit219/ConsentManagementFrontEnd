@@ -8,7 +8,6 @@ import Web3 from "web3/dist/web3.min";
 import {Box, Stack, Container} from '@mui/material';
 
 import SideMenuPatient from './Components/General/Menu'
-import Header from './Components/General/Header'
 import {selectUser} from "./Components/Redux/userSlice";
 import doctorMenu from './Components/DoctorDashboard/DoctorMenu'
 import patientMenu from './Components/PatientDashboard/PatientMenu'
@@ -56,13 +55,13 @@ export default function App() {
             (
             <>
             {/* <Header /> */}
-            <Box sx={{ display: 'flex',  backgroundColor: '#A8D0E6', padding: 10, minWidth: "98vw", minHeight: "98.7vh", overflow: "auto"   }}>
+            <Box sx={{ display: 'flex',  backgroundColor: '#A8D0E6', paddingTop: 10, minWidth: "98vw", minHeight: "98.7vh", overflow: "auto"   }}>
             
               {
                 // -----------------------------------------------------------------------------
                 // Directing to Doctor Dashboard
                 (user.role == "Doc")
-                ?(
+                ?web3.current &&(
                   <Fragment>
                     <SideMenuPatient tabs={doctorMenu}/>
                     <Routes >
@@ -75,7 +74,7 @@ export default function App() {
                       <Route exact path="/" element={user && (<Navigate replace to= "/E-Health-Records"/>)} />
                     </Routes>
                   </Fragment>)
-                :(
+                :web3.current &&(
                 //-----------------------------------------------------------------------------
                 // Directing to Patient Dashboard
                   <Fragment>

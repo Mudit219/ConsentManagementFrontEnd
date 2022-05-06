@@ -9,12 +9,12 @@ function MetaNavigate(){
     const dispatch = useDispatch()
     const navigate = useNavigate();;
     const ReleaseAccount = () => {
-      console.log("Dispatching the account ")
+    //   console.log("Dispatching the account ")
       dispatch(logout());
       navigate("/login");
     }
     window.ethereum.on('accountsChanged', function (accounts) {
-        console.log("Changing Accounts here . . . .")
+        // console.log("Changing Accounts here . . . .")
         if(user){
             ReleaseAccount();
         }

@@ -1,5 +1,5 @@
 import React from "react";
-import { Card,CardHeader,CardContent,CardActions } from '@mui/material';
+import { Card,CardHeader,CardContent,CardActions,CardMedia, Typography } from '@mui/material';
 import { typography } from '@mui/system';
 import { Container } from "@mui/material";
 import { Button } from "@mui/material";
@@ -10,26 +10,26 @@ import { Grid } from "@mui/material";
 const NotificationProp=({title,data,button1Val,button2Val,button1ValClick,button2ValClick})=>{
     return (
     <Grid item lg={12} key={data.metaId}>
-        <Card sx={{height:"30vh",width: "100%"}}>
-            <CardHeader title={title}/>
+        <Card sx={{width: "100%"}}>
+            <Typography variant="h5" style={{fontWeight:'bold',padding:10}}> {title} </Typography>
             <CardContent className="subtitle" style={{display:'flex',flexDirection:'row'}}>
-                <img src='https://st.depositphotos.com/1771835/1477/i/450/depositphotos_14779771-stock-photo-portrait-of-confident-young-doctor.jpg' style={{height:"150px",width:"150px",borderRadius:"50%"}} />
+                <CardMedia image={data.img} style={{height:"100px",width:"100px",borderRadius:"50%"}} />
                 <Container style={{display:'flex',flexDirection:'column'}}>
                     <div style={{display:'flex',flexDirection:'row'}}>
                         {
                             data.name && (
                                 <typography  variant="body2" color="text.secondary" style={{marginTop:"3%",fontSize:'1.5rem'}}>
-                                    {data.name}
+                                    {data.name+" ("+data.metaId +")"}
                                 </typography >
                             )
                         }
-                        {
+                        {/* {
                             data.msg && (
                                 <typography  variant="body2" color="text.secondary" style={{marginLeft: "1%", marginTop:"3%",fontSize:'1.5rem'}}>
                                     {data.msg}
                                 </typography >
                             )
-                        }
+                        } */}
                     </div>
                     {
                         data.description && (
@@ -39,21 +39,22 @@ const NotificationProp=({title,data,button1Val,button2Val,button1ValClick,button
                         )
                     }
                 </Container>
-            </CardContent>
-            {
-                console.log(button1Val!="",button2Val!="")
+                {
+                // console.log(button1Val!="",button2Val!="")
             }
             {
                 button1Val && button2Val && (
-                    <CardActions style={{marginLeft:"30%",marginTop:"-7%"}}>
+                    <CardActions style={{}}>
                         {
                             // console.log("I ma here")
                         }
-                        <Button size="small" onClick={() => button1ValClick(data.metaId)} variant="contained" sx={{ marginLeft: "700px",backgroundColor:"#2E9CCA"}}> {button1Val}</Button>
-                        <Button size="small" onClick={button2ValClick} variant="contained" sx={{ marginLeft: "700px",backgroundColor:"#464866"}}> {button2Val}</Button>
+                        <Button size="small" onClick={() => button1ValClick(data.metaId)} variant="contained" sx={{width:"175px", backgroundColor:"#2E9CCA"}}> {button1Val}</Button>
+                        <Button size="small" onClick={button2ValClick} variant="contained" sx={{ marginLeft: "500px",backgroundColor:"#464866"}}> {button2Val}</Button>
                     </CardActions>
                 )
             }
+            </CardContent>
+            
         </Card>
     </Grid> 
     )

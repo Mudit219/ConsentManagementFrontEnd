@@ -8,23 +8,113 @@ import axios from "axios";
 import baseURL from "../BackendApi/BackendConnection";
 import { useSelector } from "react-redux";
 import { selectUser } from "../Components/Redux/userSlice";
+import RequestConsentDialog from "../Components/DoctorDashboard/RequestConsentDialog";
+import { Container } from "@mui/material";
 // import "./RequestConsent.css"
-
+import MUIDataTable from "mui-datatables";
 
 const RequestConsent = ({web3}) => {
-  // const [formValues, setFormValues] = useState(formDefaultValues);
-  // const patientId = useRef('')
-  const selectedPatient = useRef("")
-  const [description, SetDescription] = useState("")
-  // const [patientPhone, setPatientPhone] = useState('')
-  // const [connectedDoctors,setConnectedPatients] = useState([]);
   const [connectionsProfile,setConnectionsProfile] = useState([]);
+  const [consents,setConsents] = React.useState();
   const user = useSelector(selectUser);
 
-  useEffect(()=>{
-    GetPatientConnections();
-  },[]);
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => {
+      setOpen(true);
+      GetPatientConnections();
+  }
 
+  const handleClose = () => {
+      setOpen(false);
+  }
+
+  const ConsentHeader = [
+    {
+        name: "id",
+        label: "#",
+        options: {
+            filter: true,
+            sort: true,
+            customBodyRender: (rowIndex, dataIndex) => dataIndex.rowIndex + 1 
+    }},
+    "consentId",
+    "Patientname",
+    "Doctorname",
+    "Description"]
+
+  const options = {
+    filterType: 'dropdown',
+    search:'true',
+    customToolbarSelect: () => {},
+    selectableRows: false,
+    download:false,
+    print:false
+  };
+
+  useEffect(async () => {
+    await accessConsents();
+  }, [])
+  
+  const accessConsents = async ()=>{
+    let abi = require("../contracts/ConsentManagementSystem.json")["abi"];  
+    // console.log(web3);  
+    let consentJson = {"consentId" : "","Patientname":"","Doctorname":"","Consent Data":""};
+    let contract = new web3.eth.Contract(abi,process.env.REACT_APP_CONTRACTADDRESS); 
+    await contract.methods.GetConsents().call({from: user.account, gas: 4712388}).then(async function (consents){
+        var allConsents = [];
+        // console.log(consents.length);
+        for(var i=0;i<consents.length;i++){
+            consentJson = {"consentId" : consents[i],"Patientname":"","Doctorname":"","Description":""};
+            let consent_abi = require("../contracts/Consent.json")["abi"];
+            const _consent = new web3.eth.Contract(consent_abi,consents[i]);
+            const status = await _consent.methods.getStatus().call({from: user.account, gas: 4712388})
+            // console.log("Consent Status: " + status);
+            if(status == 2){
+                await _consent.methods.getTemplate().call({from : user.account,gas: 4712388}).then(async (res) => { 
+                  let consent_template_abi = require("../contracts/ConsentTemplate.json")["abi"]
+                  const ConsentTemplate = new web3.eth.Contract(consent_template_abi,res)
+                  const desc = await ConsentTemplate.methods.GetRequestedDesc().call({from : user.account,gas: 4712388})
+                  consentJson["Description"] = desc
+                })
+            }
+                // console.log(consentJson["recordIds"]);
+            if(status == 3) {
+                consentJson["Description"] = "Accepted"
+            }
+                var consentPatientId = await _consent.methods.getPatient().call({from: user.account,gas: 4712388})
+            
+                await axios.get(`${baseURL}/Pat/${consentPatientId}/Profile-public`).then(
+                    (response)=>{
+                        var data = response.data;
+                        consentJson['Patientname'] = data['name'];
+                    },
+                    (error)=>{
+                        // console.log("No doctor");
+                        throw(error);
+                    }
+                )
+
+                var consentDoctorId = await _consent.methods.getDoctor().call({from: user.account,gas: 4712388})
+                consentJson["Consent Data"] = consentDoctorId
+
+                await axios.get(`${baseURL}/Doc/${consentDoctorId}/Profile-public`).then(
+                    (response)=>{
+                        var data = response.data;
+                        consentJson['Doctorname'] = data['name'];
+                    },
+                    (error)=>{
+                        // console.log("No doctor");
+                        throw(error);
+                    }
+                )
+                // console.log(consentJson);
+                    
+                allConsents.push(consentJson);
+    }
+    setConsents(allConsents);
+
+    });
+}
 
   const GetPatientConnections = async () =>  {
     let abi = require("../contracts/ConsentManagementSystem.json")["abi"];
@@ -39,9 +129,9 @@ const RequestConsent = ({web3}) => {
         
         await ConnectionFileContract.methods.GetTypeConnections(1).call({from : user.account},
             async(err,AcceptedConnectionList) => {
-            console.log(AcceptedConnectionList)
+            // console.log(AcceptedConnectionList)
             AcceptedConnectionList.forEach(async (doctorId) => {
-                console.log(doctorId);
+                // console.log(doctorId);
                 axios.get(`${baseURL}/Pat/${doctorId}/Profile-public`).then(
                     (response)=>{
                         setConnectionsProfile([...connectionsProfile,response.data]);
@@ -53,67 +143,22 @@ const RequestConsent = ({web3}) => {
     .catch(console.error);
 }
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    console.log("This is full value: " + selectedPatient.current);
-
-    selectedPatient.current = selectedPatient.current.substring(selectedPatient.current.indexOf("(")+1,selectedPatient.current.indexOf(")"));
-    
-    console.log("This is selected: " + selectedPatient.current);
-
-    console.log("These are form values " + selectedPatient.current + " " + description);
-    // Deploying the contract 
-
-    let abi = require("../contracts/ConsentManagementSystem.json")["abi"];
-    let CONTRACT_ADDRESS= process.env.REACT_APP_CONTRACTADDRESS;
-    console.log(CONTRACT_ADDRESS)    
-    
-    let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
-    
-    // console.log(contract,patientId);
-
-    await contract.methods.requestConsent(description,selectedPatient.current).send({from: user.account, gas: 4712388}).then(console.log);
-
-    console.log("requestConsent is working")
-    SetDescription('');
-  };
-
+  
 
   return (
-    <form onSubmit={handleSubmit}>
-        <div class="container">
-            <h1 style={{ color: 'black' }}>RequestConsent</h1>
-            <hr />
-            <Grid item className="Patient" >
-                <div><label for="Patient"><b>Patient Name</b></label></div>
-                <TextField id="outlined-basic" select required label="Enter Patient Name" variant="outlined" style={{ marginTop: '10px' ,width:'500px'}} value={selectedPatient.current} onChange={(e) => selectedPatient.current = e.target.value} >
-                { 
-                    connectionsProfile.map((item)=>(
-                    <MenuItem key={item.metaId} value= {item.name + "(" + item.metaId + ")" } >
-                      {item.name + "(" + item.metaId + ")" }
-                    </MenuItem>
-                    ))
-                }
-                </TextField>
-            </Grid>
-            <Grid item className="Mobile">
-                <div><label for="Mobile" ><b>Mobile Number</b></label></div>
-                <TextField id="standard-textarea" label="Mobile" variant="outlined" required style={{ marginTop: '10px' ,width:'500px'}} multiline value={"78979845"} 
-                // onChange={(e) => setPatientPhone(e.target.value)} 
-                >
-                </TextField>
-            </Grid>
-            
-            <Grid item className="Description">
-                <div><label for="Description"><b>Description</b></label></div>
-                <TextField id="standard-textarea" label="Enter the description for records" variant="outlined" required style={{ marginTop: '10px' ,width:'500px'}} multiline value={description} onChange={(e) => SetDescription(e.target.value)} >
-                </TextField>
-            </Grid>
-            <Button class="registerbtn" type="submit" style={{ marginTop: '1rem' } } >Request Consent</Button>
-            
-        </div >
-    </form >
+    <Container style={{}}>
+      <Button variant="filled" style={{backgroundColor:"#464866",marginBottom:"2%"}} onClick={handleOpen}> Request Consent </Button>
+      <RequestConsentDialog open={open} handleClose={handleClose} connectionsProfile={connectionsProfile} web3={web3}/>
+      <MUIDataTable
+            title={"Consent Table"}
+            data={consents}
+            columns={ConsentHeader}
+            options={options}
+        />
+    </Container>
+    // 
 
   )
-};
+}
+
 export default RequestConsent;

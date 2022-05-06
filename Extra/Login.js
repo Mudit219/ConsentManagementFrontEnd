@@ -21,7 +21,7 @@ const Login = () => {
     if (account) {
       axios.get(`${baseURL}/${role}${account}/Valid`).then(
         (response) => {
-          console.log("Check valid or not " + response.data);
+          // console.log("Check valid or not " + response.data);
           if (response.data == false)
             setfirstLogin(true);
           else

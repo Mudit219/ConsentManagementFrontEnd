@@ -31,7 +31,7 @@ const DisplayRecords = ({ web3 }) => {
 
   useEffect(async () => {
     await accessConsents();
-    console.log(ConsentedRecords);
+    // console.log(ConsentedRecords);
     // displayEHR();
   }, []);
 
@@ -42,18 +42,18 @@ const DisplayRecords = ({ web3 }) => {
   const checkEHR = (EHR) => {
     const map = new Map(EHR.map(pos => [pos.ehrId, pos]));
     const AllRecords = [...map.values()];
-    console.log(EHealthRecords);
+    // console.log(EHealthRecords);
     return AllRecords;
   }
 
   const accessConsents = async () => {
     let abi = require("../contracts/CMS.json");
-    console.log(web3);
+    // console.log(web3);
     let consentJson = { "patientId": "", "recordIds": [] };
     let contract = new web3.eth.Contract(abi, process.env.REACT_APP_CONTRACTADDRESS);
     await contract.methods.GetConsents().call({ from: user.account, gas: 4712388 }).then(async function (consents) {
       var allConsetedRecords = [];
-      console.log(consents.length);
+      // console.log(consents.length);
       for (var i = 0; i < consents.length; i++) {
         consentJson = { "patientId": "", "recordIds": [] };
         let consent_abi = require("../contracts/Consent.json")["abi"];
@@ -64,11 +64,11 @@ const DisplayRecords = ({ web3 }) => {
           var consentRecords = await _template.methods.GetConsentedRecords().call({ from: user.account, gas: 4712388 });
           // console.log(consentRecords);
           consentJson["recordIds"] = [...consentRecords];
-          console.log(consentJson);
+          // console.log(consentJson);
           // return consentJson;
         }
         )
-        console.log(consentJson["recordIds"]);
+        // console.log(consentJson["recordIds"]);
         var consentPatientId = await _consent.methods.getPatient().call({ from: user.account, gas: 4712388 })
         consentJson["patientId"] = consentPatientId;
         allConsetedRecords.push(consentJson);
@@ -80,8 +80,8 @@ const DisplayRecords = ({ web3 }) => {
   const displayEHR = () => {
     if (user.role === "Doc_") {
       // if(ConsentedRecords.length!==0){
-      console.log("Blehasdafsd");
-      console.log(ConsentedRecords);
+      // console.log("Blehasdafsd");
+      // console.log(ConsentedRecords);
       axios.post(`${baseURL}/${user.role}${user.account}/E-Health-Records`, ConsentedRecords,
         {
           headers: {

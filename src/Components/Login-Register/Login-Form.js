@@ -42,7 +42,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
   const token = useRef("");
   // create state variables for each input
   const [firstName, setFirstName] = useState("");
-  const [phoneNumber, setphoneNumber] = useState("");
+  const [abhaId, setabhaId] = useState("");
   const [doctorLicense, setDoctorLicense] = useState("");
   const [password,setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
@@ -57,7 +57,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
   
   useEffect(() => {
     setfirstLogin(firstLoginRoot);
-    console.log(chainId, account, firstLogin, firstLoginRoot);
+    // console.log(chainId, account, firstLogin, firstLoginRoot);
   },[firstLoginRoot,account]);
 
   useEffect(()=>{
@@ -76,12 +76,12 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
     let abi = require("../../contracts/ConsentManagementSystem.json")["abi"];
     let CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACTADDRESS;
     
-    console.log(abi)
-    console.log(CONTRACT_ADDRESS);
+    // console.log(abi)
+    // console.log(CONTRACT_ADDRESS);
 
     let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
   
-    console.log(contract);
+    // console.log(contract);
 
     // You'lll do a backend call here to store on this user on the blockchain
 
@@ -100,7 +100,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
   
   const RegisterSubmit = (e) => {
     e.preventDefault();
-    console.log("dsfadsf");
+    // console.log("dsfadsf");
     if(!account){
       toast.warn('Please connnect your Metamask', {
         position: "top-right",
@@ -120,12 +120,13 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
               metaId: account,
               name: firstName,
               doctorLicense: doctorLicense,
-              password:password
+              password:password,
+              doctorImage:'/Profile_img.png'
             })
             .then(
               (response) => {
                 Register();
-                console.log("Working!!!!" + response.data);
+                // console.log("Working!!!!" + response.data);
                 toast.success('Registeration Successful!', {
                   position: "top-right",
                     autoClose: 2000,
@@ -138,7 +139,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
                 handleClose();
                 },
               (error) => {
-                toast.error('Invalid Credentials!', {
+                toast.error('User already exists!', {
                   position: "top-right",
                     autoClose: 2000,
                     hideProgressBar: false,
@@ -147,10 +148,10 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
                     draggable: true,
                     progress: undefined,
                   });
-                console.log(account);
-                console.log(firstName);
-                console.log(doctorLicense);
-                console.log(password);
+                // console.log(account);
+                // console.log(firstName);
+                // console.log(doctorLicense);
+                // console.log(password);
                 // setLoginError("Failed");
                 throw error;
               }
@@ -161,8 +162,9 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
             .post(`${baseURL}/admin/Add${role}`, {
               metaId: account,
               name: firstName,
-              phone: phoneNumber,
-              password:password
+              abhaId: abhaId,
+              password:password,
+              patientImage:'/Profile_img.png'
             })
             .then(
               (response) => {
@@ -176,7 +178,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
                     draggable: true,
                     progress: undefined,
                   });
-                console.log("Working!!!!" + response.data);
+                // console.log("Working!!!!" + response.data);
                 handleClose();
                 },
               (error) => {
@@ -189,10 +191,10 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
                     draggable: true,
                     progress: undefined,
                   });
-                console.log(account);
-                console.log(firstName);
-                console.log(phoneNumber);
-                console.log(password);
+                // console.log(account);
+                // console.log(firstName);
+                // console.log(abhaId);
+                // console.log(password);
                 // setLoginError("Failed");
                 throw error;
               }
@@ -210,11 +212,11 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
   const ConnectWallet = async () => {
     // activateBrowserWallet();
     await activate(injectedConnector);
-    console.log("Existing User?: " + firstLogin);
-    console.log("My Account is: " + account);
+    // console.log("Existing User?: " + firstLogin);
+    // console.log("My Account is: " + account);
     axios.get(`${baseURL}/${role}/${account}/Valid`).then(
       (response) => {
-        console.log("Check valid or not " + response.data);
+        // console.log("Check valid or not " + response.data);
         toast.success('Please Register!', {
           position: "top-right",
             autoClose: 2000,
@@ -243,15 +245,15 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
 
   const LoginSubmit = (e)=>{
     e.preventDefault();
-    console.log("I am here")
+    // console.log("I am here")
     axios.post(`${baseURL}/login`,{
       username: account,
       password: password
     }).then(
       (response)=>{
-        console.log(response.headers);
+        // console.log(response.headers);
         token.current = response.headers['authorization'];
-        console.log("Token: " + token.current);
+        // console.log("Token: " + token.current);
         axios
         .get(`${baseURL}/${role}/${account}/Profile`,{
           headers:{
@@ -289,7 +291,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
                 draggable: true,
                 progress: undefined,
               });
-            console.log("Couldn't fetch user details");
+            // console.log("Couldn't fetch user details");
             setPassword("");
             // setLoginError("Failed");
             throw(error);
@@ -307,7 +309,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
             draggable: true,
             progress: undefined,
           });
-        console.log("Invalid Password!")
+        // console.log("Invalid Password!")
         // throw(error);
       }
     )
@@ -342,6 +344,17 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
               onChange={(e) => setFirstName(e.target.value)}
             />
 
+            {role=="Pat" && (
+              <TextField
+              label="Abha Number"
+              variant="outlined"
+              multiline
+              required
+              value={abhaId}
+              onChange={(e) => setabhaId(e.target.value)}
+            />
+            )}
+
             <TextField
               label="Password"
               type="password"
@@ -351,22 +364,12 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            {role=="Pat" && (
-              <TextField
-              label="Phone Number"
-              variant="outlined"
-              multiline
-              required
-              value={phoneNumber}
-              onChange={(e) => setphoneNumber(e.target.value)}
-            />
-            )}
+            
             
             {role == "Doc" && (
                 <TextField
                 label="Doctor License"
                 variant="outlined"
-                multiline
                 required
                 value={doctorLicense}
                 onChange={(e) => setDoctorLicense(e.target.value)}
