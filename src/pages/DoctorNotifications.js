@@ -19,10 +19,10 @@ const DoctorNotifications=({web3})=>{
     const [timeBasedSequenceEvents,setTimeBasedSequenceEvents] = useState([]);
     const user = useSelector(selectUser);
 
-    useEffect(async ()=>{
-        await fetchConnectionRequests();
-        await fetchConsentGivenRequest();
-        await GetNotificationViaEvents();
+    useEffect(()=>{
+        fetchConnectionRequests();
+        // fetchConsentGivenRequest();
+        // GetNotificationViaEvents();
     },[])
 
 
@@ -160,7 +160,7 @@ const DoctorNotifications=({web3})=>{
 
             const _consent = new web3.eth.Contract(consent_abi,consents[i]);
             const status = await _consent.methods.getStatus().call({from: user.account, gas: 4712388})
-            // console.log("Consent Status: " + status);
+            console.log("Consent Status: " + status);
             if(status == 2){
                 await _consent.methods.getTemplate().call({from: user.account, gas: 4712388}).then(async function (template){
                 let consentTemplate_abi = require("../contracts/ConsentTemplate.json")["abi"];
