@@ -13,25 +13,14 @@ import { Cookie } from "@mui/icons-material";
 
 
 
-const ConnectedDoctors=({web3})=>{
+const ConnectedPatients=({web3})=>{
     const [open, setOpen] = React.useState(false);
-    const [availableDoctors,setAvaialbleDoctors] = useState([]);
     const user = useSelector(selectUser);
     const [connections,setConnections] = useState([]);
 
     const handleClickOpen = () => {
         setOpen(true);
-        axios.get(`${baseURL}/admin/Get-AvailableDoctors`).then(
-            (response)=>{
-                // console.log(response.data);
-                setAvaialbleDoctors(response.data);
-                // console.log(response.data.map((item)=>item.hospitalName));
-            },
-            (error)=>{
-                // console.log("No Doctors");
-                throw(error);
-            }
-        )
+       
     };
 
     const handleClose = () => {
@@ -64,10 +53,10 @@ const ConnectedDoctors=({web3})=>{
                 var doctorConnections=[];
                 // await Promise.all(AcceptedConnectionList.forEach(async (doctorId) => {
                 //     console.log("This is doctor id",doctorId);
-                axios.post(`${baseURL}/Doc/Profile-public`,AcceptedConnectionList).then(
+                axios.post(`${baseURL}/Pat/Profile-public`,AcceptedConnectionList).then(
                         (response)=>{
                             // doctorConnections.push(response.data);
-                            console.log("Thidfhiasdf",response.data)
+                            // console.log("Thidfhiasdf",response.data)
                             setConnections(response.data); 
                         }
                 )
@@ -79,12 +68,8 @@ const ConnectedDoctors=({web3})=>{
     }
 
     return (
-        <Container>
-            <Button className='mainbutton' variant="container" onClick={handleClickOpen} style={{marginBottom:"5%",backgroundColor:"#25274D",color:"white"}}>
-                Connect With New Doctor
-            </Button>
-            <ConnectDoctorDialog open={open} handleClose={handleClose} web3={web3} 
-            availableDoctors={availableDoctors} />
+        <Container style={{marginTop:"2%"}}>
+            <h1>Your Connections</h1>
             <Grid container spacing={5}>
                 {
                      connections.map((connection)=>(
@@ -96,4 +81,4 @@ const ConnectedDoctors=({web3})=>{
     );
 }
 
-export default ConnectedDoctors;
+export default ConnectedPatients;

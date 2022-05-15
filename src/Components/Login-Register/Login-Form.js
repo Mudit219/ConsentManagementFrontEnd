@@ -1,7 +1,7 @@
 import React, { useState, useEffect,useRef } from "react";
 import { makeStyles } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
+// import Button from "@material-ui/core/Button";
 import { useNavigate } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -16,7 +16,7 @@ import baseURL from "../../BackendApi/BackendConnection";
 import { selectUser } from "../Redux/userSlice";
 // import abi from '../contracts/ConsentManagementSystem.json'
 import { ToastContainer, toast } from 'react-toastify';
-import { Fab } from "@mui/material";
+import { Fab,Container,Button } from "@mui/material";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -32,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
       width: "300px",
     },
     "& .MuiButtonBase-root": {
+      backgroundColor:"#25274D",
+      color:"white",
+      borderRadius:"10px",
       margin: theme.spacing(2),
     },
   },
@@ -182,7 +185,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
                 handleClose();
                 },
               (error) => {
-                toast.error('Invalid Credentials', {
+                toast.error('User already exists', {
                   position: "top-right",
                     autoClose: 2000,
                     hideProgressBar: false,
@@ -317,10 +320,10 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
 
 
   return (
-    <div>
+    <Container>
       {
         !account && (
-          <Button variant="contained" onClick={ConnectWallet} style={{marginTop:"10px",marginLeft:"50px"}}>
+          <Button variant="contained" onClick={ConnectWallet} style={{marginTop:"10px",marginLeft:"50px",backgroundColor:"#25274D"}}>
             Connect Metamask Wallet
           </Button>
         )
@@ -329,7 +332,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
         (firstLogin == true) ? (
         <form className={classes.root} onSubmit={RegisterSubmit}>
           {account && (
-            <Fab variant="extended" color="secondary"  sx={{borderRadius:"20px"}}>{"Metamask: " + account}</Fab>
+            <Button variant="contained" color="info" sx={{borderRadius:"30px",backgroundColor:"#25274D"}}>{"Metamask: " + account}</Button>
           )}
           <h4>
             {" "}
@@ -382,10 +385,10 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
         )
         :(
           <form className={classes.root} onSubmit={LoginSubmit}>
-          <Fab variant="extended" color="secondary" sx={{borderRadius:"20px"}}>{"Metamask: " + account}</Fab>
-            <Button variant="contained" onClick={()=>disconnect}>
+          <Button variant="extended" color="secondary" sx={{borderRadius:"20px"}}>{"Metamask: " + account}</Button>
+            {/* <Button variant="contained" onClick={()=>disconnect}>
               Disconnect
-            </Button>
+            </Button> */}
             <p>
               {" "}
               Please Enter your password:
@@ -408,7 +411,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
           </form>
           )
       }
-    </div>
+    </Container>
   );
 };
 

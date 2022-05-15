@@ -166,6 +166,7 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
                           draggable: true,
                           progress: undefined,
                         });
+                        window.location.reload(false);
                 },(error)=>{
                     toast.error('Something went wrong', {
                         position: "top-right",

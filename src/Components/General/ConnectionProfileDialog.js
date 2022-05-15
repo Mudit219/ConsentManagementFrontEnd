@@ -14,41 +14,39 @@ import { Container } from "@mui/material";
 
 const ConnectionProfileDialog=(props)=>{
 
-    const {open,handleClose,doctor} = props;
+    const {open,handleClose,profile} = props;
 
     return (
         <Dialog
             open={open}
             onClose={handleClose}
-            aria-labelledby={doctor.name}
-            maxWidth="md">
+            aria-labelledby={profile.name}
+            >
             <DialogTitle id="scroll-dialog-title" style={{textAlign:"center"}} >
-            <img src={doctor.img} style={{height:"200px",width:"200px",borderRadius:"20%"}}/>
+            <img src={profile.img} style={{height:"200px",width:"200px",borderRadius:"20%"}}/>
                 <Typography variant="h4" color="text.primary" >
-                        {doctor.name}
+                        {profile.name}
                 </Typography>
             </DialogTitle>
             <DialogContent>
-            <form style={{ backgroundColor: "#FFFFFF",marginTop:"5%" }}>
                     <Grid container spacing={5}>
                         {
-                            Object.keys(doctor).filter(function(item){
+                            Object.keys(profile).filter(function(item){
                                 return item!='img' && item!='authorities' && item!='name'
                             }).map((field)=>(
-                                <Grid item lg={4}>
+                                <Grid item lg={6}>
                                     <TextField
                                     id="outlined-read-only-input"
                                     label={field}
-                                    multiline
+                                    // multiline
                                     variant="filled"
-                                    defaultValue={doctor[field]}
+                                    defaultValue={profile[field]}
                                     InputProps={{
                                         readOnly: true,
                                     }}/>
                                 </Grid>))
                         } 
                     </Grid>
-            </form>           
             </DialogContent>
             <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>

@@ -129,7 +129,7 @@ const AllConsents =({web3})=> {
     return (
     
     <Container >
-        <Button variant="outlined" style={{margin:"10px"}} onClick={()=>handleClickOpen(null)} >
+        <Button variant="contained" style={{margin:"10px",backgroundColor:"#25274D",color:"white"}} onClick={()=>handleClickOpen(null)} >
             Create Consent
         </Button>
        <CreateConsentDialog open={open} handleClose={handleClose} web3={web3} whichDoctor={reqDoctor.current}/>

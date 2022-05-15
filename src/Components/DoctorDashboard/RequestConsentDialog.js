@@ -98,8 +98,8 @@ const RequestConsentDialog=({open,handleClose,connectionsProfile,web3})=>{
                     </Grid>
                     
                     <DialogActions style={{ marginTop: '1rem',marginLeft:"35%"} }>
-                        <Button type="submit" style={{backgroundColor:"#29648A" }} onClick={handleClose} >Request Consent</Button>
-                        <Button style={{marginLeft:'3rem',backgroundColor:"#464866" }} onClick={handleClose} >Cancel</Button>
+                        <Button type="submit" style={{backgroundColor:"#25274D",color:"white" }} onClick={handleClose} >Send Request</Button>
+                        <Button style={{marginLeft:'3rem',backgroundColor:"#464866",color:"white" }} onClick={handleClose} >Cancel</Button>
                     </DialogActions>
 
                     

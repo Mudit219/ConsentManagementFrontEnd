@@ -9,6 +9,7 @@ import { Grid, Button } from '@mui/material';
 import baseURL from '../BackendApi/BackendConnection';
 import NotificationProp from '../Components/General/NotficationProp';
 import { Container } from '@mui/material';
+import { toast } from 'react-toastify';
 
 
 const DoctorNotifications=({web3})=>{
@@ -19,10 +20,10 @@ const DoctorNotifications=({web3})=>{
     const [timeBasedSequenceEvents,setTimeBasedSequenceEvents] = useState([]);
     const user = useSelector(selectUser);
 
-    useEffect(()=>{
-        fetchConnectionRequests();
-        // fetchConsentGivenRequest();
-        // GetNotificationViaEvents();
+    useEffect(async()=>{
+        await fetchConnectionRequests();
+        await fetchConsentGivenRequest();
+        await GetNotificationViaEvents();
     },[])
 
 
@@ -142,7 +143,19 @@ const DoctorNotifications=({web3})=>{
         // console.log(contract);
         // console.log("This is patient: ",patientId);
     
-        await contract.methods.DoctorAcceptConnection(patientId).send({from : user.account, gas: 4712388}).then(console.log)
+        await contract.methods.DoctorAcceptConnection(patientId).send({from : user.account, gas: 4712388}).then(
+            (response)=>{
+                toast.success('Connection Accepted', {
+                    position: "top-right",
+                      autoClose: 2000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                    });
+                window.location.reload(false);
+            })
         .catch(console.error);
     }
 

@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../Components/Redux/userSlice";
 import baseURL from "../BackendApi/BackendConnection";
 import { Grid } from "@mui/material";
-import { TextField } from "@mui/material";
+import { TextField,Button } from "@mui/material";
 import { Container,Typography } from "@mui/material";
 
 const UserProfile = () => {
@@ -46,6 +46,7 @@ const UserProfile = () => {
 
     return (
         <Container>
+            <Button variant="container" style={{backgroundColor:"#25274D",color:"white",marginLeft:"90%"}}>Edit</Button>
             {
                 Profile != null && user.role == "Pat" &&
                     (

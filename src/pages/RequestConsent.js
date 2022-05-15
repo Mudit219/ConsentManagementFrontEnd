@@ -130,14 +130,12 @@ const RequestConsent = ({web3}) => {
         await ConnectionFileContract.methods.GetTypeConnections(1).call({from : user.account},
             async(err,AcceptedConnectionList) => {
             // console.log(AcceptedConnectionList)
-            AcceptedConnectionList.forEach(async (doctorId) => {
-                // console.log(doctorId);
-                axios.get(`${baseURL}/Pat/${doctorId}/Profile-public`).then(
-                    (response)=>{
-                        setConnectionsProfile([...connectionsProfile,response.data]);
-                    }
-                )
-            });
+            // 
+            await axios.post(`${baseURL}/Pat/Profile-public`,AcceptedConnectionList).then(
+                (response)=>{
+                    setConnectionsProfile(response.data);
+                }
+            )
         })
     })
     .catch(console.error);
@@ -147,7 +145,7 @@ const RequestConsent = ({web3}) => {
 
   return (
     <Container style={{}}>
-      <Button variant="filled" style={{backgroundColor:"#464866",marginBottom:"2%"}} onClick={handleOpen}> Request Consent </Button>
+      <Button variant="filled" style={{backgroundColor:"#464866",marginBottom:"2%",color:"white"}} onClick={handleOpen}> Request Consent </Button>
       <RequestConsentDialog open={open} handleClose={handleClose} connectionsProfile={connectionsProfile} web3={web3}/>
       <MUIDataTable
             title={"Consent Table"}
