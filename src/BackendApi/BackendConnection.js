@@ -1,2 +1,2 @@
-const baseURL = "https://4800-49-204-164-243.in.ngrok.io";
+const baseURL = "http://192.168.254.13:9090";
 export default baseURL;
