@@ -16,8 +16,8 @@ import baseURL from "../../BackendApi/BackendConnection";
 import { selectUser } from "../Redux/userSlice";
 // import abi from '../contracts/ConsentManagementSystem.json'
 import { ToastContainer, toast } from 'react-toastify';
-import { Fab,Container,Button } from "@mui/material";
-
+import { Fab,Container } from "@mui/material";
+import { Grid, Card, CardMedia, CardActionArea, Typography, Button } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,28 +40,45 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
+const LoginForm = ({ handleClose, web3 }) => {
   const classes = useStyles();
   const token = useRef("");
+
   // create state variables for each input
   const [firstName, setFirstName] = useState("");
   const [abhaId, setabhaId] = useState("");
   const [doctorLicense, setDoctorLicense] = useState("");
   const [password,setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
-  const [firstLogin, setfirstLogin] = useState(firstLoginRoot);
+  const [firstLogin, setfirstLogin] = useState(true);
+  const [role, setRole] = useState('Pat');
 
   const dispatch = useDispatch();
 
   const injectedConnector = new InjectedConnector({
-    supportedChainIds: [1, 3, 4, 5, 42, 1337],
+    supportedChainIds: [8081],
   });
   const { chainId, account, activate, active, library } = useWeb3React();
   
+  
+
   useEffect(() => {
-    setfirstLogin(firstLoginRoot);
+    axios.get(`${baseURL}/admin/Valid/${role}/${account}`).then(
+      (response)=>{
+        console.log("Check valid or not " + response.data);
+
+        if(response.data==false)
+          setfirstLogin(true);
+        else
+          setfirstLogin(false);
+
+      },
+      (error)=>{
+        throw(error);
+      }
+    )
     // console.log(chainId, account, firstLogin, firstLoginRoot);
-  },[firstLoginRoot,account]);
+  },[account,role]);
 
   useEffect(()=>{
 
@@ -72,32 +89,6 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
   const routeChange = () => {
     let path = `/E-Health-Records`;
     navigate(path);
-  };
-
-
-  const Register = async () => {
-    let abi = require("../../contracts/ConsentManagementSystem.json")["abi"];
-    let CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACTADDRESS;
-    
-    // console.log(abi)
-    // console.log(CONTRACT_ADDRESS);
-
-    let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
-  
-    // console.log(contract);
-
-    // You'lll do a backend call here to store on this user on the blockchain
-
-    // if(role === "Doc"){
-    //   await contract.methods.AddNewUser(account,"doctor").send({from : process.env.REACT_APP_OWNERADDRESS , gas: 4712388}).then(console.log)
-    //   await contract.methods.DoctorExists().call({from:account}).then(console.log);
-    //   console.log("You have successfully registered on the CMS Platform");
-    // }
-    // else if(role === "Pat"){
-    //   await contract.methods.AddNewUser(account,"patient").send({from : process.env.REACT_APP_OWNERADDRESS , gas: 4712388}).then(console.log)
-    //   console.log("You have successfully registered on the CMS Platform");
-    // }
-
   };
 
   
@@ -128,7 +119,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
             })
             .then(
               (response) => {
-                Register();
+                // Register();
                 // console.log("Working!!!!" + response.data);
                 toast.success('Registeration Successful!', {
                   position: "top-right",
@@ -171,7 +162,7 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
             })
             .then(
               (response) => {
-                Register();
+                // Register();
                 toast.success('Registeration Successful!', {
                   position: "top-right",
                     autoClose: 2000,
@@ -318,22 +309,55 @@ const LoginForm = ({ handleClose, role, firstLoginRoot,web3 }) => {
     )
   }
 
+  
 
+  const handleRoleSelection = (gender) => {
+    setRole(gender);
+  };
+
+  
   return (
-    <Container>
+    <Container sx={{paddingY: "30px"}}>
       {
-        !account && (
-          <Button variant="contained" onClick={ConnectWallet} style={{marginTop:"10px",marginLeft:"50px",backgroundColor:"#25274D"}}>
-            Connect Metamask Wallet
-          </Button>
-        )
+        <Grid container spacing={2} sx={{marginTop: "20px"}}>
+          <Grid item xs={12} sm={2}>
+          </Grid>
+          <Grid item xs={12} sm={4}  style={{ borderRadius: '5%',backgroundColor: role === 'Doc' ? 'rgba(0,0,0,0.5)' : 'transparent' }}>
+            <Card onClick={() => handleRoleSelection('Doc')} raised={role === 'Doc'}>
+              <CardActionArea>
+                <CardMedia component="img" src={require("../../Assets/Images/doctor-image.jpg")} style={{ height: '100%', width: '100%'  , display: 'flex', alignItems: 'center',justifyContent: 'center' }} alt="Doctor" />
+                <Typography variant="h6" align="center" style={{ marginTop: '8px' }}>
+                  Doctor
+                </Typography>
+              </CardActionArea>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={4} style={{ borderRadius: '5%', backgroundColor: role === 'Pat' ? 'rgba(0,0,0,0.5)' : 'transparent' }}>
+            <Card onClick={() => handleRoleSelection('Pat')} raised={role === 'Pat'}>
+              <CardActionArea>
+                <CardMedia component="img" src={require("../../Assets/Images/patient-image.png")} style={{ height: '100%', width: '100%'  , display: 'flex', alignItems: 'center',justifyContent: 'center' }} alt="Patient" />
+                <Typography variant="h6" align="center" style={{ marginTop: '8px' }}>
+                  Patient
+                </Typography>
+              </CardActionArea>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={2}>
+          </Grid>
+        </Grid>
       }
       {
         (firstLogin == true) ? (
         <form className={classes.root} onSubmit={RegisterSubmit}>
-          {account && (
-            <Button variant="contained" color="info" sx={{borderRadius:"30px",backgroundColor:"#25274D"}}>{"Metamask: " + account}</Button>
-          )}
+          {
+          active ? (
+                    <Button variant="contained" color="info" sx={{borderRadius:"30px",backgroundColor:"#25274D"}}>{"✅ Wallet : " + account}</Button>
+                  ) : (
+            <Button variant="contained" onClick={ConnectWallet} style={{marginTop:"10px",marginLeft:"50px",backgroundColor:"#25274D"}}>
+              Connect Metamask Wallet
+            </Button>
+          )
+          }
           <h4>
             {" "}
             Please fill in the details:

@@ -14,7 +14,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './index.css'
 
-
 function getLibrary(provider){
   const library = new Web3Provider(provider)
   library.pollingInterval = 12000
@@ -23,26 +22,25 @@ function getLibrary(provider){
 
 ReactDOM.render( 
   <Web3ReactProvider getLibrary={getLibrary}>
-  <MetamaskProvider>
-  <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-  
-    <App / >
+    <MetamaskProvider>
       
-  </PersistGate>
-  <ToastContainer position="top-right"
-                autoClose={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable />
+      <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+              <App />
+          </PersistGate>
+          <ToastContainer position="top-right"
+                      autoClose={false}
+                      newestOnTop={false}
+                      closeOnClick
+                      rtl={false}
+                      pauseOnFocusLoss
+                      draggable />
 
-  </Provider>
-  </MetamaskProvider>
-  </Web3ReactProvider>,
-    document.getElementById('root')
-);
+      </Provider>
+    </MetamaskProvider>
+  </Web3ReactProvider>
+,document.getElementById('root'));
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
