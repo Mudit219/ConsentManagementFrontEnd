@@ -19,7 +19,7 @@ const ConnectDoctorDialog = ({ web3,open,handleClose,availableDoctors }) => {
     const [selectedHospital,setSelectedHospital] = useState([]);
     const availableHospitals = [... new Set(availableDoctors.map((item)=>item.hospitalName))]
     const user = useSelector(selectUser);
-
+    
     const SendConnectionToBlockchain = async (e) => {
         e.preventDefault();
         handleClose();

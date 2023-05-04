@@ -23,7 +23,7 @@ const ConnectedDoctors=({web3})=>{
         setOpen(true);
         axios.get(`${baseURL}/admin/Get-AvailableDoctors`).then(
             (response)=>{
-                // console.log(response.data);
+                console.log("Availiable Doctors",response.data);
                 setAvaialbleDoctors(response.data);
                 // console.log(response.data.map((item)=>item.hospitalName));
             },
@@ -79,7 +79,7 @@ const ConnectedDoctors=({web3})=>{
     }
 
     return (
-        <Container>
+        <Container style={{marginTop:"5%"}}>
             <Button className='mainbutton' variant="container" onClick={handleClickOpen} style={{marginBottom:"5%",backgroundColor:"#25274D",color:"white"}}>
                 Connect With New Doctor
             </Button>

@@ -144,7 +144,7 @@ const RequestConsent = ({web3}) => {
   
 
   return (
-    <Container style={{}}>
+    <Container style={{marginTop: "5%"}}>
       <Button variant="filled" style={{backgroundColor:"#464866",marginBottom:"2%",color:"white"}} onClick={handleOpen}> Request Consent </Button>
       <RequestConsentDialog open={open} handleClose={handleClose} connectionsProfile={connectionsProfile} web3={web3}/>
       <MUIDataTable

@@ -7,7 +7,8 @@ import {selectUser} from "../Components/Redux/userSlice";
 import {useSelector} from "react-redux";
 import MUIDataTable from "mui-datatables";
 import { Container } from "@mui/material";
-
+import { Button } from "@material-ui/core";
+import HospitalModalDialog from "../Components/ConnectHospital/modal";
 
 const DisplayRecords=({web3})=>{
     const _ = require('lodash');
@@ -16,6 +17,9 @@ const DisplayRecords=({web3})=>{
     const user =  useSelector(selectUser);
     const [EHealthRecords,setEHealthRecord] = useState([]);
     const [ConsentedRecords,setConsentedRecords] = useState([]);
+    const [hospitalConnectOpen,sethospitalConnectOpen] = useState(false);
+    const [connectedHospitals,setConnectedHospitals] = useState([]);
+
     const options = {
       filterType: 'dropdown',
       search:'true',
@@ -35,6 +39,7 @@ const DisplayRecords=({web3})=>{
     },[]);
 
     useEffect(async ()=>{
+      await GetConnectedHospitals();
       await accessConsents();
       // console.log(ConsentedRecords);
       // displayEHR();
@@ -42,7 +47,7 @@ const DisplayRecords=({web3})=>{
 
     useEffect(()=>{
       displayEHR();
-    },[ConsentedRecords])
+    },[ConsentedRecords,connectedHospitals])
 
     const checkEHR=(EHR)=>{
       const map = new Map(EHR.map(pos => [pos.ehrId, pos]));
@@ -51,6 +56,28 @@ const DisplayRecords=({web3})=>{
       return AllRecords;
     }
     
+    const GetConnectedHospitals = async () => {
+      let abi = require("../contracts/ConsentManagementSystem.json")["abi"];
+      let CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACTADDRESS;
+      
+      let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS);        
+      let ConnectedHospitals = [];
+
+      console.log("Here is our user",user,CONTRACT_ADDRESS)
+      await contract.methods.GetConnectionFile().call({from : user.account},async function(err,res) {
+  
+          console.log("Connection File is here",res)
+          let ConnectionFileAbi = require("../contracts/ConnectionFile.json")["abi"];
+          let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
+          
+          ConnectionFileContract.methods.getHopitalConnections().call({from : user.account,gas:4712388}, function(err,res) {
+            setConnectedHospitals([...new Set(res)].filter((name) => {
+              return name != ""
+            }));
+          });
+        })
+    }
+
     const accessConsents= async ()=>{
       let abi = require("../contracts/ConsentManagementSystem.json")["abi"];  
       // console.log(web3);  
@@ -83,14 +110,21 @@ const DisplayRecords=({web3})=>{
       });
     }
     
-    const displayEHR=()=>{       
+    const displayEHR= async ()=>{
+      
+      console.log("EHR Connected hospitals",connectedHospitals);
+
       if(user.role === "Doc"){
         // if(ConsentedRecords.length!==0){
           // console.log("Blehasdafsd");
           // console.log(ConsentedRecords);
           // console.log("asdfasdf");
           // console.log(columnsDoc.map((item)=>_.camelCase(item)));
-          axios.post(`${baseURL}/${user.role}/${user.account}/E-Health-Records`,ConsentedRecords, 
+          console.log("This is the doctor dashboard",ConsentedRecords,connectedHospitals);
+          axios.post(`${baseURL}/${user.role}/${user.account}/E-Health-Records`,{
+            "recordsList" : ConsentedRecords,
+            "hospitalNames" : connectedHospitals
+          },
           {
               headers: { 
                   'Authorization': user.token,
@@ -100,9 +134,7 @@ const DisplayRecords=({web3})=>{
             (response)=>{
 
               var records = response.data;
-              records.map((record) => {
-                record["ehrId"] = parseInt(record["ehrId"])
-              })
+              
               // console.log("ahahahahahahha",records)
               setEHealthRecord(checkEHR(records));
               // setEHealthRecord(titleCase(EHealthRecords));
@@ -117,7 +149,7 @@ const DisplayRecords=({web3})=>{
           // }
       }
       if(user.role === "Pat"){
-        axios.get(`${baseURL}/${user.role}/${user.account}/E-Health-Records`, 
+        axios.post(`${baseURL}/${user.role}/${user.account}/E-Health-Records`,connectedHospitals,
         {
             headers: { 
                 'Authorization': user.token,
@@ -125,12 +157,13 @@ const DisplayRecords=({web3})=>{
             }
         }).then(
           (response)=>{
-            // console.log("bla bla bla bla:",response);
-
             var records = response.data;
-            records.map((record) => {
-              record["ehrId"] = parseInt(record["ehrId"])
-            })
+            
+            console.log("bla bla bla bla:",records.flat(1));
+            
+            console.log("bla bla bla bla:",records.flat(1));
+            records = records.flat(1)
+            
             // console.log("ahahahahahahha",records)
             setEHealthRecord(records);
           },
@@ -141,9 +174,23 @@ const DisplayRecords=({web3})=>{
         )
       }
     }
+
+    const HospitalModalClose = () => {
+      sethospitalConnectOpen(false);
+      GetConnectedHospitals();
+    }
     return (
         
-      <Container>
+      <Container 
+      style={{marginTop: "5%", width: "70vw"}}>
+        {
+            <Button onClick={() => sethospitalConnectOpen(true)} style={{marginBottom:"5%",backgroundColor:"#252525",color:"white"}}>
+              Connect Hospital
+            </Button>
+        }
+        {
+          <HospitalModalDialog open={hospitalConnectOpen} handleClose={HospitalModalClose} web3={web3}/>
+        }
         {
           user.role =="Pat"?(
             <MUIDataTable

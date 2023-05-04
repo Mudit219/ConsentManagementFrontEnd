@@ -1,9 +1,8 @@
-  pragma solidity ^0.7.5;
+  pragma solidity ^0.5.2;
   pragma experimental ABIEncoderV2;
   import "./ConsentFile.sol";
   import "./ConnectionFile.sol";
   import "./Connection.sol";
-  
   // /* 
   //  * This is the consent factory contract that handles consents and version of
   //  * consents.
@@ -160,9 +159,6 @@
       UserToConnectionFile[_user] = file;
     }
 
-    /*
-    Adding Connected Hospitals for a User into Connection File
-    */
 
     
 
@@ -243,11 +239,6 @@
       emit CMSConnectionStatusEvent(address(_deets.Conn),Connection.Status.requested);
     }
     
-    // function UserCreateHospitalConnection(string memory hospital) AccountExists(tx.origin) public {
-    //   ConnectionFile UserConnectionFile = UserToConnectionFile[tx.origin];
-    //   UserConnectionFile.AddHospitalConnection(hospital);
-    // }
-
     function DoctorAcceptConnection(address patient) ConnectionStatusExists(patient,tx.origin,Connection.Status.requested) public {
       ConnectionFile DoctorConnectionFile = UserToConnectionFile[tx.origin];
       ConnectionFile PatientConnectionFile = UserToConnectionFile[patient];

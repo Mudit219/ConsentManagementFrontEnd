@@ -38,7 +38,7 @@ export default function App() {
     const startWeb3 = async () => {
       await window.ethereum.enable();
       const provider = new Web3.providers.HttpProvider(
-        "https://liberty20.shardeum.org/"
+        "http://127.0.0.1:8545"
       );
       web3.current = new Web3(provider);
       console.log(web3.current)
@@ -111,8 +111,8 @@ export default function App() {
                 !user && (
                   <Box>
                     <Routes>
-                      <Route path="/login" element={<Login web3={web3.current}/>} />
-                      <Route path="/" element={<LandingPage web3={web3.current}/>} />  
+                      <Route path="/login" element={<LandingPage web3={web3.current}/>} />
+                      <Route path="*" element={<Navigate replace to= "/login"/>} />  
                      
                     </Routes>
                   </Box> 

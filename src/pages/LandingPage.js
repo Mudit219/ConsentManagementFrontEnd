@@ -43,8 +43,8 @@ const LandingPage = ({web3}) => {
 
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const supportedChainIds = [8081]
-  const [supported,setSupported] = useState(false);
+  const supportedChainIds = [1337]
+  const [supported,setSupported] = useState(true);
   
   const injectedConnector = new InjectedConnector({
     supportedChainIds: supportedChainIds,
@@ -53,16 +53,16 @@ const LandingPage = ({web3}) => {
   const { chainId, account, activate, active, library } = useWeb3React();
   
   useEffect(() => {
-    console.log("Inside Use Effect chainging ChainId",chainId,active,account)
-    if(!active) {
-      activate(injectedConnector)
-    }
-    if(supportedChainIds.includes(chainId)) {
-      setSupported(true)
-    }
-    else {
-      setSupported(false)
-    }
+    // console.log("Inside Use Effect chainging ChainId",chainId,active,account)
+    // if(!active) {
+    //   activate(injectedConnector)
+    // }
+    // if(supportedChainIds.includes(chainId)) {
+    //   setSupported(true)
+    // }
+    // else {
+    //   setSupported(false)
+    // }
   },[chainId,account,library]);
   
   const handleOpen = async() => {
@@ -82,18 +82,18 @@ const LandingPage = ({web3}) => {
 
   const handleNonSupportOpen = () => {
     
-    console.log("Inside Use Effect chainging ChainId",chainId,active,account)
-    if(!active) {
-      activate(injectedConnector)
-    }
-    if(supportedChainIds.includes(chainId)) {
-      setSupported(true)
-      handleOpen(true);
-    }
-    else {
-      setSupported(false)
-      alert("You have been connected to the wrong Chain. Please Connect to Liberty Shardeum 2.x")
-    }
+    // console.log("Inside Use Effect chainging ChainId",chainId,active,account)
+    // if(!active) {
+    //   activate(injectedConnector)
+    // }
+    // if(supportedChainIds.includes(chainId)) {
+    //   setSupported(true)
+    //   handleOpen(true);
+    // }
+    // else {
+    //   setSupported(false)
+    //   alert("You have been connected to the wrong Chain. Please Connect to Liberty Shardeum 2.x")
+    // }
   }
   return (
     

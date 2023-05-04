@@ -128,7 +128,7 @@ const AllConsents =({web3})=> {
 
     return (
     
-    <Container >
+    <Container style={{marginTop:"50px"}}>
         <Button variant="contained" style={{margin:"10px",backgroundColor:"#25274D",color:"white"}} onClick={()=>handleClickOpen(null)} >
             Create Consent
         </Button>

@@ -1,4 +1,4 @@
-pragma solidity ^0.7.5;
+pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 import "./Consent.sol";
 
@@ -37,7 +37,7 @@ contract ConsentFile {
     _;
   }
 
-  
+
   /* The constructor of the file. Also attaches it to an owner */
   constructor (address payable _user,Role _role,address _CMS) public
   {

@@ -1,2 +1,3 @@
 node_modules/
 contract-testing/build/*
+contract-testing/.secret

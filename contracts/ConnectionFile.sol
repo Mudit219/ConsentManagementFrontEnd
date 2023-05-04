@@ -1,4 +1,4 @@
-pragma solidity ^0.7.5;
+pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 import "./Connection.sol";
 
@@ -25,14 +25,12 @@ contract ConnectionFile {
   /* The list of all consents */
   Connection[] listOfConnections;
 
-  string[] private HospitalConnections;
-
-  mapping(string=>bool) private AcceptedHospitalConnections;
-
+  string[3] HospitalConnections;
+  uint8 currentHospitalCount = 0;
+  mapping(string=>bool) AcceptedHospitalConnections;
   /* Events that are sent when things happen */
   event ConnectionAdded(address indexed file,address indexed user, Role role, address indexed connection);
-  event HospitalConnectionAdded(address indexed file,address indexed user,Role role, string indexed hospital);
-
+  
   /* A modifier */
   modifier onlyByUser()
   {
@@ -52,6 +50,21 @@ contract ConnectionFile {
     CMS = _CMS;
     user = _user;
     role = _role;
+  }
+
+  function AddHospitalConnection(string memory hos) CMSorUser() public 
+  { 
+    
+    // if(!AcceptedHospitalConnections[hos]) {
+      HospitalConnections[currentHospitalCount] = hos;
+      currentHospitalCount++;
+    //   AcceptedHospitalConnections[hos] = true;
+    // }
+  }
+
+  function getHopitalConnections() onlyByUser() public view returns (string[3] memory)
+  {
+    return HospitalConnections;
   }
 
   function GetNumTypeConnections(Connection.Status state) CMSorUser() private view returns(uint256) {
@@ -113,35 +126,12 @@ contract ConnectionFile {
     emit ConnectionAdded(address(this), user, role, address(_connect));
   }
 
-  function AddHospitalConnection(string memory _hospital) CMSorUser() public 
-  { 
-    
-    if(!AcceptedHospitalConnections[_hospital]) {
-      HospitalConnections.push(_hospital);
-      AcceptedHospitalConnections[_hospital] = true;
-      emit HospitalConnectionAdded(address(this), user, role, _hospital);
-    }
-  }
   
-  
-  function getHopitalConnections() onlyByUser() public view returns (string[] memory)
-  {
-    string[] memory HospitalsToRet = new string[](HospitalConnections.length);
-    
-    uint256 cnt = 0;
-    for(uint256 i=0;i<HospitalConnections.length;i++) {
-      if(AcceptedHospitalConnections[HospitalConnections[i]]) {
-        HospitalsToRet[cnt] = HospitalConnections[i];
-        cnt++;
-      }
-    }
-    return HospitalsToRet;
-  }
-  
-  function disconnectHospital(string memory _hospital) onlyByUser() public {
-    AcceptedHospitalConnections[_hospital] = false;
-  }
-  
+
+  // function HosConn() public {
+  //   string memory myString = string("Hello, world!");
+  // }
+
   /* Retrieve a list of all consents in the file */
   function getListOfConnections () onlyByUser() public view returns (Connection[] memory)
   {
