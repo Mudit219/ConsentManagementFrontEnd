@@ -43,7 +43,7 @@ const LandingPage = ({web3}) => {
 
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const supportedChainIds = [1337]
+  const supportedChainIds = [1337,8082]
   const [supported,setSupported] = useState(true);
   
   const injectedConnector = new InjectedConnector({

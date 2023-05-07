@@ -53,10 +53,10 @@ module.exports = {
     //  gasPrice: web3.utils.toWei('50', 'gwei'),
     },
     sphinx: {
-      networkCheckTimeout: 100000,    
-      timeoutBlocks: 200,
+      networkCheckTimeout: 1000000,    
+      timeoutBlocks: 1500,
       // addressIndex: 2, 
-      provider: () => new HDWalletProvider(mnemonic, `https://sphinx.shardeum.org/`),
+      provider: () => new HDWalletProvider(mnemonic, `https://sphinx.shardeum.org`),
       network_id: 8082,
       confirmations: 2,
       skipDryRun: true, 
