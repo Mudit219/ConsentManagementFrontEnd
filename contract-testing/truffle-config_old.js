@@ -18,11 +18,11 @@
  *
  */
 
-const HDWalletProvider = require('@truffle/hdwallet-provider');
+// const HDWalletProvider = require('@truffle/hdwallet-provider');
 //
-const fs = require('fs');
-const mnemonic = fs.readFileSync(".secret").toString().trim();
-// const web3 = require('web3');
+// const fs = require('fs');
+// const mnemonic = fs.readFileSync(".secret").toString().trim();
+
 
 module.exports = {
   /**
@@ -36,7 +36,7 @@ module.exports = {
    */
 
   contracts_build_directory: "../src/contracts",
-  
+
   networks: {
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.
@@ -48,23 +48,13 @@ module.exports = {
      host: "127.0.0.1",     // Localhost (default: none)
      port: 8545,            // Standard Ethereum port (default: none)
      network_id: "*",       // Any network (default: none)
-    //  gasPrice: web3.utils.toWei('50', 'gwei'),
-    },
-    sphinx: {
-      networkCheckTimeout: 1000000,    
-      timeoutBlocks: 2000,
-      // addressIndex: 2, 
-      provider: () => new HDWalletProvider(mnemonic, `https://sphinx.shardeum.org/`),
-      network_id: 8082,
-      confirmations: 2,
-      skipDryRun: true, 
     },
     // Another network with more advanced options...
     advanced: {
     // // //   // port: 8777,             // Custom port
     // // //   // network_id: 1342,       // Custom network
-      // gas: 50000000,           // Gas sent with each transaction (default: ~6700000)
-      // gasPrice: 8000000,  // 20 gwei (in wei) (default: 100 gwei)
+      gas: 50000000,           // Gas sent with each transaction (default: ~6700000)
+      gasPrice: 8000000,  // 20 gwei (in wei) (default: 100 gwei)
     //   // from: account,        // Account to send txs from (default: accounts[0])
     //   // websocket: true        // Enable EventEmitter interface for web3 (default: false)
     },
@@ -94,7 +84,7 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      version: "0.7.5",    // Fetch exact version from solc-bin (default: truffle's version)
+      version: "0.5.17",    // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       settings: {          // See the solidity docs for advice about optimization and evmVersion
        optimizer: {
