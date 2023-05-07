@@ -38,6 +38,7 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
     const [toDate, setToDate] = useState(new Date());
     const selectedDoc = useRef("");
     const [chosenDoc,setChosenDoc] = useState(selectedDoc.current);
+    const [connectedHospitals,setConnectedHospitals] = useState([]);
 
     const addRecord = () => {
         setRecords(new Set([...records, value]));
@@ -48,13 +49,16 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
 
     useEffect(async()=>{
         await GetDoctorConnections();
-        getRecords();
-        // console.log("Is there anyone here",whichDoctor)
+        await GetConnectedHospitals();
 
         if(whichDoctor){
             mapSelectedDoc();
         }
     },[whichDoctor])
+
+    useEffect(async () => {
+        await getRecords();
+    },[connectedHospitals])
 
     useEffect(() => {
         GetConsentedRecordsFromBlockchain();
@@ -94,8 +98,34 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
         })
     }
 
-    const getRecords=()=>{
-        axios.get(`${baseURL}/${user.role}/${user.account}/E-Health-Records`, 
+
+    const GetConnectedHospitals = async () => {
+        let abi = require("../../contracts/ConsentManagementSystem.json")["abi"];
+        let CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACTADDRESS;
+        
+        let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS);        
+        var ConnectedHospitals = [];
+  
+        console.log("Here is our user",user,CONTRACT_ADDRESS)
+        await contract.methods.GetConnectionFile().call({from : user.account},async function(err,res) {
+    
+            console.log("Connection File is here",res)
+            let ConnectionFileAbi = require("../../contracts/ConnectionFile.json")["abi"];
+            let ConnectionFileContract = new web3.eth.Contract(ConnectionFileAbi,res);
+            
+            await ConnectionFileContract.methods.getHopitalConnections().call({from : user.account,gas:4712388}, async function(err,res) {
+                console.log("Inside Contract Hospitals",res)
+                setConnectedHospitals([...new Set(res)].filter((name) => {return name != ""}))
+            });
+          })
+
+          return ConnectedHospitals;
+      }
+
+    const getRecords= async()=>{
+
+        console.log("Connected Hospitals",connectedHospitals)
+        axios.post(`${baseURL}/${user.role}/${user.account}/E-Health-Records`,connectedHospitals,
         {
             headers: { 
                 'Authorization': user.token,
@@ -103,8 +133,8 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
             }
         }).then(
             (response)=>{
-            //   console.log("bla bla bla bla:",response);
-              setPatientRecords(response.data);
+              console.log("bla bla bla bla:",response.data.flat(1));
+              setPatientRecords(response.data.flat(1));
             },
             (error)=>{
             // console.log("bla bla bla blasdfadsfsdf:",error);
@@ -126,7 +156,7 @@ const CreateConsentDialog = ({web3,open,handleClose,whichDoctor})=>{
             
             await ConnectionFileContract.methods.GetTypeConnections(1).call({from : user.account,gas:4712388},
                 async(err,AcceptedConnectionList) => {
-                // console.log(AcceptedConnectionList)
+                console.log("Accepted COnnection List",AcceptedConnectionList)
                 AcceptedConnectionList.forEach(async (doctorId) => {
                     // console.log(doctorId);
                     axios.get(`${baseURL}/Doc/${doctorId}/Profile-public`).then(

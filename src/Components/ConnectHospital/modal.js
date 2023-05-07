@@ -121,7 +121,7 @@ const HospitalModalDialog = ({ open, handleClose, web3}) => {
           await ConnectionFileContract.methods.disconnectHospital(selectedHospital).send({from : user.account,gas:4712388}).then(
             (response)=>{
                 console.log("Got correct call")
-                toast.success('Connection Successful !', {
+                toast.success('Disconnection Successful !', {
                     position: "top-right",
                       autoClose: 2000,
                       hideProgressBar: false,
@@ -132,7 +132,7 @@ const HospitalModalDialog = ({ open, handleClose, web3}) => {
                     });
             },(error)=>{
                 console.log("Got wrong call")
-                toast.error('Connection Failed !!', {
+                toast.error('Disconnection Failed !!', {
                     position: "top-right",
                       autoClose: 2000,
                       hideProgressBar: false,

@@ -33,7 +33,7 @@ const ConnectDoctorDialog = ({ web3,open,handleClose,availableDoctors }) => {
         let contract = new web3.eth.Contract(abi,CONTRACT_ADDRESS); 
       
         // console.log(contract);
-    
+        
         await contract.methods.PatientCreateConnection(selectedDoc).send({from : user.account, gas: 5500000}).then(
             (response)=>{
                 toast.success('Request has been sent!', {
@@ -62,6 +62,7 @@ const ConnectDoctorDialog = ({ web3,open,handleClose,availableDoctors }) => {
         return;
     }
 
+    
     return (
         <div>
             <Dialog open={open} onClose={handleClose} className='DialogBox' disableEnforceFocus>
@@ -77,13 +78,14 @@ const ConnectDoctorDialog = ({ web3,open,handleClose,availableDoctors }) => {
                                 label="Hospital"
                                 type="text"
                                 style={{ width: 450 }}
+                                fullWidth
                                 select
                                 required
                                 variant="outlined"
                             >
                                 {
                                     availableHospitals.map((item)=>(
-                                        <MenuItem key={item} value={item}>
+                                        <MenuItem key={item} value={item} style={{width:"100%", justifyContent: "left" , marginLeft: "20px"}}>
                                             {item}
                                         </MenuItem>
                                     ))
@@ -100,6 +102,7 @@ const ConnectDoctorDialog = ({ web3,open,handleClose,availableDoctors }) => {
                                 type="text"
                                 select
                                 style={{ width: 450 }}
+                                fullWidth
                                 multiline
                                 rows={4}
                                 variant="outlined">
@@ -109,7 +112,7 @@ const ConnectDoctorDialog = ({ web3,open,handleClose,availableDoctors }) => {
                                         if(item.hospitalName == selectedHospital){
                                             // console.log("Called multiple times")
                                             return (
-                                            <MenuItem key={item.doctorMetaId} value={item.doctorMetaId}>
+                                            <MenuItem key={item.doctorMetaId} value={item.doctorMetaId} style={{width:"100%", justifyContent: "left" , marginLeft: "20px"}}>
                                                 {item.doctorName + " (" + item.doctorMetaId + ")"}
                                             </MenuItem>
                                             )

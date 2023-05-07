@@ -21,11 +21,23 @@ const ConnectedDoctors=({web3})=>{
 
     const handleClickOpen = () => {
         setOpen(true);
+
+
         axios.get(`${baseURL}/admin/Get-AvailableDoctors`).then(
             (response)=>{
-                console.log("Availiable Doctors",response.data);
-                setAvaialbleDoctors(response.data);
-                // console.log(response.data.map((item)=>item.hospitalName));
+                // console.log("Availiable Doctors",response.data);
+                
+                var doctors = response.data;
+                
+                
+                
+                
+                doctors = doctors.filter((doc) => {
+                    return !(connections.map((conn) => conn.metaId).includes(doc.doctorMetaId)) 
+                })
+
+                setAvaialbleDoctors(doctors);
+
             },
             (error)=>{
                 // console.log("No Doctors");
@@ -64,10 +76,12 @@ const ConnectedDoctors=({web3})=>{
                 var doctorConnections=[];
                 // await Promise.all(AcceptedConnectionList.forEach(async (doctorId) => {
                 //     console.log("This is doctor id",doctorId);
+                
                 axios.post(`${baseURL}/Doc/Profile-public`,AcceptedConnectionList).then(
                         (response)=>{
                             // doctorConnections.push(response.data);
                             console.log("Thidfhiasdf",response.data)
+                            
                             setConnections(response.data); 
                         }
                 )

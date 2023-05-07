@@ -24,9 +24,9 @@ const ConnectionProfileDialog=(props)=>{
             >
             <DialogTitle id="scroll-dialog-title" style={{textAlign:"center"}} >
             <img src={profile.img} style={{height:"200px",width:"200px",borderRadius:"20%"}}/>
-                <Typography variant="h4" color="text.primary" >
-                        {profile.name}
-                </Typography>
+            <Typography variant="h4" color="text.primary" >
+                {profile.name}
+            </Typography>
             </DialogTitle>
             <DialogContent>
                     <Grid container spacing={5}>
@@ -34,16 +34,17 @@ const ConnectionProfileDialog=(props)=>{
                             Object.keys(profile).filter(function(item){
                                 return item!='img' && item!='authorities' && item!='name'
                             }).map((field)=>(
-                                <Grid item lg={6}>
-                                    <TextField
+                                <Grid key={field} item lg={6}>
+                                    { <TextField
                                     id="outlined-read-only-input"
                                     label={field}
+                                    key={field}
                                     // multiline
                                     variant="filled"
                                     defaultValue={profile[field]}
                                     InputProps={{
                                         readOnly: true,
-                                    }}/>
+                                    }}/> }
                                 </Grid>))
                         } 
                     </Grid>

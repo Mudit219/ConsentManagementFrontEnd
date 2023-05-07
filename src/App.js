@@ -32,7 +32,6 @@ export default function App() {
     const { chainId, account, activate, active,library } = useWeb3React()
     const user =  useSelector(selectUser);
 
-    
     const web3 = useRef();
     
     const startWeb3 = async () => {
@@ -63,7 +62,7 @@ export default function App() {
               (
               <>
               {/* <Header /> */}
-              <Box sx={{ display: 'flex', minWidth: "98vw", minHeight: "98.7vh", overflow: "auto" }}>
+              <Box sx={{ display: 'flex', minWidth: "98vw", minHeight: "98.7vh", overflow: "auto" , paddingTop: "5%"}}>
               
                 {
                   // -----------------------------------------------------------------------------

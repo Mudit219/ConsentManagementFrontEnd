@@ -12,8 +12,8 @@ import HospitalModalDialog from "../Components/ConnectHospital/modal";
 
 const DisplayRecords=({web3})=>{
     const _ = require('lodash');
-    const columnsPat = ["EhrID", "AbhaID","DoctorName", "Hospital Name", "diagnosis", "Prescription", "Date"]
-    const columnsDoc = ["EhrID", "PatientName","PatientPhone","DoctorName", "Hospital Name", "Diagnosis", "Prescription", "Date"]
+    const columnsPat = ["EHR ID", "Abha ID","Doctor Name", "Hospital Name", "Diagnosis", "Prescription", "Date"]
+    const columnsDoc = ["EHR ID", "Patient Name","Patient Phone","Doctor Name", "Hospital Name", "Diagnosis", "Prescription", "Date"]
     const user =  useSelector(selectUser);
     const [EHealthRecords,setEHealthRecord] = useState([]);
     const [ConsentedRecords,setConsentedRecords] = useState([]);
@@ -50,9 +50,9 @@ const DisplayRecords=({web3})=>{
     },[ConsentedRecords,connectedHospitals])
 
     const checkEHR=(EHR)=>{
+      // console.log("This is the Ehealth Records:",EHealthRecords);
       const map = new Map(EHR.map(pos => [pos.ehrId, pos]));
       const AllRecords = [...map.values()];
-      // console.log("This is the Ehealth Records:",EHealthRecords);
       return AllRecords;
     }
     
@@ -135,8 +135,21 @@ const DisplayRecords=({web3})=>{
 
               var records = response.data;
               
-              // console.log("ahahahahahahha",records)
-              setEHealthRecord(checkEHR(records));
+              records = checkEHR(records)
+
+              var new_records = []
+              records.map((item) => {
+                var new_record = {}
+                columnsDoc.map((field) => {
+                  new_record[field] = item[_.camelCase(field)]
+                })
+                new_records.push(new_record)
+              })
+              
+
+
+              console.log("ahahahahahahha",new_records)
+              setEHealthRecord(new_records);
               // setEHealthRecord(titleCase(EHealthRecords));
               
               // console.log(EHealthRecords);
@@ -164,8 +177,20 @@ const DisplayRecords=({web3})=>{
             console.log("bla bla bla bla:",records.flat(1));
             records = records.flat(1)
             
-            // console.log("ahahahahahahha",records)
-            setEHealthRecord(records);
+
+            var new_records = []
+            records.map((item) => {
+              var new_record = {}
+              columnsDoc.map((field) => {
+                new_record[field] = item[_.camelCase(field)]
+              })
+              new_records.push(new_record)
+            })
+            
+
+
+            console.log("ahahahahahahha",new_records)
+            setEHealthRecord(new_records);
           },
           (error)=>{
           // console.log("bla bla bla blasdfadsfsdf:",error);
@@ -182,9 +207,9 @@ const DisplayRecords=({web3})=>{
     return (
         
       <Container 
-      style={{marginTop: "5%", width: "70vw"}}>
+      style={{width: "70vw"}}>
         {
-            <Button onClick={() => sethospitalConnectOpen(true)} style={{marginBottom:"5%",backgroundColor:"#252525",color:"white"}}>
+            <Button onClick={() => sethospitalConnectOpen(true)} style={{marginBottom:"2%",backgroundColor:"#252525",color:"white"}}>
               Connect Hospital
             </Button>
         }
@@ -196,14 +221,14 @@ const DisplayRecords=({web3})=>{
             <MUIDataTable
           title={"E-Health-Records"}
           data={EHealthRecords}
-          columns={columnsPat.map((item)=>_.camelCase(item))}
+          columns={columnsPat}
           options={options}
         />)
         :(
           <MUIDataTable
           title={"E-Health-Records"}
           data={EHealthRecords}
-          columns={columnsDoc.map((item)=>_.camelCase(item))}
+          columns={columnsDoc}
           options={options}
         />
         )
